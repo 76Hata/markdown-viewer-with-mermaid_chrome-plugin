@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Markdown Test</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            line-height: 1.6;
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .mermaid {
+            text-align: center;
+            margin: 20px 0;
+            background-color: #fafafa;
+            padding: 20px;
+            border-radius: 5px;
+            border: 1px solid #e1e4e8;
+        }
+        pre {
+            background-color: #f8f8f8;
+            padding: 15px;
+            border-radius: 5px;
+            overflow-x: auto;
+        }
+        code {
+            background-color: #f8f8f8;
+            padding: 2px 4px;
+            border-radius: 3px;
+        }
+        pre code {
+            background: none;
+            padding: 0;
+        }
+    </style>
+</head>
+<body>
+    <div id="content"></div>
+    
+    <script src="https://cdn.jsdelivr.net/npm/marked@5.1.1/marked.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/mermaid@10.6.0/dist/mermaid.min.js"></script>
+    <script>
+        const markdownText = `# テスト用Markdown
+
+これはテスト用のMarkdownファイルです。
+
+## 基本機能
+
+- **太字**
+- *斜体*  
+- \`コード\`
+
+### フローチャート
+
+\`\`\`mermaid
+graph TD
+    A[開始] --> B{条件}
+    B -->|Yes| C[処理A]
+    B -->|No| D[処理B]
+    C --> E[終了]
+    D --> E
+\`\`\`
+
+## コードブロック
+
+\`\`\`javascript
+function hello() {
+    console.log("Hello World!");
+}
+\`\`\`
+`;
+
+        // Mermaid初期化
+        mermaid.initialize({
+            startOnLoad: false,
+            theme: 'default',
+            securityLevel: 'loose'
+        });
+
+        // カスタムレンダラー
+        const renderer = new marked.Renderer();
+        let mermaidCounter = 0;
+
+        renderer.code = function(code, language) {
+            if (language === 'mermaid') {
+                const id = `mermaid-${mermaidCounter++}`;
+                return `<div class="mermaid" id="${id}">${code}</div>`;
+            }
+            // HTMLエスケープ関数
+            const escapeHtml = (text) => {
+                const div = document.createElement('div');
+                div.textContent = text;
+                return div.innerHTML;
+            };
+            return `<pre><code class="language-${language || ''}">${escapeHtml(code)}</code></pre>`;
+        };
+
+        marked.setOptions({
+            renderer: renderer,
+            gfm: true,
+            breaks: false
+        });
+
+        // レンダリング
+        async function render() {
+            try {
+                console.log('Markdown rendering started...');
+                const html = marked.parse(markdownText);
+                document.getElementById('content').innerHTML = html;
+                
+                console.log('Looking for mermaid elements...');
+                const mermaidElements = document.querySelectorAll('.mermaid');
+                console.log(`Found ${mermaidElements.length} mermaid elements`);
+                
+                for (const element of mermaidElements) {
+                    try {
+                        const graphDefinition = element.textContent.trim();
+                        console.log('Rendering mermaid:', graphDefinition);
+                        const { svg } = await mermaid.render(`graph-${element.id}`, graphDefinition);
+                        element.innerHTML = svg;
+                        console.log('Mermaid rendered successfully');
+                    } catch (error) {
+                        console.error('Mermaid error:', error);
+                        element.innerHTML = `<pre style="color: red;">Mermaid error: ${error.message}</pre>`;
+                    }
+                }
+                console.log('All rendering completed');
+            } catch (error) {
+                console.error('Rendering error:', error);
+                document.getElementById('content').innerHTML = `<pre style="color: red;">Error: ${error.message}</pre>`;
+            }
+        }
+
+        // ページ読み込み後に実行
+        document.addEventListener('DOMContentLoaded', render);
+    </script>
+</body>
+</html>

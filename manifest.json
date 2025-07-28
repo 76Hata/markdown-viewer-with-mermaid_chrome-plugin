@@ -1,0 +1,45 @@
+{
+  "manifest_version": 3,
+  "name": "Markdown Viewer with Mermaid",
+  "version": "1.0.0",
+  "description": "Enhanced Markdown viewer with TOC, themes, search, and Mermaid diagram support",
+  "icons": {
+    "16": "icons/mdvier-icon_16.png",
+    "48": "icons/mdvier-icon_48.png",
+    "128": "icons/mdvier-icon_128.png"
+  },
+  "permissions": [
+    "activeTab",
+    "storage"
+  ],
+  "host_permissions": [
+    "file:///*"
+  ],
+  "content_scripts": [
+    {
+      "matches": ["file://*.md", "file://*.markdown"],
+      "js": [
+        "lib/marked.min.js", 
+        "lib/mermaid.min.js",
+        "js/toc-generator.js",
+        "js/theme-manager.js",
+        "js/search-engine.js",
+        "js/toolbar.js",
+        "content.js"
+      ],
+      "css": ["css/main.css"],
+      "run_at": "document_idle",
+      "all_frames": false
+    }
+  ],
+  "web_accessible_resources": [
+    {
+      "resources": [
+        "js/*.js",
+        "css/*.css",
+        "lib/*.js"
+      ],
+      "matches": ["file://*/*"]
+    }
+  ]
+}
