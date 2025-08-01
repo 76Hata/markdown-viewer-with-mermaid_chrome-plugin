@@ -19,6 +19,8 @@ class TOCGenerator {
         this.tocElement = null;
         this.activeHeading = null;
         this.observer = null;
+        this.isCollapsed = false;
+        this.floatingButton = null;
         
         this.init();
     }
@@ -98,7 +100,11 @@ class TOCGenerator {
         this.tocElement.innerHTML = `
             <div class="toc-header">
                 <h3>目次</h3>
-                <button class="toc-toggle" title="折りたたみ">−</button>
+                <button class="toc-toggle" title="目次を折りたたむ" aria-label="目次を折りたたむ">
+                    <svg class="toc-toggle-icon" viewBox="0 0 24 24" width="16" height="16">
+                        <path d="M15 18l-6-6 6-6"/>
+                    </svg>
+                </button>
             </div>
             <div class="toc-content">
                 <nav class="toc-nav" role="navigation" aria-label="目次">
@@ -195,13 +201,22 @@ class TOCGenerator {
     adjustContentMargin() {
         const content = document.querySelector('#markdown-content') || document.body;
         
-        switch (this.options.position) {
-            case 'left':
-                content.style.marginLeft = `calc(${this.options.width} + 20px)`;
-                break;
-            case 'right':
-                content.style.marginRight = `calc(${this.options.width} + 20px)`;
-                break;
+        if (this.isCollapsed) {
+            // 折りたたまれている場合はマージンをリセット
+            content.style.marginLeft = '20px';
+            content.style.marginRight = '20px';
+        } else {
+            // 展開されている場合は通常のマージン
+            switch (this.options.position) {
+                case 'left':
+                    content.style.marginLeft = `calc(${this.options.width} + 20px)`;
+                    content.style.marginRight = '20px';
+                    break;
+                case 'right':
+                    content.style.marginLeft = '20px';
+                    content.style.marginRight = `calc(${this.options.width} + 20px)`;
+                    break;
+            }
         }
     }
     
@@ -263,7 +278,11 @@ class TOCGenerator {
                 this.toggleSublist(e.target);
             }
             
-            if (e.target.classList.contains('toc-toggle')) {
+            // Handle toggle button click (including SVG child elements)
+            const toggleButton = e.target.closest('.toc-toggle');
+            if (toggleButton) {
+                e.preventDefault();
+                e.stopPropagation();
                 this.toggleTOC();
             }
         });
@@ -343,17 +362,89 @@ class TOCGenerator {
     }
     
     toggleTOC() {
-        const content = this.tocElement.querySelector('.toc-content');
-        const toggle = this.tocElement.querySelector('.toc-toggle');
-        const isCollapsed = content.style.display === 'none';
+        try {
+            // console.log('toggleTOC called, current state:', this.isCollapsed);
+            
+            if (!this.tocElement) {
+                console.error('TOC element not found');
+                return;
+            }
+            
+            const content = this.tocElement.querySelector('.toc-content');
+            const toggle = this.tocElement.querySelector('.toc-toggle');
+            const icon = toggle ? toggle.querySelector('.toc-toggle-icon') : null;
+            const headerElement = this.tocElement.querySelector('.toc-header');
+            const headerTitle = headerElement ? headerElement.querySelector('h3') : null;
+            
+            if (!content || !toggle || !icon || !headerElement || !headerTitle) {
+                console.error('TOC elements not found:', { 
+                    content: !!content, 
+                    toggle: !!toggle, 
+                    icon: !!icon, 
+                    headerElement: !!headerElement,
+                    headerTitle: !!headerTitle
+                });
+                return;
+            }
+            
+            this.isCollapsed = !this.isCollapsed;
+            // console.log('New state:', this.isCollapsed);
         
-        content.style.display = isCollapsed ? 'block' : 'none';
-        toggle.textContent = isCollapsed ? '−' : '+';
-        
-        if (!isCollapsed) {
-            this.tocElement.style.width = '40px';
+        if (this.isCollapsed) {
+            // 折りたたむ - サイドバーを完全に非表示
+            this.tocElement.style.display = 'none';
+            this.showFloatingButton();
+            
         } else {
+            // 展開する
+            this.tocElement.style.display = 'block';
+            this.hideFloatingButton();
+            content.style.display = 'block';
             this.tocElement.style.width = this.options.width;
+            this.tocElement.classList.remove('collapsed');
+            
+            // アイコンを閉じる形（左向き矢印）に変更
+            icon.innerHTML = `<path d="M15 18l-6-6 6-6"/>`;
+            toggle.title = '目次を折りたたむ';
+            toggle.setAttribute('aria-label', '目次を折りたたむ');
+        }
+        
+        // コンテンツのマージンを調整
+        this.adjustContentMargin();
+        
+        } catch (error) {
+            console.error('Error in toggleTOC:', error);
+        }
+    }
+    
+    showFloatingButton() {
+        // フローティングボタンが既に存在する場合は削除
+        this.hideFloatingButton();
+        
+        // フローティングボタンを作成
+        this.floatingButton = document.createElement('button');
+        this.floatingButton.className = 'toc-floating-button';
+        this.floatingButton.title = '目次を表示';
+        this.floatingButton.setAttribute('aria-label', '目次を表示');
+        this.floatingButton.innerHTML = `
+            <svg viewBox="0 0 24 24" width="20" height="20">
+                <path d="M3 6h18v2H3V6zm0 5h18v2H3v-2zm0 5h18v2H3v-2z"/>
+            </svg>
+        `;
+        
+        // クリックイベントを追加
+        this.floatingButton.addEventListener('click', () => {
+            this.toggleTOC();
+        });
+        
+        // ドキュメントに追加
+        document.body.appendChild(this.floatingButton);
+    }
+    
+    hideFloatingButton() {
+        if (this.floatingButton && this.floatingButton.parentNode) {
+            this.floatingButton.parentNode.removeChild(this.floatingButton);
+            this.floatingButton = null;
         }
     }
     

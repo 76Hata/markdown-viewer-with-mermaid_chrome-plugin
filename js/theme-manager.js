@@ -26,11 +26,16 @@ class ThemeManager {
                 const result = await chrome.storage.sync.get(['theme', 'customCSS']);
                 this.currentTheme = result.theme || 'light';
                 this.customCSS = result.customCSS || '';
+            } else if (window.SafeStorage) {
+                window.SafeStorage.getItem('markdown-viewer-theme', (theme) => {
+                    this.currentTheme = theme || 'light';
+                });
+                window.SafeStorage.getItem('markdown-viewer-custom-css', (customCSS) => {
+                    this.customCSS = customCSS || '';
+                });
             } else {
-                const theme = localStorage.getItem('markdown-viewer-theme') || 'light';
-                const customCSS = localStorage.getItem('markdown-viewer-custom-css') || '';
-                this.currentTheme = theme;
-                this.customCSS = customCSS;
+                this.currentTheme = 'light';
+                this.customCSS = '';
             }
         } catch (error) {
             console.warn('Failed to load theme settings:', error);
@@ -244,9 +249,9 @@ class ThemeManager {
                     theme: this.currentTheme,
                     customCSS: this.customCSS
                 });
-            } else {
-                localStorage.setItem('markdown-viewer-theme', this.currentTheme);
-                localStorage.setItem('markdown-viewer-custom-css', this.customCSS);
+            } else if (window.SafeStorage) {
+                window.SafeStorage.setItem('markdown-viewer-theme', this.currentTheme);
+                window.SafeStorage.setItem('markdown-viewer-custom-css', this.customCSS);
             }
         } catch (error) {
             console.error('Failed to save theme settings:', error);
