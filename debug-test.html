@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Debug Test - Enhanced Markdown Viewer</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background: #f5f5f5;
+        }
+        .debug-panel {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+        .status {
+            padding: 10px;
+            border-radius: 4px;
+            margin: 5px 0;
+        }
+        .success { background: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
+        .error { background: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
+        .warning { background: #fff3cd; color: #856404; border: 1px solid #ffeaa7; }
+        button {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        button:hover { background: #0056b3; }
+        #test-content {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <h1>🔧 Enhanced Markdown Viewer Debug Test</h1>
+    
+    <div class="debug-panel">
+        <h2>デバッグ情報</h2>
+        <div id="debug-info"></div>
+        
+        <h3>テストボタン</h3>
+        <button onclick="testLibraries()">ライブラリテスト</button>
+        <button onclick="testExtensionFiles()">拡張機能ファイルテスト</button>
+        <button onclick="testMarkdownRendering()">Markdownレンダリングテスト</button>
+        <button onclick="loadEnhancedFeatures()">拡張機能読み込みテスト</button>
+    </div>
+    
+    <div id="test-content">
+        <h2>テスト用Markdownコンテンツ</h2>
+        <div id="markdown-content">
+            <!-- ここにMarkdownがレンダリングされます -->
+        </div>
+    </div>
+
+    <!-- ライブラリ読み込み -->
+    <script src="lib/marked.min.js"></script>
+    <script src="lib/mermaid.min.js"></script>
+    
+    <script>
+        // デバッグ情報表示
+        function showStatus(message, type = 'success') {
+            const debugInfo = document.getElementById('debug-info');
+            const statusDiv = document.createElement('div');
+            statusDiv.className = `status ${type}`;
+            statusDiv.textContent = message;
+            debugInfo.appendChild(statusDiv);
+            console.log(`[${type.toUpperCase()}] ${message}`);
+        }
+        
+        // 初期デバッグ情報
+        showStatus(`ブラウザ: ${navigator.userAgent}`, 'warning');
+        showStatus(`現在のURL: ${location.href}`, 'warning');
+        showStatus(`プロトコル: ${location.protocol}`, 'warning');
+        
+        // ライブラリテスト
+        function testLibraries() {
+            showStatus('ライブラリテストを開始...');
+            
+            if (typeof marked !== 'undefined') {
+                showStatus('✅ marked.js 読み込み成功');
+            } else {
+                showStatus('❌ marked.js 読み込み失敗', 'error');
+            }
+            
+            if (typeof mermaid !== 'undefined') {
+                showStatus('✅ mermaid.js 読み込み成功');
+            } else {
+                showStatus('❌ mermaid.js 読み込み失敗', 'error');
+            }
+        }
+        
+        // 拡張機能ファイルテスト
+        function testExtensionFiles() {
+            showStatus('拡張機能ファイルテストを開始...');
+            
+            const files = [
+                'css/main.css',
+                'js/toc-generator.js',
+                'js/theme-manager.js',
+                'js/search-engine.js',
+                'js/toolbar.js'
+            ];
+            
+            files.forEach(file => {
+                fetch(file)
+                    .then(response => {
+                        if (response.ok) {
+                            showStatus(`✅ ${file} アクセス可能`);
+                        } else {
+                            showStatus(`❌ ${file} アクセス失敗 (${response.status})`, 'error');
+                        }
+                    })
+                    .catch(error => {
+                        showStatus(`❌ ${file} 読み込みエラー: ${error.message}`, 'error');
+                    });
+            });
+        }
+        
+        // Markdownレンダリングテスト
+        function testMarkdownRendering() {
+            showStatus('Markdownレンダリングテストを開始...');
+            
+            if (typeof marked === 'undefined') {
+                showStatus('❌ marked.js が利用できません', 'error');
+                return;
+            }
+            
+            const testMarkdown = `# テストヘッダー
+            
+これはテスト用のMarkdownです。
+
+## サブヘッダー
+
+- リスト項目1
+- リスト項目2
+
+\`\`\`javascript
+console.log("Hello, World!");
+\`\`\`
+
+\`\`\`mermaid
+graph TD
+    A[Start] --> B[Process]
+    B --> C[End]
+\`\`\`
+`;
+            
+            try {
+                const html = marked.parse(testMarkdown);
+                document.getElementById('markdown-content').innerHTML = html;
+                showStatus('✅ Markdownレンダリング成功');
+                
+                // Mermaidテスト
+                if (typeof mermaid !== 'undefined') {
+                    mermaid.initialize({
+                        startOnLoad: false,
+                        theme: 'default',
+                        securityLevel: 'loose'
+                    });
+                    
+                    const mermaidElements = document.querySelectorAll('.mermaid');
+                    if (mermaidElements.length > 0) {
+                        renderMermaidDiagrams();
+                    }
+                }
+            } catch (error) {
+                showStatus(`❌ Markdownレンダリングエラー: ${error.message}`, 'error');
+            }
+        }
+        
+        // Mermaid図の描画
+        async function renderMermaidDiagrams() {
+            const mermaidElements = document.querySelectorAll('.mermaid');
+            
+            for (let i = 0; i < mermaidElements.length; i++) {
+                const element = mermaidElements[i];
+                try {
+                    const graphDefinition = element.textContent.trim();
+                    const { svg } = await mermaid.render(`graph-${i}`, graphDefinition);
+                    element.innerHTML = svg;
+                    showStatus(`✅ Mermaid図 ${i + 1} レンダリング成功`);
+                } catch (error) {
+                    showStatus(`❌ Mermaid図 ${i + 1} エラー: ${error.message}`, 'error');
+                }
+            }
+        }
+        
+        // 拡張機能読み込みテスト
+        async function loadEnhancedFeatures() {
+            showStatus('拡張機能読み込みテストを開始...');
+            
+            // CSS読み込み
+            const link = document.createElement('link');
+            link.rel = 'stylesheet';
+            link.href = 'css/main.css';
+            link.onload = () => showStatus('✅ main.css 読み込み成功');
+            link.onerror = () => showStatus('❌ main.css 読み込み失敗', 'error');
+            document.head.appendChild(link);
+            
+            // JavaScript ファイル読み込み
+            const scripts = [
+                'js/toc-generator.js',
+                'js/theme-manager.js',
+                'js/search-engine.js',
+                'js/toolbar.js'
+            ];
+            
+            for (const scriptSrc of scripts) {
+                try {
+                    await loadScript(scriptSrc);
+                    showStatus(`✅ ${scriptSrc} 読み込み成功`);
+                } catch (error) {
+                    showStatus(`❌ ${scriptSrc} 読み込み失敗: ${error.message}`, 'error');
+                }
+            }
+            
+            // 機能テスト
+            setTimeout(() => {
+                if (typeof Toolbar !== 'undefined') {
+                    showStatus('✅ Toolbar クラス利用可能');
+                    try {
+                        // ツールバー用のコンテナがあるか確認
+                        let container = document.body;
+                        if (!container) {
+                            showStatus('❌ document.body が利用できません', 'error');
+                            return;
+                        }
+                        
+                        window.markdownToolbar = new Toolbar(container);
+                        showStatus('✅ Toolbar 初期化成功');
+                        
+                        // ツールバーが表示されているか確認
+                        const toolbarElement = document.querySelector('.main-toolbar');
+                        if (toolbarElement) {
+                            showStatus('✅ ツールバー要素が作成されました');
+                        } else {
+                            showStatus('⚠️ ツールバー要素が見つかりません', 'warning');
+                        }
+                        
+                    } catch (error) {
+                        showStatus(`❌ Toolbar 初期化失敗: ${error.message}`, 'error');
+                        console.error('Toolbar initialization error:', error);
+                    }
+                } else {
+                    showStatus('❌ Toolbar クラス利用不可', 'error');
+                }
+            }, 1000);
+        }
+        
+        // スクリプト動的読み込み
+        function loadScript(src) {
+            return new Promise((resolve, reject) => {
+                const script = document.createElement('script');
+                script.src = src;
+                script.onload = resolve;
+                script.onerror = reject;
+                document.head.appendChild(script);
+            });
+        }
+        
+        // 初期テスト実行
+        document.addEventListener('DOMContentLoaded', () => {
+            testLibraries();
+        });
+    </script>
+</body>
+</html>
