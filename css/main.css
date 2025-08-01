@@ -321,6 +321,64 @@ li {
   color: var(--toc-active-color);
 }
 
+/* Export Selector */
+.export-selector {
+  position: relative;
+}
+
+.export-dropdown {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  background: var(--bg-color);
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
+  box-shadow: 0 4px 12px var(--shadow);
+  padding: 10px;
+  min-width: 150px;
+  z-index: 1002;
+}
+
+.export-options {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.export-option {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.export-option:hover {
+  background: var(--button-hover-bg);
+}
+
+.export-preview {
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+}
+
+.export-option-label {
+  font-size: 14px;
+  color: var(--text-color);
+  font-weight: 500;
+}
+
+.export-label {
+  font-size: 12px;
+  margin-left: 4px;
+}
+
 /* =================== TOC STYLES =================== */
 .toc-panel {
   background: var(--toc-bg-color);
@@ -329,6 +387,12 @@ li {
   font-size: 14px;
   overflow-y: auto;
   box-shadow: 2px 0 5px var(--shadow);
+  transition: width 0.3s ease;
+}
+
+.toc-panel.collapsed {
+  background: var(--toc-bg-color);
+  border-right: 1px solid var(--toc-border-color);
 }
 
 .toc-header {
@@ -350,15 +414,107 @@ li {
 .toc-toggle {
   background: none;
   border: none;
-  font-size: 18px;
   cursor: pointer;
-  padding: 5px;
-  border-radius: 3px;
+  padding: 8px;
+  border-radius: 6px;
   color: var(--toc-text-color);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  transition: all 0.2s ease;
 }
 
 .toc-toggle:hover {
   background: var(--toc-hover-bg);
+  transform: scale(1.1);
+}
+
+.toc-toggle-icon {
+  fill: currentColor;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  transition: all 0.3s ease;
+  pointer-events: none;
+}
+
+.toc-toggle-icon path {
+  pointer-events: none;
+}
+
+.toc-panel.collapsed {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  padding-top: 15px;
+}
+
+.toc-panel.collapsed .toc-header {
+  padding: 0;
+  border-bottom: none;
+  background: transparent;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
+
+.toc-panel.collapsed .toc-header h3 {
+  display: none;
+}
+
+.toc-panel.collapsed .toc-toggle {
+  width: 28px;
+  height: 28px;
+  margin: 0;
+  padding: 6px;
+  border-radius: 50%;
+  background: var(--toc-header-bg);
+  box-shadow: 0 2px 4px var(--shadow);
+  border: 1px solid var(--toc-border-color);
+}
+
+.toc-panel.collapsed .toc-toggle:hover {
+  background: var(--toc-hover-bg);
+  transform: scale(1.1);
+}
+
+.toc-panel.collapsed .toc-toggle-icon {
+  width: 14px;
+  height: 14px;
+}
+
+/* フローティングボタンのスタイル */
+.toc-floating-button {
+  position: fixed;
+  top: 20px;
+  left: 20px;
+  width: 44px;
+  height: 44px;
+  background: var(--toc-header-bg);
+  border: 1px solid var(--toc-border-color);
+  border-radius: 8px;
+  cursor: pointer;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 8px var(--shadow);
+  transition: all 0.2s ease;
+}
+
+.toc-floating-button:hover {
+  background: var(--toc-hover-bg);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px var(--shadow);
+}
+
+.toc-floating-button svg {
+  fill: var(--toc-text-color);
+  pointer-events: none;
 }
 
 .toc-content {
