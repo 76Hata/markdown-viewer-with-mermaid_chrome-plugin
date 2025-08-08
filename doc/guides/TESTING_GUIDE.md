@@ -19,7 +19,6 @@
 ## 🧪 動作確認手順
 
 ### Step 1: 拡張機能の読み込み
-
 1. Chromeで `chrome://extensions/` を開く
 2. 「デベロッパーモード」を有効にする
 3. 「パッケージ化されていない拡張機能を読み込む」をクリック
@@ -73,7 +72,6 @@
 正常に動作している場合、以下のようなログが出力されます：
 
 **ファイルアクセスOFFの場合:**
-
 ```
 === FileAccessNotifier.init() ===
 Markdown file loaded - checking file access permission
@@ -89,7 +87,6 @@ Creating local file usage dialog...
 ```
 
 **ファイルアクセスONの場合:**
-
 ```
 === FileAccessNotifier.init() ===
 Markdown file loaded - checking file access permission

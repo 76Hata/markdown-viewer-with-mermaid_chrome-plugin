@@ -3,7 +3,6 @@
 ## 🚨 問題の分析
 
 ユーザーから報告された問題：
-
 - 「ファイルのURLへのアクセスを許可する」が ON/OFF どちらでも「ローカルファイルでの使用について」ダイアログが表示される
 
 ## 🔍 根本原因
@@ -45,7 +44,6 @@ case 'checkFileAccess':
 checkExtensionFileAccessPermission: function(callback) {
     try {
         console.log('=== Checking extension file access permission ===');
-
         // Method 1: Ask background script for accurate file access permission
         if (typeof chrome !== 'undefined' && chrome.runtime) {
             console.log('Requesting file access permission status from background script...');
@@ -55,7 +53,6 @@ checkExtensionFileAccessPermission: function(callback) {
                     this.fallbackFileAccessCheck(callback);
                     return;
                 }
-
                 if (response && response.success) {
                     console.log('Background script file access result:', response.hasFileAccess);
                     callback(response.hasFileAccess);
@@ -83,7 +80,6 @@ checkExtensionFileAccessPermission: function(callback) {
 fallbackFileAccessCheck: function(callback) {
     try {
         console.log('Using fallback file access check method...');
-
         // Method 1: Try chrome.extension.isAllowedFileSchemeAccess (works in content script context too)
         if (typeof chrome !== 'undefined' && chrome.extension && chrome.extension.isAllowedFileSchemeAccess) {
             const hasAccess = chrome.extension.isAllowedFileSchemeAccess();
@@ -91,7 +87,6 @@ fallbackFileAccessCheck: function(callback) {
             callback(hasAccess);
             return;
         }
-
         // Method 2: For non-file protocols, assume file access is not needed
         if (location.protocol !== 'file:') {
             console.log('Fallback: Non-file protocol detected, file access not needed');
@@ -129,7 +124,6 @@ fallbackFileAccessCheck: function(callback) {
 ## 🧪 期待される動作
 
 ### ファイルアクセス権限 ON の場合
-
 ```
 === Checking extension file access permission ===
 Requesting file access permission status from background script...
@@ -154,19 +148,16 @@ File access permission status: false
 ⏰ Setting timer to show local file usage dialog in 2 seconds...
 🚀 Showing local file usage dialog now
 ```
-
 **結果**: 2秒後に黄色いダイアログが表示される
 
 ## 🔧 動作確認方法
 
 1. **拡張機能の読み込み**
-
    ```
    chrome://extensions/ → デベロッパーモード ON → パッケージ化されていない拡張機能を読み込む
    ```
 
 2. **ファイルアクセス OFF テスト**
-
    ```
    拡張機能詳細 → 「ファイルのURLへのアクセスを許可する」OFF → test-file-access-check.md を開く
    → 開発者ツールコンソール確認 → 2秒後にダイアログ表示確認

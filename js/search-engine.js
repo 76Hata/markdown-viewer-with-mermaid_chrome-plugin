@@ -1,5 +1,40 @@
 /**
- * 完全安全版検索エンジン - DOM破壊を防ぐ
+ * @fileoverview 検索エンジンクラス - Markdown Viewerの高度な検索機能を提供
+ * 
+ * このファイルは、Chrome拡張機能「Markdown Viewer with Mermaid」の検索機能を実装します。
+ * 正規表現検索、リアルタイム検索、ハイライト表示などの機能を提供します。
+ * 
+ * @author 76Hata
+ * @version 2.0.0
+ * @since 1.0.0
+ */
+
+/**
+ * 検索エンジンクラス
+ * Markdownコンテンツ内の高度な検索機能を提供します（DOM破壊を防ぐ完全安全版）
+ * 
+ * @class SearchEngine
+ * @description このクラスは以下の機能を提供します：
+ * - リアルタイム検索
+ * - 正規表現による高度な検索
+ * - 大文字小文字の区別/無視
+ * - 完全一致検索
+ * - 検索結果のハイライト表示
+ * - 検索結果間の移動
+ * - DOM構造を破壊しない安全な検索
+ * 
+ * @example
+ * // 検索エンジンを初期化
+ * const searchEngine = new SearchEngine();
+ * 
+ * // 検索パネルを表示
+ * searchEngine.show();
+ * 
+ * // プログラムから検索を実行
+ * searchEngine.search('検索語', {regex: true, caseSensitive: false});
+ * 
+ * @author 76Hata
+ * @since 1.0.0
  */
 class SearchEngine {
     constructor(container) {
@@ -132,7 +167,7 @@ class SearchEngine {
             return;
         }
         
-        console.log('Performing safe search for:', query);
+        // Performing safe search
         
         // 元のHTMLを保存（初回のみ）
         const contentContainer = document.querySelector('#markdown-content') || document.body;
@@ -149,8 +184,21 @@ class SearchEngine {
         }
     }
     
+    getSearchableTextContent(container) {
+        // Mermaid要素とSVG要素を除外したテキストコンテンツを取得
+        const clone = container.cloneNode(true);
+        const mermaidElements = clone.querySelectorAll('.mermaid');
+        const svgElements = clone.querySelectorAll('svg');
+        
+        mermaidElements.forEach(element => element.remove());
+        svgElements.forEach(element => element.remove());
+        
+        return clone.textContent || clone.innerText || '';
+    }
+    
     safeSearch(query, container) {
-        const textContent = container.textContent || container.innerText;
+        // Mermaid要素を除外したテキストコンテンツを取得
+        const textContent = this.getSearchableTextContent(container);
         const options = this.getSearchOptions();
         const flags = options.caseSensitive ? 'g' : 'gi';
         let searchRegex;
@@ -160,7 +208,7 @@ class SearchEngine {
             const escapedQuery = query.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
             searchRegex = new RegExp(escapedQuery, flags);
         } catch (error) {
-            console.warn('Invalid search pattern:', error);
+            // Invalid search pattern - reset and return
             this.updateStatus();
             return;
         }
@@ -189,7 +237,7 @@ class SearchEngine {
             if (!searchRegex.global) break;
         }
         
-        console.log(`Found ${this.currentResults.length} matches`);
+        // Search completed
         
         // 安全なハイライト表示
         if (this.currentResults.length > 0) {
@@ -231,6 +279,20 @@ class SearchEngine {
                         parent.classList.contains('search-highlight')) {
                         return NodeFilter.FILTER_REJECT;
                     }
+                    
+                    // Mermaid図表とSVG要素を検索対象から除外
+                    let currentElement = parent;
+                    while (currentElement) {
+                        if (currentElement.classList && currentElement.classList.contains('mermaid')) {
+                            return NodeFilter.FILTER_REJECT;
+                        }
+                        // SVG要素内のテキストも除外
+                        if (currentElement.tagName === 'SVG' || currentElement.tagName === 'svg') {
+                            return NodeFilter.FILTER_REJECT;
+                        }
+                        currentElement = currentElement.parentElement;
+                    }
+                    
                     return NodeFilter.FILTER_ACCEPT;
                 }
             }

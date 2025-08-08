@@ -12,7 +12,6 @@
   - Status: Should show ✓ Connected
 
 ### Verification Commands:
-
 ```bash
 # Check MCP server status
 claude mcp list

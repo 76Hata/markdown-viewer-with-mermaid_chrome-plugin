@@ -110,7 +110,6 @@
 ## Content Security Policy (CSP)
 
 #### ✅ 適合
-
 ```json
 "content_security_policy": {
   "extension_pages": "script-src 'self'; object-src 'self'; style-src 'self' 'unsafe-inline';",
@@ -132,7 +131,6 @@
 - **外部通信**: なし（file://とhttp/httpsのローカルアクセスのみ）
 
 ### 権限の適正性
-
 - **storage**: 設定保存用（適正）
 - **notifications**: ユーザー通知用（適正）
 - **contextMenus**: 右クリックメニュー用（適正）
@@ -141,7 +139,6 @@
 ## 修正履歴
 
 ### Phase 1: 初期実装 → 審査対応
-
 1. **eval使用削除** (`content.js:167`)
    - `eval('1+1')` sandbox検出削除
    - 代替実装で安全性確保
@@ -151,7 +148,6 @@
    - ローカルライブラリ検出ロジックに変更
 
 ### Phase 2: 再審査対応 → 最終確認
-
 3. **包括的監査実施**
    - 全ファイルのコンプライアンス確認
    - 外部依存関係の完全除去確認

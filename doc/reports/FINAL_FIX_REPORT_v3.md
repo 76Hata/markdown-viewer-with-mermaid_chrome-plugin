@@ -49,7 +49,6 @@ checkExtensionFileAccessPermission: function(callback) {
                     callback(true);
                 }
             });
-
     } catch (e) {
         console.warn('Could not check extension file access permission:', e.message);
         console.log('❌ Exception occurred, assuming file access is OFF');
@@ -68,7 +67,6 @@ checkExtensionFileAccessPermission: function(callback) {
 ## 📋 期待される動作
 
 ### ファイルアクセス権限 ON の場合
-
 ```
 === Checking extension file access permission ===
 Testing file:// access capability with dummy file test...
@@ -95,7 +93,6 @@ File access permission status: false
 ⏰ Setting timer to show local file usage dialog in 2 seconds...
 🚀 Showing local file usage dialog now
 ```
-
 **結果**: 2秒後に黄色いダイアログが表示される
 
 ## ✅ 修正したファイル
@@ -114,13 +111,11 @@ File access permission status: false
 ## 🧪 動作確認方法
 
 1. **拡張機能の読み込み**
-
    ```
    chrome://extensions/ → デベロッパーモード ON → パッケージ化されていない拡張機能を読み込む
    ```
 
 2. **ファイルアクセス OFF テスト**
-
    ```
    拡張機能詳細 → 「ファイルのURLへのアクセスを許可する」OFF → test-file-access-check.md を開く
    → 開発者ツールコンソール確認 → 2秒後にダイアログ表示確認

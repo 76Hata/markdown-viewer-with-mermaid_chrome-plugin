@@ -1,0 +1,41 @@
+# Dependencies
+node_modules/
+package-lock.json
+
+# Build outputs
+dist/
+build/
+docs/
+
+# Minified files
+*.min.js
+*.min.css
+
+# External libraries
+lib/
+
+# Generated files
+coverage/
+
+# IDE files
+.vscode/
+.idea/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+
+# Chrome extension specific
+*.crx
+*.pem
+
+# Test files
+mermaid-debug.md
+search-test.md
+
+# Temporary files
+*.tmp
+*.temp

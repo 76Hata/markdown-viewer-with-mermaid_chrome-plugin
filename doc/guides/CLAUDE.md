@@ -5,7 +5,6 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 ## Project Overview
 
 This is a Chrome extension that enhances Markdown file viewing with advanced features including:
-
 - Table of Contents (TOC) generation with navigation
 - Multiple themes (light/dark/sepia) with automatic switching
 - Advanced search functionality with regex support
@@ -17,13 +16,11 @@ This is a Chrome extension that enhances Markdown file viewing with advanced fea
 ## Architecture
 
 ### Core Files
-
 - `content.js` - Main content script (2000+ lines) that initializes the markdown viewer
 - `background.js` - Service worker handling installation, notifications, and context menus
 - `popup.js` - Extension popup interface for settings and testing
 
 ### Modular Components (`js/` directory)
-
 - `toolbar.js` - Main toolbar UI with all interactive controls
 - `theme-manager.js` - Theme switching and CSS variable management
 - `search-engine.js` - Search functionality with highlighting
@@ -43,40 +40,34 @@ This is a Chrome extension that enhances Markdown file viewing with advanced fea
 ## Development Commands
 
 ### Testing the Extension
-
 1. Load extension in Chrome: Navigate to `chrome://extensions/`, enable Developer mode, click "Load unpacked" and select this directory
 2. Test with markdown files: Open any `.md` file in Chrome to see the enhanced viewer
 3. Debug mode: Open browser console to see detailed logging
 
 ### File Access Setup (Critical for Local Files)
-
 The extension requires "Allow access to file URLs" permission in Chrome extensions settings to work with local markdown files.
 
 ### Key Classes and Their Responsibilities
 
 #### `Toolbar` (toolbar.js)
-
 - Creates floating toolbar with drag functionality
 - Manages all UI controls (search, themes, print, export, settings)
 - Coordinates between other component classes
 - Handles keyboard shortcuts
 
 #### `ThemeManager` (theme-manager.js)
-
 - Manages three built-in themes: light, dark, sepia
 - Applies CSS variables for consistent theming
 - Persists theme preferences using Chrome Storage API
 - Re-renders Mermaid diagrams when theme changes
 
 #### `SearchEngine` (search-engine.js)
-
 - Provides real-time search with highlighting
 - Supports regex patterns and case sensitivity options
 - Navigation between search results
 - Integrates with the main toolbar
 
 #### `TOCGenerator` (toc-generator.js)
-
 - Automatically detects headings (h1-h6) in markdown content
 - Creates collapsible navigation panel
 - Provides active section highlighting during scroll
@@ -100,7 +91,6 @@ The extension includes a comprehensive file access permission system:
 - `SafeStorage` - Fallback storage for sandboxed environments
 
 ### Export Functionality
-
 - HTML export with embedded CSS and complete styling
 - Multiple fallback methods for different environments (Blob, Data URL, clipboard)
 - Sandbox environment detection and appropriate handling
@@ -108,27 +98,23 @@ The extension includes a comprehensive file access permission system:
 ## Common Development Tasks
 
 ### Adding New Themes
-
 1. Add theme configuration in `ThemeManager.registerDefaultThemes()`
 2. Define CSS variables in the theme config
 3. Add theme preview in `toolbar.js` theme selector
 4. Update CSS with theme-specific selectors if needed
 
 ### Modifying Toolbar
-
 - Edit `toolbar.js` `createToolbar()` method for HTML structure
 - Add event handlers in `bindEvents()` method
 - Update CSS in `main.css` under "TOOLBAR STYLES" section
 
 ### Debugging Issues
-
 - Check browser console for detailed logging
 - Verify file access permissions for local files
 - Test in different environments (local files, GitHub raw URLs, regular websites)
 - Use the popup interface debug functions for testing
 
 ### Testing
-
 - Load `test-enhanced.html` for comprehensive feature testing
 - Use console command `runMarkdownViewerTests()` for automated testing
 - Test file access behavior with local markdown files
@@ -156,7 +142,6 @@ Comprehensive error handling throughout:
 - Console logging for debugging
 
 ### Security
-
 - CSP-compliant code (no eval, inline scripts properly handled)
 - Safe HTML generation with proper escaping
 - Secure storage of user preferences
@@ -194,12 +179,10 @@ Comprehensive error handling throughout:
 - 指示がない限り勝手なgit操作は行わないこと。
 
 ### コードの作成、修正、リファクタリングについて
-
 - コードには適切な量のコメントをつけること。
 - コメントはTypeDocのフォーマット形式で記述すること。
 
 ### テストについて
-
 - 可能な限りの手法を用いてしっかりとしたテストを必ず実施すること。
 - テスト結果は必ずレポートとして残すこと。
 - 可能な限り最終確認時以外は人の手によるテストを依頼しないで解決すること。
@@ -214,21 +197,18 @@ Comprehensive error handling throughout:
 - **必須確認**: 「要件定義フェーズが完了しました。設計フェーズに進んでよろしいですか？」
 
 ### 2. 設計
-
 - **必ず`.claude_workflow/requirements.md`を読み込んでから開始**
 - アプローチ検討、実施手順決定、問題点の特定
 - `.claude_workflow/design.md`に文書化
 - **必須確認**: 「設計フェーズが完了しました。タスク化フェーズに進んでよろしいですか？」
 
 ### 3. タスク化
-
 - **必ず`.claude_workflow/design.md`を読み込んでから開始**
 - タスクを実行可能な単位に分解、優先順位設定
 - `.claude_workflow/tasks.md`に文書化
 - **必須確認**: 「タスク化フェーズが完了しました。実行フェーズに進んでよろしいですか？」
 
 ### 4. 実行
-
 - **必ず`.claude_workflow/tasks.md`を読み込んでから開始**
 - タスクを順次実行、進捗を`.claude_workflow/tasks.md`に更新
 - 各タスク完了時に報告
@@ -241,13 +221,11 @@ Comprehensive error handling throughout:
 - ファイル編集前に必ず現在の内容を確認
 
 ### フェーズ管理
-
 - 各段階開始時: 「前段階のmdファイルを読み込みました」と報告
 - 各段階の最後に、期待通りの結果になっているか確認
 - 要件定義なしにいきなり実装を始めない
 
 ### 実行方針
-
 - 段階的に進める: 一度に全てを変更せず、小さな変更を積み重ねる
 - 複数のタスクを同時並行で進めない
 - エラーは解決してから次へ進む

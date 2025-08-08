@@ -1,8 +1,53 @@
 /**
- * Theme Manager Class
- * Manages theme switching and CSS variables
+ * @fileoverview テーマ管理クラス - Markdown Viewerのテーマ切り替え機能を提供
+ * 
+ * このファイルは、Chrome拡張機能「Markdown Viewer with Mermaid」のテーマ管理機能を実装します。
+ * ライト、ダーク、セピアテーマの切り替えとカスタムCSSの適用を行います。
+ * 
+ * @author 76Hata
+ * @version 2.0.0
+ * @since 1.0.0
+ */
+
+/**
+ * テーマ管理クラス
+ * Markdownビューアーのテーマ切り替えとCSS変数の管理を行います
+ * 
+ * @class ThemeManager
+ * @description このクラスは以下の機能を提供します：
+ * - 複数のテーマ（ライト、ダーク、セピア）の管理
+ * - テーマ設定の永続化
+ * - カスタムCSSSの適用
+ * - Mermaid図表のテーマ連携
+ * - テーマ変更時の観察者パターン実装
+ * 
+ * @example
+ * // テーママネージャーを初期化
+ * const themeManager = new ThemeManager();
+ * 
+ * // ダークテーマに切り替え
+ * await themeManager.applyTheme('dark');
+ * 
+ * // カスタムCSSを適用
+ * await themeManager.setCustomCSS('body { font-size: 18px; }');
+ * 
+ * @author 76Hata
+ * @since 1.0.0
  */
 class ThemeManager {
+    /**
+     * ThemeManagerクラスのコンストラクタ
+     * 
+     * @constructor
+     * @description テーママネージャーの初期化を行います。
+     *              テーママップ、現在のテーマ、カスタムCSS、システムテーマクエリ、
+     *              観察者セットを初期化し、init()メソッドを呼び出します。
+     * 
+     * @example
+     * const themeManager = new ThemeManager();
+     * 
+     * @since 1.0.0
+     */
     constructor() {
         this.themes = new Map();
         this.currentTheme = 'light';
@@ -13,6 +58,26 @@ class ThemeManager {
         this.init();
     }
     
+    /**
+     * テーママネージャーの初期化処理
+     * 
+     * @method init
+     * @async
+     * @description テーママネージャーの初期化を行います。以下の順序で処理を実行します：
+     *              1. 設定の読み込み
+     *              2. デフォルトテーマの登録
+     *              3. システムテーマ検出の設定
+     *              4. 現在のテーマを適用
+     * 
+     * @returns {Promise<void>} 初期化完了のPromise
+     * 
+     * @example
+     * const themeManager = new ThemeManager();
+     * // init()はコンストラクタで自動的に呼び出されます
+     * 
+     * @throws {Error} 初期化中にエラーが発生した場合
+     * @since 1.0.0
+     */
     async init() {
         await this.loadSettings();
         this.registerDefaultThemes();
@@ -127,24 +192,13 @@ class ThemeManager {
     }
     
     setupSystemThemeDetection() {
-        this.systemThemeQuery = window.matchMedia('(prefers-color-scheme: dark)');
-        this.systemThemeQuery.addEventListener('change', (e) => {
-            if (this.currentTheme === 'auto') {
-                this.applyTheme('auto');
-            }
-        });
+        // システムテーマ検出機能を削除
     }
     
     async applyTheme(themeName) {
-        let actualTheme = themeName;
-        
-        if (themeName === 'auto') {
-            actualTheme = this.detectSystemTheme();
-        }
-        
-        const theme = this.themes.get(actualTheme);
+        const theme = this.themes.get(themeName);
         if (!theme) {
-            console.warn(`Theme "${actualTheme}" not found`);
+            console.warn(`Theme "${themeName}" not found`);
             return;
         }
         
@@ -152,12 +206,12 @@ class ThemeManager {
         this.applyCustomCSS(theme.customCSS);
         await this.applyMermaidTheme(theme.mermaidTheme);
         
-        document.documentElement.setAttribute('data-theme', actualTheme);
+        document.documentElement.setAttribute('data-theme', themeName);
         
         this.currentTheme = themeName;
         await this.saveSettings();
         
-        this.notifyObservers('themeChanged', { theme: actualTheme, config: theme });
+        this.notifyObservers('themeChanged', { theme: themeName, config: theme });
     }
     
     applyCSSVariables(variables) {
@@ -203,21 +257,30 @@ class ThemeManager {
         
         for (const element of mermaidElements) {
             try {
-                const originalCode = element.dataset.mermaidCode || element.textContent;
+                let originalCode = element.dataset.mermaidCode || element.textContent;
                 
-                if (originalCode) {
-                    const { svg } = await mermaid.render(`mermaid-${Date.now()}`, originalCode);
+                // エンコードされたコードをデコード
+                if (originalCode && element.dataset.mermaidCode) {
+                    try {
+                        originalCode = decodeURIComponent(element.dataset.mermaidCode);
+                    } catch (decodeError) {
+                        console.warn('Failed to decode mermaid code, using as-is:', decodeError);
+                        originalCode = element.dataset.mermaidCode;
+                    }
+                }
+                
+                if (originalCode && originalCode.trim()) {
+                    const { svg } = await mermaid.render(`mermaid-${Date.now()}`, originalCode.trim());
                     element.innerHTML = svg;
                 }
             } catch (error) {
                 console.error('Failed to re-render mermaid diagram:', error);
+                console.error('Original code was:', element.dataset.mermaidCode || element.textContent);
             }
         }
     }
     
-    detectSystemTheme() {
-        return this.systemThemeQuery?.matches ? 'dark' : 'light';
-    }
+    // detectSystemTheme関数を削除
     
     getAvailableThemes() {
         return Array.from(this.themes.entries()).map(([key, theme]) => ({

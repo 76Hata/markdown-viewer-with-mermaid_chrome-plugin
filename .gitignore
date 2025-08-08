@@ -1,0 +1,43 @@
+# Dependencies
+node_modules/
+
+# Build outputs
+dist/
+build/
+
+# Development files
+*.log
+.env
+
+# IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS generated files
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Test files (if any)
+test/
+coverage/
+
+# TypeDoc output
+docs/
+
+# CI/CD artifacts
+chrome-extension.zip
+build/
+
+# ESLint cache
+.eslintcache
+
+# Test files
+*-test.md
+*-debug.md
+mermaid-debug.md
+search-test.md
+
+.claude

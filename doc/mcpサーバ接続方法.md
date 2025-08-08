@@ -11,7 +11,6 @@ Claude CodeでMCP（Model Context Protocol）サーバーを接続し、cipher�
 - MCPサーバーファイルが`C:\mcp\`に配置済み
 
 ## MCPサーバーの場所
-
 ```
 C:\mcp\
 ├── cipher-mcp-server\          # Cipherメモリーエージェント
@@ -27,19 +26,16 @@ C:\mcp\
 ## 接続手順
 
 ### 1. Cipher MCPサーバーの接続（stdio方式）
-
 ```bash
 claude mcp add cipher "C:\mcp\cipher-mcp-server\start-cipher.bat" -s local
 ```
 
 ### 2. Serena MCPサーバーの接続（stdio方式）
-
 ```bash
 claude mcp add serena "C:\mcp\start_serena_mcp.bat" -s local
 ```
 
 ### 3. MCP Gatewayサーバーの接続（SSE方式）
-
 ```bash
 claude mcp add-json mcp-gateway '{"type": "sse", "url": "http://10.10.0.1:8811/sse"}' -s local
 ```
@@ -47,13 +43,11 @@ claude mcp add-json mcp-gateway '{"type": "sse", "url": "http://10.10.0.1:8811/s
 ## 接続状態の確認方法
 
 ### 1. 基本的な状態確認
-
 ```bash
 claude mcp list
 ```
 
 **期待される出力：**
-
 ```
 Checking MCP server health...
 
@@ -83,13 +77,11 @@ Claude Code起動後、以下のコマンドで動作確認：
 ```
 
 #### Cipherの動作テスト
-
 ```
 /mcp__cipher__ask_cipher "Hello, test message"
 ```
 
 #### Serenaの初期指示の表示
-
 ```
 /mcp__serena__initial_instructions
 ```
@@ -113,13 +105,11 @@ Claude Code起動後、以下のコマンドで動作確認：
    ```
 
 2. **MCPサーバーの再追加**
-
    ```bash
    # 既存設定を削除
    claude mcp remove cipher -s local
    claude mcp remove serena -s local
    claude mcp remove mcp-gateway -s local
-
    # 再追加
    claude mcp add cipher "C:\mcp\cipher-mcp-server\start-cipher.bat" -s local
    claude mcp add serena "C:\mcp\start_serena_mcp.bat" -s local
@@ -133,24 +123,20 @@ Claude Code起動後、以下のコマンドで動作確認：
 ### よくある問題と解決方法
 
 #### 1. Serenaが「Connected」だがリソースが表示されない
-
 - これは正常な状態です
 - SerenaはプロジェクトをActivateした後にツールが利用可能になります
 - `/mcp__serena__initial_instructions`で初期指示が表示されれば正常
 
 #### 2. Cipherの認証エラー
-
 - CipherはOpenAI APIキーが必要な場合があります
 - 設定ファイルでAPIキーを確認してください
 
 #### 3. ネットワーク接続の問題（MCP Gateway）
-
 - MCP Gateway（`http://10.10.0.1:8811`）が起動していることを確認
 - ネットワーク接続確認：`curl http://10.10.0.1:8811/sse`
 - ファイアウォール設定の確認
 
 #### 4. パスの問題
-
 - Windowsではバックスラッシュ（`\`）を使用
 - パスにスペースが含まれる場合は引用符で囲む
 
@@ -171,7 +157,6 @@ Serenaを使用する際は、最初にプロジェクトをActivateしてくだ
 ```
 
 ## 参考情報
-
 - [Serena MCP Server Documentation](C:\mcp\serena\README.md)
 - [Claude Code MCP Documentation](https://docs.anthropic.com/en/docs/claude-code/mcp)
 

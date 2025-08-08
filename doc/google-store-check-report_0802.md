@@ -19,7 +19,6 @@
 #### ✅ **適合**
 
 **manifest.json確認結果**:
-
 ```json
 "js": [
   "lib/marked.min.js",      // ✅ ローカル同梱
@@ -52,12 +51,10 @@
 #### ✅ **適合**
 
 **eval使用チェック**:
-
 - `content.js`: eval使用なし（以前の`eval('1+1')`は削除済み）
 - 検出されたevalはdocフォルダ内のPuppeteerテストコード（開発用、本番に影響なし）
 
 **動的コード実行チェック**:
-
 - `new Function`: 使用なし
 - `setTimeout/setInterval(string)`: 使用なし
 - その他の動的コード実行: 使用なし
@@ -67,7 +64,6 @@
 #### ✅ **適合**
 
 **manifest.json設定**:
-
 ```json
 "host_permissions": [
   "file:///*",     // ✅ ファイルアクセス許可要求
@@ -90,7 +86,6 @@
 ```
 
 **ユーザー設定要求の実装**:
-
 - ファイルアクセス許可検出ロジック実装済み（`content.js:45-91`）
 - 設定手順ダイアログ実装済み（`content.js:1817-1818`で画像表示）
 - 適切なユーザーガイダンス提供
@@ -113,7 +108,6 @@ const response = await fetch(url, {
 ```
 
 **fetch使用箇所**:
-
 - `content.js:288` - Markdownコンテンツ取得（適切なCORS設定済み）
 - `debug-test.html:117` - 開発用テストファイル（本番影響なし）
 - libファィル内のfetch文字列 - ライブラリ内部データ（実際の通信なし）
@@ -123,7 +117,6 @@ const response = await fetch(url, {
 ## 追加セキュリティ検証
 
 ### Content Security Policy (CSP)
-
 ```json
 "content_security_policy": {
   "extension_pages": "script-src 'self'; object-src 'self'; style-src 'self' 'unsafe-inline';",
@@ -157,7 +150,6 @@ const response = await fetch(url, {
   "management"    // ✅ 拡張機能管理用
 ]
 ```
-
 ✅ 必要最小限の権限
 
 ---
@@ -165,12 +157,10 @@ const response = await fetch(url, {
 ## 前回審査からの修正事項
 
 ### Phase 1 修正（初回審査対応）
-
 1. **eval使用削除**: `content.js:167`の`eval('1+1')`削除
 2. **CDN参照削除**: `js/toolbar.js`のCDN読み込み削除
 
 ### Phase 2 修正（現在まで）
-
 3. **ダイアログ改善**: ファイルアクセス許可ダイアログの表示ロジック改善
 4. **画像リソース追加**: `doc/*.png`をweb_accessible_resourcesに追加
 5. **構文エラー修正**: `handleWebProtocol`関数の括弧問題修正
