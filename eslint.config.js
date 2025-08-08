@@ -79,27 +79,37 @@ module.exports = [
       '*-debug.md',
     ],
   },
-];
-import tseslint from "@typescript-eslint/eslint-plugin";
-import parser from "@typescript-eslint/parser";
-
-export default [
+  // TypeScript configuration
   {
     files: ["**/*.ts", "**/*.tsx"],
     languageOptions: {
-      parser: parser,
-      parserOptions: {
-        project: "./tsconfig.json", // tsconfigが必要
-        tsconfigRootDir: process.cwd(),
-        ecmaVersion: 2020,
-        sourceType: "module"
-      }
-    },
-    plugins: {
-      "@typescript-eslint": tseslint
+      ecmaVersion: 2020,
+      sourceType: "module",
+      globals: {
+        // Browser globals
+        window: 'readonly',
+        document: 'readonly',
+        console: 'readonly',
+        
+        // Chrome Extension APIs
+        chrome: 'readonly',
+        browser: 'readonly',
+      },
     },
     rules: {
-      ...tseslint.configs.recommended.rules // 推奨ルールを展開
-    }
-  }
+      // TypeScript-specific rules can be added here
+      'no-unused-vars': 'off', // TypeScript handles this
+      'no-console': [
+        'warn',
+        {
+          allow: ['warn', 'error'],
+        },
+      ],
+      'no-debugger': 'error',
+      'prefer-const': 'error',
+      'no-var': 'error',
+      eqeqeq: 'warn',
+      curly: 'error',
+    },
+  },
 ];
