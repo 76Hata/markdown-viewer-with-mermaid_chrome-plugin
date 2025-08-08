@@ -1,0 +1,61 @@
+{
+  "name": "Markdown Viewer with Mermaid - API Documentation",
+  "entryPoints": [
+    "./content.js",
+    "./background.js",
+    "./popup.js",
+    "./js/theme-manager.js",
+    "./js/toolbar.js",
+    "./js/search-engine.js",
+    "./js/toc-generator.js"
+  ],
+  "out": "./doc/type-doc",
+  "readme": "./doc/README.md",
+  "includeVersion": true,
+  "excludeExternals": true,
+  "excludePrivate": false,
+  "excludeProtected": false,
+  "exclude": ["**/node_modules/**", "**/doc/**", "**/lib/**", "**/test*", "**/debug*", "**/verify*"],
+  "hideGenerator": false,
+  "theme": "default",
+  "plugin": [],
+  "sort": ["source-order"],
+  "validation": {
+    "notExported": true,
+    "invalidLink": true,
+    "notDocumented": false
+  },
+  "treatWarningsAsErrors": false,
+  "githubPages": false,
+  "markdownItOptions": {
+    "html": true
+  },
+  "titleLink": "https://github.com/76Hata/markdown-viewer-with-mermaid",
+  "navigationLinks": {
+    "GitHub": "https://github.com/76Hata/markdown-viewer-with-mermaid",
+    "Issues": "https://github.com/76Hata/markdown-viewer-with-mermaid/issues"
+  },
+  "sidebarLinks": {
+    "プロジェクトホーム": "https://github.com/76Hata/markdown-viewer-with-mermaid",
+    "Chrome Web Store": "#"
+  },
+  "customCss": "",
+  "blockTags": [
+    "@author",
+    "@since",
+    "@version",
+    "@deprecated",
+    "@example",
+    "@see",
+    "@throws",
+    "@param",
+    "@returns",
+    "@memberof",
+    "@namespace",
+    "@class",
+    "@method",
+    "@description",
+    "@fileoverview"
+  ],
+  "inlineTags": ["@link", "@linkcode", "@linkplain"]
+}
