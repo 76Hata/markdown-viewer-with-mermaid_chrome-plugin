@@ -207,7 +207,7 @@ class SearchEngine {
             // 常にリテラル検索のみ（正規表現特殊文字を完全エスケープ）
             const escapedQuery = query.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
             searchRegex = new RegExp(escapedQuery, flags);
-        } catch (error) {
+        } catch {
             // Invalid search pattern - reset and return
             this.updateStatus();
             return;
@@ -234,7 +234,9 @@ class SearchEngine {
                 searchRegex.lastIndex++;
             }
             
-            if (!searchRegex.global) break;
+            if (!searchRegex.global) {
+                break;
+            }
         }
         
         // Search completed
@@ -310,7 +312,9 @@ class SearchEngine {
         nodesToProcess.reverse().forEach(textNode => {
             try {
                 const parent = textNode.parentElement;
-                if (!parent) return;
+                if (!parent) {
+                    return;
+                }
                 
                 const text = textNode.textContent;
                 const highlightedText = text.replace(regex, (match) => {
@@ -359,7 +363,9 @@ class SearchEngine {
     }
     
     navigateResults(direction) {
-        if (this.currentResults.length === 0) return;
+        if (this.currentResults.length === 0) {
+            return;
+        }
         
         // 現在のアクティブを削除
         document.querySelectorAll('.search-highlight-active').forEach(el => {

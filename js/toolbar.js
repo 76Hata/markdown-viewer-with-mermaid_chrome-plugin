@@ -387,7 +387,9 @@ class Toolbar {
     }
     
     toggleTOC() {
-        if (!this.tocGenerator) return;
+        if (!this.tocGenerator) {
+            return;
+        }
         
         const tocPanel = document.querySelector('.toc-panel');
         if (tocPanel) {
@@ -1024,7 +1026,7 @@ class Toolbar {
             user-select: none;
         `;
         
-        this.showButtonElement.addEventListener('click', (e) => {
+        this.showButtonElement.addEventListener('click', (_e) => {
             // ドラッグ操作でない場合のみツールバーを表示
             if (!this.isDragging) {
                 this.showToolbar();
@@ -1131,7 +1133,7 @@ class Toolbar {
     
     hideToolbar() {
         // ツールバーの位置を表示ボタンに反映（右端に合わせる）
-        const toolbarRect = this.toolbarElement.getBoundingClientRect();
+        const _toolbarRect = this.toolbarElement.getBoundingClientRect();
         const showButtonWidth = 50; // 表示ボタンの幅
         
         if (this.toolbarElement.style.left && this.toolbarElement.style.top) {
@@ -1478,7 +1480,7 @@ class Toolbar {
             const availableHeight = pageHeight - (marginY * 2);
             
             let currentY = marginY;
-            let currentPage = 1;
+            let _currentPage = 1;
             
             // デフォルトフォントを設定（日本語対応）
             pdf.setFontSize(12);
@@ -1512,7 +1514,7 @@ class Toolbar {
                 
                 // ページが変わった場合の処理
                 if (result.newPage) {
-                    currentPage++;
+                    _currentPage++;
                     currentY = marginY + 10; // 新しいページの開始位置
                 }
             }
@@ -1680,7 +1682,9 @@ class Toolbar {
                     for (const child of element.children) {
                         const result = await this.addElementToPDF(pdf, child, x, currentY, maxWidth, maxHeight, pageHeight);
                         currentY = result.y;
-                        if (result.newPage) newPage = true;
+                        if (result.newPage) {
+                            newPage = true;
+                        }
                     }
                 }
                 break;
@@ -1815,7 +1819,7 @@ class Toolbar {
         }
     }
     
-    async layoutElementsIntoPages(elements, container) {
+    async layoutElementsIntoPages(elements, _container) {
         const pages = [];
         let currentPage = [];
         let currentPageHeight = 0;
@@ -1826,7 +1830,7 @@ class Toolbar {
         
         for (let i = 0; i < elements.length; i++) {
             const elementInfo = elements[i];
-            let elementHeight = Math.max(elementInfo.height, 30);
+            const elementHeight = Math.max(elementInfo.height, 30);
             
             console.log(`Processing element ${i}: ${elementInfo.type}, height: ${elementHeight}px, breakBehavior: ${elementInfo.breakBehavior}`);
             
@@ -1928,8 +1932,12 @@ class Toolbar {
     }
     
     combinePageCanvases(pageCanvases) {
-        if (pageCanvases.length === 0) return null;
-        if (pageCanvases.length === 1) return pageCanvases[0];
+        if (pageCanvases.length === 0) {
+            return null;
+        }
+        if (pageCanvases.length === 1) {
+            return pageCanvases[0];
+        }
         
         // 全ページの高さを計算
         const totalWidth = pageCanvases[0].width;
@@ -2110,7 +2118,9 @@ class Toolbar {
     }
     
     mergeOverlappingAreas(areas) {
-        if (areas.length === 0) return areas;
+        if (areas.length === 0) {
+            return areas;
+        }
         
         // 開始位置でソート
         areas.sort((a, b) => a.start - b.start);
@@ -2235,10 +2245,12 @@ class Toolbar {
             const rect = element.getBoundingClientRect();
             const contentRect = originalContent.getBoundingClientRect();
             
-            if (rect.height < 5) continue; // 極小要素は除外
+            if (rect.height < 5) {
+                continue;
+            } // 極小要素は除外
             
             const relativeTop = (rect.top - contentRect.top) * scale;
-            const relativeBottom = relativeTop + (rect.height * scale);
+            const _relativeBottom = relativeTop + (rect.height * scale);
             
             // 要素内の行を推定
             const lineHeight = this.getElementLineHeight(element) * scale;
@@ -2248,7 +2260,7 @@ class Toolbar {
             // 要素のパディングとマージンを考慮
             const computedStyle = window.getComputedStyle(element);
             const paddingTop = parseFloat(computedStyle.paddingTop) * scale;
-            const marginTop = parseFloat(computedStyle.marginTop) * scale;
+            const _marginTop = parseFloat(computedStyle.marginTop) * scale;
             
             for (let i = 0; i < lineCount; i++) {
                 const lineY = relativeTop + paddingTop + (i * lineHeight);
@@ -2302,7 +2314,7 @@ class Toolbar {
         return Math.max(calculatedLineHeight, fontSize * 1.1);
     }
     
-    findNearestLineGap(targetY, textLines, defaultLineHeight) {
+    findNearestLineGap(targetY, textLines, _defaultLineHeight) {
         let bestGap = targetY;
         let minDistance = Infinity;
         
@@ -2358,7 +2370,7 @@ class Toolbar {
     }
     
     
-    createPagesFromBreakPoints(fullCanvas, breakPoints, pageHeight) {
+    createPagesFromBreakPoints(fullCanvas, breakPoints, _pageHeight) {
         const pages = [];
         
         for (let i = 0; i < breakPoints.length; i++) {
