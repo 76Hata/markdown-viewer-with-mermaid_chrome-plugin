@@ -1,4 +1,4 @@
-{
+ESL{
   "name": "markdown-viewer-with-mermaid_chrome-plugin",
   "version": "1.0.0",
   "type": "commonjs",
@@ -12,8 +12,8 @@
     "test": "echo \"No tests implemented yet\"",
     "lint": "eslint . --ext .js",
     "lint:fix": "eslint . --ext .js --fix",
-    "format": "prettier --write \"**/*.{js,json,md,yml,yaml}\"",
-    "format:check": "prettier --check \"**/*.{js,json,md,yml,yaml}\"",
+    "format": "prettier --write \"**/*.{js,json,yml,yaml}\"",
+    "format:check": "prettier --check \"**/*.{js,json,yml,yaml}\"",
     "type-check": "tsc --noEmit",
     "docs": "typedoc",
     "docs:watch": "typedoc --watch",
