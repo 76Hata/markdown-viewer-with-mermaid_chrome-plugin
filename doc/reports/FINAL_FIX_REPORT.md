@@ -44,7 +44,6 @@ case 'checkFileAccess':
 checkExtensionFileAccessPermission: function(callback) {
     try {
         console.log('=== Checking extension file access permission ===');
-        
         // Method 1: Ask background script for accurate file access permission
         if (typeof chrome !== 'undefined' && chrome.runtime) {
             console.log('Requesting file access permission status from background script...');
@@ -54,7 +53,6 @@ checkExtensionFileAccessPermission: function(callback) {
                     this.fallbackFileAccessCheck(callback);
                     return;
                 }
-                
                 if (response && response.success) {
                     console.log('Background script file access result:', response.hasFileAccess);
                     callback(response.hasFileAccess);
@@ -65,10 +63,10 @@ checkExtensionFileAccessPermission: function(callback) {
             });
             return;
         }
-        
+
         // Fallback method
         this.fallbackFileAccessCheck(callback);
-        
+
     } catch (e) {
         console.warn('Could not check extension file access permission:', e.message);
         callback(false);
@@ -82,7 +80,6 @@ checkExtensionFileAccessPermission: function(callback) {
 fallbackFileAccessCheck: function(callback) {
     try {
         console.log('Using fallback file access check method...');
-        
         // Method 1: Try chrome.extension.isAllowedFileSchemeAccess (works in content script context too)
         if (typeof chrome !== 'undefined' && chrome.extension && chrome.extension.isAllowedFileSchemeAccess) {
             const hasAccess = chrome.extension.isAllowedFileSchemeAccess();
@@ -90,18 +87,17 @@ fallbackFileAccessCheck: function(callback) {
             callback(hasAccess);
             return;
         }
-        
         // Method 2: For non-file protocols, assume file access is not needed
         if (location.protocol !== 'file:') {
             console.log('Fallback: Non-file protocol detected, file access not needed');
             callback(true);
             return;
         }
-        
+
         // Method 3: For file protocol, default to false (show dialog) for safety
         console.log('Fallback: File protocol detected, defaulting to false (will show dialog)');
         callback(false);
-        
+
     } catch (e) {
         console.warn('Fallback file access check failed:', e.message);
         callback(false);
@@ -136,9 +132,11 @@ Background script file access result: true
 File access permission status: true
 ✅ File access ON - doing nothing
 ```
+
 **結果**: ダイアログ表示されない
 
 ### ファイルアクセス権限 OFF の場合
+
 ```
 === Checking extension file access permission ===
 Requesting file access permission status from background script...

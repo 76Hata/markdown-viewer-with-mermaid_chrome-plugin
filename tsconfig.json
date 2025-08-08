@@ -14,10 +14,7 @@
     "forceConsistentCasingInFileNames": true,
     "moduleResolution": "node"
   },
-  "include": [
-    "./*.js",
-    "./js/*.js"
-  ],
+  "include": ["./*.js", "./js/*.js"],
   "exclude": [
     "node_modules",
     "dist",

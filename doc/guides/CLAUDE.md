@@ -27,9 +27,11 @@ This is a Chrome extension that enhances Markdown file viewing with advanced fea
 - `toc-generator.js` - Table of contents generation and navigation
 
 ### Styling
+
 - `css/main.css` - Comprehensive CSS with CSS variables for theming
 
 ### External Libraries (`lib/` directory)
+
 - `marked.min.js` - Markdown parsing
 - `mermaid.min.js` - Diagram rendering
 - `jspdf.umd.min.js` - PDF export functionality
@@ -81,7 +83,9 @@ The extension requires "Allow access to file URLs" permission in Chrome extensio
 6. **File Access Notifications**: Shows setup guidance when file access is disabled
 
 ### File Access System
+
 The extension includes a comprehensive file access permission system:
+
 - `FileAccessChecker` - Detects file access permissions
 - `FileAccessNotifier` - Shows setup guidance dialogs
 - `SafeStorage` - Fallback storage for sandboxed environments
@@ -118,16 +122,20 @@ The extension includes a comprehensive file access permission system:
 ## Key Implementation Notes
 
 ### Sandboxed Environment Handling
+
 The extension detects and adapts to sandboxed environments (like GitHub raw URLs) where some APIs are restricted.
 
 ### Performance Considerations
+
 - Lazy initialization of components
 - Efficient DOM querying with caching
 - Throttled scroll events for TOC updates
 - Memory cleanup on component destruction
 
 ### Error Handling
+
 Comprehensive error handling throughout:
+
 - Graceful degradation when APIs are unavailable
 - Fallback storage methods
 - User-friendly error messages
@@ -139,29 +147,34 @@ Comprehensive error handling throughout:
 - Secure storage of user preferences
 - File access permission validation
 
-
 ## 大前提
 
 ### claude codeターミナル(コンソール、プロンプト)について
+
 - 出力メッセージは原則日本語で出力すること
 
 ### 資料、レポート、ドキュメントについて
+
 - ドキュメントはすべてdocフォルダに格納すること
 - 作成者の名前は『76Hata』にすること。
 
 ### 不明な技術や仕様について
+
 - 不明瞭やうまくいかない技術や仕様などがあればすぐにネットで調査すること。
 
 ### 設計書について
+
 - コード作成前には必ず『基本設計書』『詳細設計書』『テーブル仕様書』『インターフェース定義書』『API設計書』『画面仕様書』のうち必要なドキュメントを作成すること。
 - 設計書類はdocフォルダ下にdesignフォルダを作成しそこに格納すること。
 - 必要であればUML図も描画して下さい。UML図作成時にはmermaid形式で描画すること。
 - コードの作成、修正、リファクタリングを行った場合は必ずドキュメントに反映すること。
 
 ### 画面設計について
+
 - 常にUI/UXに考慮しユーザの使いやすさを第一にデザインすること
 
 ### ファイル、Git操作について
+
 - 原則としてプロジェクトルートフォルダ以外に影響を与えるファイル操作は行わないこと。行いたい場合はたとえ「--dangerously-skip-permissions」オプションが付いてても必ず確認すること。
 - 指示がない限り勝手なgit操作は行わないこと。
 
@@ -175,7 +188,9 @@ Comprehensive error handling throughout:
 - 可能な限り最終確認時以外は人の手によるテストを依頼しないで解決すること。
 
 ## タスク実行の4段階フロー
+
 ### 1. 要件定義
+
 - `.claude_workflow/complete.md`が存在すれば参照
 - 目的の明確化、現状把握、成功基準の設定
 - `.claude_workflow/requirements.md`に文書化
@@ -199,7 +214,9 @@ Comprehensive error handling throughout:
 - 各タスク完了時に報告
 
 ## 実行ルール
+
 ### ファイル操作
+
 - 新規タスク開始時: 既存ファイルの**内容を全て削除して白紙から書き直す**
 - ファイル編集前に必ず現在の内容を確認
 
@@ -216,13 +233,11 @@ Comprehensive error handling throughout:
 - 指示にない機能を勝手に追加しない
 
 ## 厳守事項
-以下のルールを厳守して下さい。
-1.ルートフォルダに対して影響のあるLINUXコマンド操作は絶対に行わない。
-2.プロジェクトのカレントフォルダより上の階層に影響がある操作を行うときは確認を促す。
-3.現在利用中のリポジトリへのgit操作は一切禁止
-4.以下のコマンドは絶対に利用禁止
-- rm -rf *
-- rm -rf /*
+
+以下のルールを厳守して下さい。1.ルートフォルダに対して影響のあるLINUXコマンド操作は絶対に行わない。2.プロジェクトのカレントフォルダより上の階層に影響がある操作を行うときは確認を促す。3.現在利用中のリポジトリへのgit操作は一切禁止4.以下のコマンドは絶対に利用禁止
+
+- rm -rf \*
+- rm -rf /\*
 - mkfs.ext4 /dev/sdX
 - dd if=/dev/zero of=/dev/sdX
 - reboot

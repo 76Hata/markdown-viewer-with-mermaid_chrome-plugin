@@ -1,9 +1,11 @@
 # MCPサーバー接続方法
 
 ## 概要
+
 Claude CodeでMCP（Model Context Protocol）サーバーを接続し、cipher、serena、mcp-gatewayの3つのMCPサーバーを利用可能にする手順をまとめます。
 
 ## 前提条件
+
 - Claude Codeがインストール済み
 - uvがインストール済み
 - MCPサーバーファイルが`C:\mcp\`に配置済み
@@ -55,17 +57,21 @@ mcp-gateway: http://10.10.0.1:8811/sse (SSE) - ✓ Connected
 ```
 
 ### 2. 詳細情報の確認
+
 個別のMCPサーバー情報を確認：
+
 ```bash
 claude mcp get cipher
-claude mcp get serena  
+claude mcp get serena
 claude mcp get mcp-gateway
 ```
 
 ### 3. Claude Code内での確認方法
+
 Claude Code起動後、以下のコマンドで動作確認：
 
 #### 利用可能なMCPリソースの確認
+
 ```
 /ListMcpResourcesTool
 ```
@@ -81,15 +87,19 @@ Claude Code起動後、以下のコマンドで動作確認：
 ```
 
 #### MCP Gatewayの動作確認
+
 ```
 /ListMcpResourcesTool
 ```
+
 ※MCP Gatewayが提供するリソースを確認できます
 
 ## トラブルシューティング
 
 ### MCPサーバーが接続されない場合
+
 1. **uvのインストール確認**
+
    ```bash
    uv --version
    ```
@@ -100,7 +110,6 @@ Claude Code起動後、以下のコマンドで動作確認：
    claude mcp remove cipher -s local
    claude mcp remove serena -s local
    claude mcp remove mcp-gateway -s local
-   
    # 再追加
    claude mcp add cipher "C:\mcp\cipher-mcp-server\start-cipher.bat" -s local
    claude mcp add serena "C:\mcp\start_serena_mcp.bat" -s local
@@ -132,13 +141,17 @@ Claude Code起動後、以下のコマンドで動作確認：
 - パスにスペースが含まれる場合は引用符で囲む
 
 ## 設定ファイルの場所
+
 MCPサーバーの設定は以下のファイルに保存されます：
+
 ```
 C:\Users\{ユーザー名}\.claude.json
 ```
 
 ## Serenaの使用方法
+
 Serenaを使用する際は、最初にプロジェクトをActivateしてください：
+
 ```
 "Activate the project C:\Develop\Portfolio\markdown-viewer-with-mermaid_chrome-plugin"
 ```

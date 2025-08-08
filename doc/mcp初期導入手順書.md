@@ -1,11 +1,25 @@
 # MCP初期導入手順書
 
 ## 概要
+<<<<<<< HEAD
+
+=======
+>>>>>>> 0f5d860b848a9e6094a33edbfab309b455e1b792
 この手順書では、SerenaとCipherのMCPサーバーをGitHubリポジトリから初期導入し、Claude Codeで利用可能にする手順を説明します。
 
 ## 前提条件
 
 ### 必要なソフトウェア
+<<<<<<< HEAD
+
+1. **Git**: バージョン管理システム
+   - [Git for Windows](https://gitforwindows.org/) をインストール
+2. **Python 3.11**: Serena用（注意：3.12は未サポート）
+   - [Python公式サイト](https://www.python.org/downloads/) からPython 3.11.xをダウンロード
+   - インストール時に「Add Python to PATH」を必ずチェック
+3. **Node.js**: Cipher用
+   - [Node.js公式サイト](https://nodejs.org/) からLTS版をダウンロード・インストール
+=======
 1. **Git**: バージョン管理システム
    - [Git for Windows](https://gitforwindows.org/) をインストール
    
@@ -16,15 +30,23 @@
 3. **Node.js**: Cipher用
    - [Node.js公式サイト](https://nodejs.org/) からLTS版をダウンロード・インストール
    
+>>>>>>> 0f5d860b848a9e6094a33edbfab309b455e1b792
 4. **uv**: Python環境管理ツール（Serena用）
    ```powershell
    # PowerShell または Command Prompt で実行
    powershell -c "irm https://astral.sh/uv/install.ps1 | iex"
    ```
+<<<<<<< HEAD
+5. **Claude Code**: 既にインストール済み想定
+
+### 動作確認
+
+=======
    
 5. **Claude Code**: 既にインストール済み想定
 
 ### 動作確認
+>>>>>>> 0f5d860b848a9e6094a33edbfab309b455e1b792
 ```bash
 # 各ツールのバージョン確認
 git --version
@@ -48,6 +70,10 @@ cd C:\mcp
 ### Step 2: Serena MCP Server のインストール
 
 #### 2-1. Gitリポジトリのクローン
+<<<<<<< HEAD
+
+=======
+>>>>>>> 0f5d860b848a9e6094a33edbfab309b455e1b792
 ```bash
 # Serenaの公式リポジトリをクローン（実際のURLは環境に応じて調整してください）
 git clone https://github.com/oraios-ai/serena.git
@@ -55,10 +81,18 @@ cd serena
 ```
 
 > **注意**: 上記はリポジトリの推定URLです。実際のURLは以下の方法で確認してください：
+<<<<<<< HEAD
+>
+=======
+>>>>>>> 0f5d860b848a9e6094a33edbfab309b455e1b792
 > - [GitHub](https://github.com)でSerena MCP Serverを検索
 > - または既存の設定ファイルから確認
 
 #### 2-2. Python環境のセットアップ
+<<<<<<< HEAD
+
+=======
+>>>>>>> 0f5d860b848a9e6094a33edbfab309b455e1b792
 ```bash
 # Serenaディレクトリ内で実行
 cd C:\mcp\serena
@@ -71,6 +105,10 @@ uv run serena --help
 ```
 
 #### 2-3. Serena起動バッチファイルの作成
+<<<<<<< HEAD
+
+=======
+>>>>>>> 0f5d860b848a9e6094a33edbfab309b455e1b792
 `C:\mcp\start_serena_mcp.bat`を作成：
 
 ```batch
@@ -97,6 +135,10 @@ echo [%date% %time%] Serena MCP Server stopped >> C:\mcp\serena_startup.log
 ```
 
 **バッチファイルの動作説明:**
+<<<<<<< HEAD
+
+=======
+>>>>>>> 0f5d860b848a9e6094a33edbfab309b455e1b792
 - `cd /d "C:\mcp\serena"`: Serenaのディレクトリに移動
 - `uv --version >nul 2>&1`: uvがインストールされているかチェック
 - `uv run serena-mcp-server`: pyproject.tomlで定義されたserena-mcp-serverコマンドを実行
@@ -106,6 +148,10 @@ echo [%date% %time%] Serena MCP Server stopped >> C:\mcp\serena_startup.log
 ### Step 3: Cipher MCP Server のインストール
 
 #### 3-1. Gitリポジトリのクローン
+<<<<<<< HEAD
+
+=======
+>>>>>>> 0f5d860b848a9e6094a33edbfab309b455e1b792
 ```bash
 # Cipherの公式リポジトリをクローン（実際のURLは環境に応じて調整してください）
 cd C:\mcp
@@ -114,10 +160,18 @@ cd cipher-mcp-server
 ```
 
 > **注意**: 上記はリポジトリの推定URLです。実際のURLは以下の方法で確認してください：
+<<<<<<< HEAD
+>
+=======
+>>>>>>> 0f5d860b848a9e6094a33edbfab309b455e1b792
 > - [GitHub](https://github.com)でCipher MCP Serverを検索
 > - または@byterover/cipherパッケージの公式リポジトリを確認
 
 #### 3-2. Node.js環境のセットアップ
+<<<<<<< HEAD
+
+=======
+>>>>>>> 0f5d860b848a9e6094a33edbfab309b455e1b792
 ```bash
 # Cipher MCPサーバーディレクトリ内で実行
 cd C:\mcp\cipher-mcp-server
@@ -127,6 +181,10 @@ cd C:\mcp\cipher-mcp-server
 ```
 
 **package.json**の作成内容：
+<<<<<<< HEAD
+
+=======
+>>>>>>> 0f5d860b848a9e6094a33edbfab309b455e1b792
 ```json
 {
   "dependencies": {
@@ -153,12 +211,28 @@ npm install
 ```
 
 #### 3-3. Cipher設定ファイルの準備
+<<<<<<< HEAD
+
+=======
+>>>>>>> 0f5d860b848a9e6094a33edbfab309b455e1b792
 ```bash
 # memAgentディレクトリとconfigファイルを作成
 mkdir memAgent
 ```
 
 **memAgent/cipher.yml**を作成（メモリーエージェントの設定）：
+<<<<<<< HEAD
+
+```yaml
+# Cipher Memory Agent Configuration
+name: 'cipher'
+description: 'Memory-powered AI agent for coding assistance'
+version: '1.0.0'
+
+# メモリー設定
+memory:
+  database: 'data/cipher.db'
+=======
 ```yaml
 # Cipher Memory Agent Configuration
 name: "cipher"
@@ -168,12 +242,17 @@ version: "1.0.0"
 # メモリー設定
 memory:
   database: "data/cipher.db"
+>>>>>>> 0f5d860b848a9e6094a33edbfab309b455e1b792
   max_entries: 10000
   retention_days: 30
 
 # エージェント設定
 agent:
+<<<<<<< HEAD
+  model: 'gpt-3.5-turbo'
+=======
   model: "gpt-3.5-turbo"
+>>>>>>> 0f5d860b848a9e6094a33edbfab309b455e1b792
   temperature: 0.1
   max_tokens: 2048
 ```
@@ -184,6 +263,10 @@ mkdir data
 ```
 
 #### 3-4. Cipher起動バッチファイルの作成
+<<<<<<< HEAD
+
+=======
+>>>>>>> 0f5d860b848a9e6094a33edbfab309b455e1b792
 `C:\mcp\cipher-mcp-server\start-cipher.bat`を作成：
 
 ```batch
@@ -193,6 +276,10 @@ npm run mcp
 ```
 
 **バッチファイルの動作説明:**
+<<<<<<< HEAD
+
+=======
+>>>>>>> 0f5d860b848a9e6094a33edbfab309b455e1b792
 - `cd /d "C:\mcp\cipher-mcp-server"`: Cipherのディレクトリに移動
 - `npm run mcp`: package.jsonのmcpスクリプトを実行
   - 実際の実行内容: `dotenv -- cipher --mode mcp --agent memAgent/cipher.yml`
@@ -204,11 +291,19 @@ npm run mcp
 ### Step 4: Claude Codeへの接続設定
 
 #### 4-1. MCPサーバーの追加
+<<<<<<< HEAD
+
+=======
+>>>>>>> 0f5d860b848a9e6094a33edbfab309b455e1b792
 ```bash
 # Serena MCPサーバーを追加
 claude mcp add serena "C:\mcp\start_serena_mcp.bat" -s local
 
+<<<<<<< HEAD
+# Cipher MCPサーバーを追加
+=======
 # Cipher MCPサーバーを追加  
+>>>>>>> 0f5d860b848a9e6094a33edbfab309b455e1b792
 claude mcp add cipher "C:\mcp\cipher-mcp-server\start-cipher.bat" -s local
 
 # MCP Gateway サーバーを追加（オプション）
@@ -216,12 +311,20 @@ claude mcp add-json mcp-gateway '{"type": "sse", "url": "http://10.10.0.1:8811/s
 ```
 
 #### 4-2. 接続状態の確認
+<<<<<<< HEAD
+
+=======
+>>>>>>> 0f5d860b848a9e6094a33edbfab309b455e1b792
 ```bash
 # MCPサーバーの接続状態確認
 claude mcp list
 ```
 
 **期待される出力:**
+<<<<<<< HEAD
+
+=======
+>>>>>>> 0f5d860b848a9e6094a33edbfab309b455e1b792
 ```
 Checking MCP server health...
 
@@ -233,14 +336,26 @@ mcp-gateway: http://10.10.0.1:8811/sse (SSE) - ✓ Connected
 ## 動作確認
 
 ### Claude Code内での確認
+<<<<<<< HEAD
+
 Claude Code起動後、以下のコマンドで各MCPサーバーの動作を確認：
 
 1. **利用可能なMCPリソースの確認**
+
+=======
+Claude Code起動後、以下のコマンドで各MCPサーバーの動作を確認：
+
+1. **利用可能なMCPリソースの確認**
+>>>>>>> 0f5d860b848a9e6094a33edbfab309b455e1b792
    ```
    /ListMcpResourcesTool
    ```
 
 2. **Cipherの動作テスト**
+<<<<<<< HEAD
+
+=======
+>>>>>>> 0f5d860b848a9e6094a33edbfab309b455e1b792
    ```
    /mcp__cipher__ask_cipher "Hello, this is a connection test"
    ```
@@ -255,45 +370,83 @@ Claude Code起動後、以下のコマンドで各MCPサーバーの動作を確
 ### よくある問題と解決策
 
 #### 1. Pythonバージョンエラー
+<<<<<<< HEAD
+
+=======
+>>>>>>> 0f5d860b848a9e6094a33edbfab309b455e1b792
 **エラー:** `requires-python = ">=3.11, <3.12"`
 **解決策:** Python 3.11.xを使用してください。Python 3.12は現在未サポートです。
 
 #### 2. uvがインストールされていない
+<<<<<<< HEAD
+
+**エラー:** `'uv' is not recognized as an internal or external command`
+**解決策:**
+
+=======
 **エラー:** `'uv' is not recognized as an internal or external command`
 **解決策:** 
+>>>>>>> 0f5d860b848a9e6094a33edbfab309b455e1b792
 ```powershell
 powershell -c "irm https://astral.sh/uv/install.ps1 | iex"
 ```
 
 #### 3. Node.js依存関係エラー
+<<<<<<< HEAD
+
+**エラー:** `Cannot find module '@byterover/cipher'`
+**解決策:**
+
+=======
 **エラー:** `Cannot find module '@byterover/cipher'`
 **解決策:** 
+>>>>>>> 0f5d860b848a9e6094a33edbfab309b455e1b792
 ```bash
 cd C:\mcp\cipher-mcp-server
 npm install
 ```
 
 #### 4. MCPサーバーが接続されない
+<<<<<<< HEAD
+
 **解決策:**
+
+=======
+**解決策:**
+>>>>>>> 0f5d860b848a9e6094a33edbfab309b455e1b792
 ```bash
 # MCPサーバーを削除して再追加
 claude mcp remove serena -s local
 claude mcp remove cipher -s local
 
 # 再追加
+<<<<<<< HEAD
+claude mcp add serena "C:\mcp\start_serena_mcp.bat" -s local
+=======
 claude mcp add serena "C:\mcp\start_serena_mcp.bat" -s local  
+>>>>>>> 0f5d860b848a9e6094a33edbfab309b455e1b792
 claude mcp add cipher "C:\mcp\cipher-mcp-server\start-cipher.bat" -s local
 ```
 
 #### 5. ログファイルでのデバッグ
+<<<<<<< HEAD
+
+- **Serenaログ**: `C:\mcp\serena_startup.log`
+- **手動実行確認**:
+=======
 - **Serenaログ**: `C:\mcp\serena_startup.log`
 - **手動実行確認**: 
+>>>>>>> 0f5d860b848a9e6094a33edbfab309b455e1b792
   ```bash
   cd C:\mcp\serena
   uv run serena-mcp-server
   ```
 
 ## ディレクトリ構造
+<<<<<<< HEAD
+
+=======
+>>>>>>> 0f5d860b848a9e6094a33edbfab309b455e1b792
 インストール完了後の`C:\mcp\`ディレクトリ構造：
 
 ```
@@ -303,7 +456,11 @@ C:\mcp\
 │   ├── pyproject.toml               # Python依存関係定義
 │   ├── uv.lock                      # 依存関係ロックファイル
 │   └── README.md                    # ドキュメント
+<<<<<<< HEAD
+├── cipher-mcp-server\               # Cipher MCP Server
+=======
 ├── cipher-mcp-server\               # Cipher MCP Server  
+>>>>>>> 0f5d860b848a9e6094a33edbfab309b455e1b792
 │   ├── memAgent\
 │   │   └── cipher.yml               # エージェント設定
 │   ├── data\                        # データベースディレクトリ
@@ -315,7 +472,13 @@ C:\mcp\
 ```
 
 ## 設定ファイルの場所
+<<<<<<< HEAD
+
 MCPサーバーの設定は以下のファイルに保存されます：
+
+=======
+MCPサーバーの設定は以下のファイルに保存されます：
+>>>>>>> 0f5d860b848a9e6094a33edbfab309b455e1b792
 ```
 C:\Users\{ユーザー名}\.claude.json
 ```
@@ -324,7 +487,15 @@ C:\Users\{ユーザー名}\.claude.json
 
 **最終更新:** 2025年8月8日  
 **動作確認済み環境:**
+<<<<<<< HEAD
+
 - Python 3.11.x
 - Node.js 18.x+
 - Claude Code latest
 - Windows 10/11
+=======
+- Python 3.11.x
+- Node.js 18.x+
+- Claude Code latest
+- Windows 10/11
+>>>>>>> 0f5d860b848a9e6094a33edbfab309b455e1b792

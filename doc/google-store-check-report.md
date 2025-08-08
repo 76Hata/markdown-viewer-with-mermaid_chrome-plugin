@@ -2,7 +2,7 @@
 
 **監査実施日**: 2025-08-01  
 **対象バージョン**: 1.1.0  
-**拡張機能名**: Markdown Viewer with Mermaid  
+**拡張機能名**: Markdown Viewer with Mermaid
 
 ## 監査結果サマリー
 
@@ -13,16 +13,18 @@
 ### 1. 外部JS・CSS同梱確認（CDN禁止）
 
 #### ✅ 適合
+
 - **lib/フォルダ内容確認**:
   - `marked.min.js` - ローカル同梱済み
-  - `mermaid.min.js` - ローカル同梱済み  
+  - `mermaid.min.js` - ローカル同梱済み
   - `jspdf.umd.min.js` - ローカル同梱済み
   - `html2canvas.min.js` - ローカル同梱済み
 
 - **manifest.json検証**:
+
   ```json
   "js": [
-    "lib/marked.min.js", 
+    "lib/marked.min.js",
     "lib/mermaid.min.js",
     "lib/jspdf.umd.min.js",
     "lib/html2canvas.min.js",
@@ -40,12 +42,13 @@
 
 ### 2. eval・動的コード実行禁止
 
-#### ✅ 適合  
-- **eval使用チェック**: 
+#### ✅ 適合
+
+- **eval使用チェック**:
   - `content.js:167` - 以前のsandbox検出用 `eval('1+1')` は削除済み
   - 検出されたeval使用は開発用テストファイル内のPuppeteerコードのみ（本番コードには影響なし）
 
-- **動的コード実行チェック**: 
+- **動的コード実行チェック**:
   - `new Function()` 使用なし
   - `setTimeout/setInterval` with string なし
   - `document.write()` with script なし
@@ -53,7 +56,9 @@
 ### 3. file://アクセス許可設定
 
 #### ✅ 適合
+
 - **manifest.json設定**:
+
   ```json
   "host_permissions": [
     "file:///*",
@@ -63,15 +68,16 @@
   ```
 
 - **content_scripts matches**:
+
   ```json
   "matches": [
-    "file:///*/*.md", 
-    "file:///*/*.mkd", 
-    "file:///*/*.mdx", 
+    "file:///*/*.md",
+    "file:///*/*.mkd",
+    "file:///*/*.mdx",
     "file:///*/*.markdown",
     "file://*/*.md",
-    "file://*/*.mkd", 
-    "file://*/*.mdx", 
+    "file://*/*.mkd",
+    "file://*/*.mdx",
     "file://*/*.markdown"
   ]
   ```
@@ -83,15 +89,17 @@
 ### 4. fetch URL・CORS対応
 
 #### ✅ 適合
+
 - **CORS設定確認** (`content.js:265-272`):
+
   ```javascript
   const response = await fetch(url, {
     method: 'GET',
     mode: 'cors', // CORS明示
     cache: 'no-cache',
     headers: {
-      'Accept': 'text/plain, text/markdown, */*'
-    }
+      Accept: 'text/plain, text/markdown, */*',
+    },
   });
   ```
 
@@ -116,8 +124,9 @@
 ## セキュリティ監査
 
 ### 機密情報の検証
+
 - **APIキー・トークン**: なし
-- **パスワード・認証情報**: なし  
+- **パスワード・認証情報**: なし
 - **個人情報収集**: なし
 - **外部通信**: なし（file://とhttp/httpsのローカルアクセスのみ）
 
@@ -161,5 +170,6 @@
 **推奨事項**: 即座に再審査申請可能
 
 ---
-*監査担当: Claude Code*  
-*監査方法: 静的コード解析・設定ファイル検証・セキュリティスキャン*
+
+_監査担当: Claude Code_  
+_監査方法: 静的コード解析・設定ファイル検証・セキュリティスキャン_

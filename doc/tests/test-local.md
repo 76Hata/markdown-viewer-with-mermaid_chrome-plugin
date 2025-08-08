@@ -23,10 +23,10 @@ graph TD
 
 ```javascript
 function test() {
-    console.log('Hello, World!');
+  console.log('Hello, World!');
 }
 ```
 
-**太字テスト** と *斜体テスト*
+**太字テスト** と _斜体テスト_
 
 以上がテストファイルの内容です。

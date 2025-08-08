@@ -36,10 +36,10 @@
     
     // Check for sandboxed environment and GitHub Raw URLs
     try {
-        const isSandboxed = window.parent !== window.self && 
+        const _isSandboxed = window.parent !== window.self && 
                           window.location !== window.parent.location;
-        const isGitHubRaw = location.hostname.includes('raw.githubusercontent.com');
-    } catch (e) {
+        const _isGitHubRaw = location.hostname.includes('raw.githubusercontent.com');
+    } catch {
         // Sandbox detection failed - continue normal execution
     }
     
@@ -461,7 +461,7 @@
     }
     
     // 外部スクリプトとCSSを動的に読み込む
-    function loadScript(src) {
+    function _loadScript(src) {
         return new Promise((resolve, reject) => {
             const script = document.createElement('script');
             script.src = src;
@@ -478,7 +478,7 @@
         });
     }
     
-    function loadCSS(href) {
+    function _loadCSS(href) {
         const link = document.createElement('link');
         link.rel = 'stylesheet';
         link.href = href;
@@ -486,7 +486,7 @@
     }
     
     // 拡張機能のベースURLを取得
-    function getExtensionBaseURL() {
+    function _getExtensionBaseURL() {
         return chrome.runtime ? chrome.runtime.getURL('') : '';
     }
     
@@ -1168,7 +1168,7 @@ ${element.dataset.mermaidCode ? decodeURIComponent(element.dataset.mermaidCode) 
             console.log('='.repeat(40));
             
             // サンドボックス調査を実行
-            const capabilities = investigateSandboxLimitations();
+            const _capabilities = investigateSandboxLimitations();
             
             const markdownContent = document.getElementById('markdown-content');
             if (!markdownContent) {
@@ -1668,7 +1668,7 @@ ${element.dataset.mermaidCode ? decodeURIComponent(element.dataset.mermaidCode) 
     }
 
     // Show export error message - 印刷エラーダイアログと完全に同じ実装
-    function showExportError(errorMessage) {
+    function showExportError(_errorMessage) {
         // 既存のトーストがあれば削除
         const existingToast = document.querySelector('.export-error-toast');
         if (existingToast) {
@@ -2133,7 +2133,7 @@ ${element.dataset.mermaidCode ? decodeURIComponent(element.dataset.mermaidCode) 
     };
     
     // 簡単なHTML生成（モーダル用）
-    function generateSimpleHTML(contentHTML, originalMarkdown) {
+    function _generateSimpleHTML(contentHTML, _originalMarkdown) {
         const title = document.title || 'Markdown Document';
         const currentURL = location.href;
         const timestamp = new Date().toLocaleString();
@@ -2252,7 +2252,7 @@ ${element.dataset.mermaidCode ? decodeURIComponent(element.dataset.mermaidCode) 
             const initFeatures = () => {
                 try {
                     initializeEnhancedFeatures(originalContent);
-                } catch (error) {
+                } catch {
                     console.warn('Enhanced features initialization delayed due to restrictions');
                     // Try again with longer delay
                     setTimeout(() => {

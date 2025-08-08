@@ -339,7 +339,9 @@ class TOCGenerator {
     
     scrollToHeading(headingId) {
         const heading = document.getElementById(headingId);
-        if (!heading) return;
+        if (!heading) {
+            return;
+        }
         
         // 右側ツールバーなので、上部オフセットのみ考慮
         const baseOffset = 100; // 十分な上部余白
@@ -365,7 +367,9 @@ class TOCGenerator {
         let startTime = null;
         
         const animation = (currentTime) => {
-            if (startTime === null) startTime = currentTime;
+            if (startTime === null) {
+                startTime = currentTime;
+            }
             const timeElapsed = currentTime - startTime;
             const progress = Math.min(timeElapsed / duration, 1);
             
@@ -386,7 +390,9 @@ class TOCGenerator {
     
     toggleSublist(button) {
         const sublist = button.parentElement.querySelector('.toc-sublist');
-        if (!sublist) return;
+        if (!sublist) {
+            return;
+        }
         
         const isExpanded = button.getAttribute('aria-expanded') === 'true';
         
@@ -487,10 +493,14 @@ class TOCGenerator {
     }
     
     navigateToHeading(direction) {
-        if (!this.activeHeading) return;
+        if (!this.activeHeading) {
+            return;
+        }
         
         const currentIndex = this.headings.findIndex(h => h.id === this.activeHeading);
-        if (currentIndex === -1) return;
+        if (currentIndex === -1) {
+            return;
+        }
         
         let targetIndex;
         if (direction === 'prev') {

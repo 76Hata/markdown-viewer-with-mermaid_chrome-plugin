@@ -47,4 +47,4 @@ F12でDevToolsを開き、Consoleタブで以下のログを確認：
 
 ---
 
-*このファイルは `file:///C:/Develop/Portfolio/markdown-viewer-with-mermaid_chrome-plugin/test-file-access.md` として開いてください*
+_このファイルは `file:///C:/Develop/Portfolio/markdown-viewer-with-mermaid_chrome-plugin/test-file-access.md` として開いてください_

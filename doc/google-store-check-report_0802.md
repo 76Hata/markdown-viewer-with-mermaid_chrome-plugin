@@ -34,12 +34,14 @@
 ```
 
 **libフォルダ検証**:
+
 - `html2canvas.min.js` ✅ 存在
 - `jspdf.umd.min.js` ✅ 存在
-- `marked.min.js` ✅ 存在  
+- `marked.min.js` ✅ 存在
 - `mermaid.min.js` ✅ 存在
 
 **CDN参照チェック**:
+
 - 検出されたHTTP/HTTPS URLはライブラリ内部データのみ
 - 実際のCDN読み込みコードなし
 - test.htmlは開発用テストファイル（本番に影響なし）
@@ -71,10 +73,11 @@
 ```
 
 **content_scripts matches**:
+
 ```json
 "matches": [
   "file:///*/*.md",      // ✅ ファイルパターン対応
-  "file:///*/*.mkd",     // ✅ ファイルパターン対応  
+  "file:///*/*.mkd",     // ✅ ファイルパターン対応
   "file:///*/*.mdx",     // ✅ ファイルパターン対応
   "file:///*/*.markdown", // ✅ ファイルパターン対応
   "file://*/*.md",       // ✅ 直接パターン対応
@@ -92,14 +95,15 @@
 #### ✅ **適合**
 
 **CORS設定確認** (`content.js:288-295`):
+
 ```javascript
 const response = await fetch(url, {
   method: 'GET',
-  mode: 'cors',           // ✅ CORS明示的設定
+  mode: 'cors', // ✅ CORS明示的設定
   cache: 'no-cache',
   headers: {
-    'Accept': 'text/plain, text/markdown, */*'
-  }
+    Accept: 'text/plain, text/markdown, */*',
+  },
 });
 ```
 
@@ -119,21 +123,25 @@ const response = await fetch(url, {
   "content_scripts": "script-src 'self'; object-src 'self'; style-src 'self' 'unsafe-inline';"
 }
 ```
+
 ✅ 適切な制限設定
 
 ### Web Accessible Resources
+
 ```json
 "resources": [
   "js/*.js",
-  "css/*.css", 
+  "css/*.css",
   "lib/*.js",
   "icons/*.png",
   "doc/*.png"    // ✅ 画像表示のため追加済み
 ]
 ```
+
 ✅ 必要最小限のリソース公開
 
 ### 権限の最小化
+
 ```json
 "permissions": [
   "storage",      // ✅ 設定保存用
@@ -167,15 +175,15 @@ const response = await fetch(url, {
 
 ## 最終確認項目
 
-| 項目 | 状況 | 備考 |
-|------|------|------|
-| 外部JS・CSS同梱 | ✅ 適合 | 全ライブラリローカル同梱済み |
-| eval・動的コード実行 | ✅ 適合 | 使用なし |
-| file://アクセス設定 | ✅ 適合 | manifest設定・UI実装完了 |
-| fetch・CORS対応 | ✅ 適合 | 適切なCORS設定済み |
-| CSP設定 | ✅ 適合 | 適切な制限 |
-| 権限最小化 | ✅ 適合 | 必要最小限 |
-| セキュリティ | ✅ 適合 | 脆弱性なし |
+| 項目                 | 状況    | 備考                         |
+| -------------------- | ------- | ---------------------------- |
+| 外部JS・CSS同梱      | ✅ 適合 | 全ライブラリローカル同梱済み |
+| eval・動的コード実行 | ✅ 適合 | 使用なし                     |
+| file://アクセス設定  | ✅ 適合 | manifest設定・UI実装完了     |
+| fetch・CORS対応      | ✅ 適合 | 適切なCORS設定済み           |
+| CSP設定              | ✅ 適合 | 適切な制限                   |
+| 権限最小化           | ✅ 適合 | 必要最小限                   |
+| セキュリティ         | ✅ 適合 | 脆弱性なし                   |
 
 ---
 
@@ -186,7 +194,7 @@ const response = await fetch(url, {
 本拡張機能は Google Chrome Web Store の全審査要件を満たしており、以下の点で審査基準に適合しています：
 
 1. ✅ **外部リソース**: 全てローカル同梱（CDN使用なし）
-2. ✅ **コード実行**: eval等の動的実行なし  
+2. ✅ **コード実行**: eval等の動的実行なし
 3. ✅ **ファイルアクセス**: 適切なmanifest設定とユーザーガイダンス
 4. ✅ **ネットワーク**: 適切なCORS設定
 5. ✅ **セキュリティ**: CSP適用・権限最小化・脆弱性なし

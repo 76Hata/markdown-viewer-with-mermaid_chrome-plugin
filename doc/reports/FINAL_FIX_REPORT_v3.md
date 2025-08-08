@@ -17,14 +17,14 @@
 checkExtensionFileAccessPermission: function(callback) {
     try {
         console.log('=== Checking extension file access permission ===');
-        
+
         // Test file access capability by trying to access a dummy file:// URL
         console.log('Testing file:// access capability with dummy file test...');
-        
+
         // Create a dummy file:// URL that should fail if file access is not allowed
         const dummyFileUrl = 'file:///non-existent-dummy-test-file.txt';
         console.log('Testing dummy file access:', dummyFileUrl);
-        
+
         fetch(dummyFileUrl)
             .then(response => {
                 // If we get ANY response (even 404), it means file:// protocol access is enabled
@@ -34,13 +34,13 @@ checkExtensionFileAccessPermission: function(callback) {
             })
             .catch(error => {
                 console.log('❌ Dummy file fetch failed with error:', error.message);
-                
+
                 // Check if the error indicates file:// protocol is blocked
-                if (error.message.includes('Failed to fetch') || 
+                if (error.message.includes('Failed to fetch') ||
                     error.message.includes('net::ERR_FILE_NOT_FOUND') ||
                     error.message.includes('Protocol') ||
                     error.message.includes('scheme')) {
-                    
+
                     console.log('❌ File access is OFF - file:// protocol is blocked');
                     callback(false);
                 } else {
@@ -49,7 +49,6 @@ checkExtensionFileAccessPermission: function(callback) {
                     callback(true);
                 }
             });
-        
     } catch (e) {
         console.warn('Could not check extension file access permission:', e.message);
         console.log('❌ Exception occurred, assuming file access is OFF');
@@ -77,9 +76,11 @@ Testing dummy file access: file:///non-existent-dummy-test-file.txt
 File access permission status: true
 ✅ File access ON - doing nothing
 ```
+
 **結果**: ダイアログ表示されない
 
 ### ファイルアクセス権限 OFF の場合
+
 ```
 === Checking extension file access permission ===
 Testing file:// access capability with dummy file test...

@@ -1,7 +1,7 @@
 {
   "name": "markdown-viewer-with-mermaid_chrome-plugin",
   "version": "1.0.0",
-  "type": "module",
+  "type": "commonjs",
   "description": "",
   "main": "background.js",
   "directories": {
@@ -12,8 +12,8 @@
     "test": "echo \"No tests implemented yet\"",
     "lint": "eslint . --ext .js",
     "lint:fix": "eslint . --ext .js --fix",
-    "format": "prettier --write \"**/*.{js,json,md,yml,yaml}\"",
-    "format:check": "prettier --check \"**/*.{js,json,md,yml,yaml}\"",
+    "format": "prettier --write \"**/*.{js,json,yml,yaml}\"",
+    "format:check": "prettier --check \"**/*.{js,json,yml,yaml}\"",
     "type-check": "tsc --noEmit",
     "docs": "typedoc",
     "docs:watch": "typedoc --watch",
@@ -32,8 +32,6 @@
   },
   "homepage": "https://github.com/76Hata/markdown-viewer-with-mermaid_chrome-plugin#readme",
   "devDependencies": {
-    "@typescript-eslint/eslint-plugin": "^8.39.0",
-    "@typescript-eslint/parser": "^8.39.0",
     "eslint": "^9.32.0",
     "prettier": "^3.6.2",
     "typedoc": "^0.28.9",

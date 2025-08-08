@@ -33,7 +33,6 @@
 2. **テスト実行**
    - `test-file-access-check.md` をChromeで開く
    - 開発者ツールのコンソールを開く
-   
 3. **確認項目**
    - [ ] コンソールに「❌ File access OFF - showing local file usage dialog」が表示される
    - [ ] 2秒後に黄色いダイアログが画面上部に表示される
@@ -50,7 +49,6 @@
 2. **テスト実行**
    - `test-file-access-check.md` をリロード
    - 開発者ツールのコンソールを開く
-   
 3. **確認項目**
    - [ ] コンソールに「✅ File access ON - doing nothing」が表示される
    - [ ] ダイアログが表示されない
