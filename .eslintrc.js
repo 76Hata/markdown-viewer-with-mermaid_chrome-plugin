@@ -6,18 +6,12 @@ module.exports = {
     webextensions: true
   },
   extends: [
-    'eslint:recommended',
-    '@typescript-eslint/recommended'
+    'eslint:recommended'
   ],
-  parser: '@typescript-eslint/parser',
   parserOptions: {
     ecmaVersion: 'latest',
-    sourceType: 'module',
-    project: './tsconfig.json'
+    sourceType: 'script'
   },
-  plugins: [
-    '@typescript-eslint'
-  ],
   rules: {
     // JavaScript/TypeScript rules
     'no-unused-vars': ['error', { 
@@ -40,15 +34,9 @@ module.exports = {
     'prefer-arrow-callback': 'warn',
     'prefer-template': 'warn',
     
-    // TypeScript specific rules
-    '@typescript-eslint/no-unused-vars': ['error', {
-      'argsIgnorePattern': '^_',
-      'varsIgnorePattern': '^_'
-    }],
-    '@typescript-eslint/explicit-function-return-type': 'off',
-    '@typescript-eslint/explicit-module-boundary-types': 'off',
-    '@typescript-eslint/no-explicit-any': 'warn',
-    '@typescript-eslint/no-non-null-assertion': 'warn',
+    // Additional JavaScript rules
+    'eqeqeq': 'warn',
+    'curly': 'error',
     
     // Chrome Extension specific
     'no-undef': 'off' // Chrome APIs are global
@@ -80,13 +68,6 @@ module.exports = {
     'coverage/'
   ],
   overrides: [
-    {
-      files: ['*.js'],
-      rules: {
-        '@typescript-eslint/no-var-requires': 'off',
-        '@typescript-eslint/explicit-function-return-type': 'off'
-      }
-    },
     {
       files: ['background.js', 'content.js'],
       rules: {

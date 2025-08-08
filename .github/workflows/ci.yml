@@ -192,7 +192,7 @@ jobs:
           )
           
           found_sensitive=false
-          for pattern in "${patterns[@]}"; do
+          for pattern in "${sensitive_patterns[@]}"; do
             if find . -name "$pattern" -not -path "./node_modules/*" -not -path "./.git/*" | grep -q .; then
               echo "❌ Found sensitive file pattern: $pattern"
               find . -name "$pattern" -not -path "./node_modules/*" -not -path "./.git/*"
