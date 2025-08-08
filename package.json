@@ -1,0 +1,30 @@
+{
+  "name": "markdown-viewer-with-mermaid_chrome-plugin",
+  "version": "1.0.0",
+  "description": "",
+  "main": "background.js",
+  "directories": {
+    "doc": "doc",
+    "lib": "lib"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "docs": "typedoc",
+    "docs:watch": "typedoc --watch"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/76Hata/markdown-viewer-with-mermaid_chrome-plugin.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/76Hata/markdown-viewer-with-mermaid_chrome-plugin/issues"
+  },
+  "homepage": "https://github.com/76Hata/markdown-viewer-with-mermaid_chrome-plugin#readme",
+  "devDependencies": {
+    "typedoc": "^0.28.9"
+  }
+}

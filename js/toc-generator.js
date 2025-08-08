@@ -1,6 +1,40 @@
 /**
- * TOC Generator Class
- * Automatically generates table of contents from headings
+ * @fileoverview 目次生成クラス - Markdown Viewerの目次自動生成機能を提供
+ * 
+ * このファイルは、Chrome拡張機能「Markdown Viewer with Mermaid」の目次生成機能を実装します。
+ * 見出しから階層構造を持つ目次を自動生成し、ナビゲーション機能を提供します。
+ * 
+ * @author 76Hata
+ * @version 2.0.0
+ * @since 1.0.0
+ */
+
+/**
+ * 目次生成クラス
+ * Markdownの見出しから目次を自動生成し、ナビゲーション機能を提供します
+ * 
+ * @class TOCGenerator
+ * @description このクラスは以下の機能を提供します：
+ * - 見出し（h1-h6）からの目次自動生成
+ * - 階層構造を持つ目次の作成
+ * - 目次項目クリックによるスムーズスクロール
+ * - 現在の位置のハイライト表示
+ * - 折りたたみ可能な目次パネル
+ * - 目次の表示/非表示切り替え
+ * - レスポンシブデザイン対応
+ * 
+ * @example
+ * // 目次生成器を初期化
+ * const tocGenerator = new TOCGenerator();
+ * 
+ * // オプション付きで初期化
+ * const tocGenerator = new TOCGenerator({
+ *     maxDepth: 4,
+ *     includeNumbers: true
+ * });
+ * 
+ * @author 76Hata
+ * @since 1.0.0
  */
 class TOCGenerator {
     constructor(options = {}) {
@@ -357,13 +391,18 @@ class TOCGenerator {
         const isExpanded = button.getAttribute('aria-expanded') === 'true';
         
         button.setAttribute('aria-expanded', !isExpanded);
-        button.textContent = isExpanded ? '▶' : '▼';
-        sublist.style.display = isExpanded ? 'none' : 'block';
+        // 開く時も閉じる時も同じ位置に表示するために、アイコンの位置を統一
+        if (isExpanded) {
+            button.innerHTML = '▶'; // 閉じる時（展開時→折りたたみ時）
+            sublist.style.display = 'none';
+        } else {
+            button.innerHTML = '▼'; // 開く時（折りたたみ時→展開時） 
+            sublist.style.display = 'block';
+        }
     }
     
     toggleTOC() {
         try {
-            // console.log('toggleTOC called, current state:', this.isCollapsed);
             
             if (!this.tocElement) {
                 console.error('TOC element not found');
@@ -388,7 +427,6 @@ class TOCGenerator {
             }
             
             this.isCollapsed = !this.isCollapsed;
-            // console.log('New state:', this.isCollapsed);
         
         if (this.isCollapsed) {
             // 折りたたむ - サイドバーを完全に非表示

@@ -1,6 +1,38 @@
 /**
- * Toolbar Class
- * Creates and manages the main toolbar interface
+ * @fileoverview ツールバークラス - Markdown Viewerのメインツールバー機能を提供
+ * 
+ * このファイルは、Chrome拡張機能「Markdown Viewer with Mermaid」のツールバー管理を実装します。
+ * 検索、テーマ切り替え、印刷、エクスポート、設定などの機能へのアクセスを提供します。
+ * 
+ * @author 76Hata
+ * @version 2.0.0
+ * @since 1.0.0
+ */
+
+/**
+ * ツールバークラス
+ * Markdownビューアーのメインツールバーインターフェースを作成・管理します
+ * 
+ * @class Toolbar
+ * @description このクラスは以下の機能を提供します：
+ * - フローティングツールバーの作成と配置
+ * - 検索機能へのアクセス
+ * - テーマ切り替え機能
+ * - 印刷機能
+ * - エクスポート機能（HTML/PDF）
+ * - 設定パネルへのアクセス
+ * - ツールバーのドラッグ移動
+ * - キーボードショートカット
+ * 
+ * @example
+ * // ツールバーを初期化
+ * const toolbar = new Toolbar(document.body);
+ * 
+ * // 特定のコンテナにツールバーを作成
+ * const toolbar = new Toolbar(document.getElementById('content'));
+ * 
+ * @author 76Hata
+ * @since 1.0.0
  */
 class Toolbar {
     constructor(container) {
@@ -144,9 +176,6 @@ class Toolbar {
                         <span class="theme-label">Sepia</span>
                     </div>
                 </div>
-                <div class="theme-actions">
-                    <button class="auto-theme-button">🌓 自動切り替え</button>
-                </div>
             </div>
         `;
         
@@ -246,9 +275,7 @@ class Toolbar {
                 this.selectTheme(themeKey);
             }
             
-            if (e.target.classList.contains('auto-theme-button')) {
-                this.toggleAutoTheme();
-            }
+            // 自動切り替えボタンのイベントハンドラを削除
         });
         
         document.addEventListener('click', (e) => {
@@ -283,19 +310,14 @@ class Toolbar {
         }
     }
     
-    toggleAutoTheme() {
-        const currentTheme = this.themeManager.currentTheme;
-        const newTheme = currentTheme === 'auto' ? 'light' : 'auto';
-        this.selectTheme(newTheme);
-    }
+    // toggleAutoTheme関数を削除
     
     updateThemeDisplay(themeName) {
         const themeNameElement = this.toolbarElement.querySelector('.theme-name');
         const themeNames = {
             'light': 'Light',
             'dark': 'Dark',
-            'sepia': 'Sepia',
-            'auto': '自動'
+            'sepia': 'Sepia'
         };
         
         themeNameElement.textContent = themeNames[themeName] || themeName;
@@ -305,9 +327,7 @@ class Toolbar {
             option.classList.toggle('active', option.dataset.theme === themeName);
         });
         
-        // Update auto button
-        const autoButton = this.toolbarElement.querySelector('.auto-theme-button');
-        autoButton.classList.toggle('active', themeName === 'auto');
+        // 自動切り替えボタンの更新コードを削除
     }
     
     bindExportEvents(exportSelector) {
@@ -1311,31 +1331,19 @@ class Toolbar {
     
     async loadPDFLibraries() {
         try {
-            // jsPDFが既に読み込まれているかチェック
-            if (typeof window.jsPDF !== 'undefined' || typeof window.jspdf !== 'undefined' || typeof jsPDF !== 'undefined') {
-                console.log('jsPDF already loaded');
-                return typeof window.html2canvas !== 'undefined';
-            }
+            // ライブラリはmanifest.jsonで既にローカルで読み込まれているはず
+            console.log('Checking if PDF libraries are loaded...');
             
-            // 動的にライブラリを読み込み
-            console.log('Loading PDF libraries dynamically...');
+            const jsPDFAvailable = typeof window.jsPDF !== 'undefined' || typeof window.jspdf !== 'undefined' || typeof jsPDF !== 'undefined';
+            const html2canvasAvailable = typeof window.html2canvas !== 'undefined';
             
-            const jsPDFPromise = this.loadScript('https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js');
-            const html2canvasPromise = this.loadScript('https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js');
+            console.log('jsPDF available:', jsPDFAvailable);
+            console.log('html2canvas available:', html2canvasAvailable);
             
-            await Promise.all([jsPDFPromise, html2canvasPromise]);
-            
-            // 読み込み完了後に確認
-            const jsPDFLoaded = typeof window.jsPDF !== 'undefined' || typeof window.jspdf !== 'undefined' || typeof jsPDF !== 'undefined';
-            const html2canvasLoaded = typeof window.html2canvas !== 'undefined';
-            
-            console.log('jsPDF loaded:', jsPDFLoaded);
-            console.log('html2canvas loaded:', html2canvasLoaded);
-            
-            return jsPDFLoaded && html2canvasLoaded;
+            return jsPDFAvailable && html2canvasAvailable;
             
         } catch (error) {
-            console.error('Failed to load PDF libraries:', error);
+            console.error('Failed to check PDF libraries:', error);
             return false;
         }
     }
@@ -2594,36 +2602,127 @@ class Toolbar {
     }
     
     showPDFErrorMessage() {
-        const message = document.createElement('div');
-        message.style.cssText = `
+        // 既存のトーストがあれば削除
+        const existingToast = document.querySelector('.pdf-error-toast');
+        if (existingToast) {
+            existingToast.remove();
+        }
+        
+        // 印刷エラーと完全に同じスタイル
+        const toast = document.createElement('div');
+        toast.className = 'pdf-error-toast';
+        toast.innerHTML = `
+            <div class="toast-content">
+                <div class="toast-icon">⚠️</div>
+                <div class="toast-message">
+                    <strong>PDFエクスポート機能について</strong><br>
+                    この環境ではPDFエクスポート機能を利用できません。<br>
+                    ブラウザの印刷機能をご利用ください。
+                </div>
+                <button class="toast-close">×</button>
+            </div>
+        `;
+        
+        // スタイルを設定 - 印刷エラーと完全に同じ
+        toast.style.cssText = `
             position: fixed;
             top: 80px;
             right: 20px;
-            background: #f8d7da;
-            border: 1px solid #f5c6cb;
-            color: #721c24;
-            padding: 15px 20px;
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
             border-radius: 8px;
             box-shadow: 0 4px 12px rgba(0,0,0,0.15);
             z-index: 10010;
-            font-size: 14px;
             max-width: 350px;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            animation: slideInRight 0.3s ease;
         `;
-        message.innerHTML = `
-            <div style="display: flex; align-items: center;">
-                <span style="font-size: 18px; margin-right: 10px;">❌</span>
-                <div>
-                    <strong>PDFエクスポート機能について</strong><br>
-                    <small>この環境ではPDFエクスポート機能を利用できません。</small>
-                </div>
-            </div>
-        `;
-        document.body.appendChild(message);
         
-        // Auto-hide after 5 seconds
+        // コンテンツのスタイル
+        const content = toast.querySelector('.toast-content');
+        content.style.cssText = `
+            display: flex;
+            align-items: flex-start;
+            padding: 16px;
+            gap: 12px;
+        `;
+        
+        // アイコンのスタイル
+        const icon = toast.querySelector('.toast-icon');
+        icon.style.cssText = `
+            font-size: 20px;
+            flex-shrink: 0;
+        `;
+        
+        // メッセージのスタイル
+        const message = toast.querySelector('.toast-message');
+        message.style.cssText = `
+            flex: 1;
+            font-size: 14px;
+            line-height: 1.4;
+            color: #856404;
+        `;
+        
+        // 閉じるボタンのスタイル
+        const closeBtn = toast.querySelector('.toast-close');
+        closeBtn.style.cssText = `
+            background: none;
+            border: none;
+            font-size: 18px;
+            cursor: pointer;
+            color: #856404;
+            padding: 0;
+            width: 24px;
+            height: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 4px;
+            flex-shrink: 0;
+        `;
+        
+        // CSSアニメーションを追加
+        if (!document.querySelector('#toast-animations')) {
+            const style = document.createElement('style');
+            style.id = 'toast-animations';
+            style.textContent = `
+                @keyframes slideInRight {
+                    from {
+                        transform: translateX(100%);
+                        opacity: 0;
+                    }
+                    to {
+                        transform: translateX(0);
+                        opacity: 1;
+                    }
+                }
+                
+                .toast-close:hover {
+                    background: rgba(0,0,0,0.1) !important;
+                }
+            `;
+            document.head.appendChild(style);
+        }
+        
+        document.body.appendChild(toast);
+        
+        // 閉じるボタンのイベントリスナー
+        closeBtn.addEventListener('click', () => {
+            toast.remove();
+        });
+        
+        // ホバー効果
+        closeBtn.addEventListener('mouseenter', () => {
+            closeBtn.style.backgroundColor = 'rgba(0,0,0,0.1)';
+        });
+        closeBtn.addEventListener('mouseleave', () => {
+            closeBtn.style.backgroundColor = 'transparent';
+        });
+        
+        // 5秒後に自動で閉じる
         setTimeout(() => {
-            if (message.parentNode) {
-                message.parentNode.removeChild(message);
+            if (toast.parentNode) {
+                toast.remove();
             }
         }, 5000);
     }
@@ -2903,36 +3002,127 @@ ${allCSS}
     }
     
     showExportErrorMessage() {
-        const message = document.createElement('div');
-        message.style.cssText = `
+        // 既存のトーストがあれば削除
+        const existingToast = document.querySelector('.export-error-toast');
+        if (existingToast) {
+            existingToast.remove();
+        }
+        
+        // 印刷エラーと完全に同じスタイル
+        const toast = document.createElement('div');
+        toast.className = 'export-error-toast';
+        toast.innerHTML = `
+            <div class="toast-content">
+                <div class="toast-icon">⚠️</div>
+                <div class="toast-message">
+                    <strong>エクスポート機能について</strong><br>
+                    この環境ではエクスポート機能を利用できません。<br>
+                    ブラウザの印刷機能をご利用ください。
+                </div>
+                <button class="toast-close">×</button>
+            </div>
+        `;
+        
+        // スタイルを設定 - 印刷エラーと完全に同じ
+        toast.style.cssText = `
             position: fixed;
             top: 80px;
             right: 20px;
-            background: #f8d7da;
-            border: 1px solid #f5c6cb;
-            color: #721c24;
-            padding: 15px 20px;
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
             border-radius: 8px;
             box-shadow: 0 4px 12px rgba(0,0,0,0.15);
             z-index: 10010;
-            font-size: 14px;
             max-width: 350px;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            animation: slideInRight 0.3s ease;
         `;
-        message.innerHTML = `
-            <div style="display: flex; align-items: center;">
-                <span style="font-size: 18px; margin-right: 10px;">❌</span>
-                <div>
-                    <strong>エクスポート機能について</strong><br>
-                    <small>この環境ではエクスポート機能を利用できません。</small>
-                </div>
-            </div>
-        `;
-        document.body.appendChild(message);
         
-        // Auto-hide after 5 seconds
+        // コンテンツのスタイル
+        const content = toast.querySelector('.toast-content');
+        content.style.cssText = `
+            display: flex;
+            align-items: flex-start;
+            padding: 16px;
+            gap: 12px;
+        `;
+        
+        // アイコンのスタイル
+        const icon = toast.querySelector('.toast-icon');
+        icon.style.cssText = `
+            font-size: 20px;
+            flex-shrink: 0;
+        `;
+        
+        // メッセージのスタイル
+        const message = toast.querySelector('.toast-message');
+        message.style.cssText = `
+            flex: 1;
+            font-size: 14px;
+            line-height: 1.4;
+            color: #856404;
+        `;
+        
+        // 閉じるボタンのスタイル
+        const closeBtn = toast.querySelector('.toast-close');
+        closeBtn.style.cssText = `
+            background: none;
+            border: none;
+            font-size: 18px;
+            cursor: pointer;
+            color: #856404;
+            padding: 0;
+            width: 24px;
+            height: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 4px;
+            flex-shrink: 0;
+        `;
+        
+        // CSSアニメーションを追加
+        if (!document.querySelector('#toast-animations')) {
+            const style = document.createElement('style');
+            style.id = 'toast-animations';
+            style.textContent = `
+                @keyframes slideInRight {
+                    from {
+                        transform: translateX(100%);
+                        opacity: 0;
+                    }
+                    to {
+                        transform: translateX(0);
+                        opacity: 1;
+                    }
+                }
+                
+                .toast-close:hover {
+                    background: rgba(0,0,0,0.1) !important;
+                }
+            `;
+            document.head.appendChild(style);
+        }
+        
+        document.body.appendChild(toast);
+        
+        // 閉じるボタンのイベントリスナー
+        closeBtn.addEventListener('click', () => {
+            toast.remove();
+        });
+        
+        // ホバー効果
+        closeBtn.addEventListener('mouseenter', () => {
+            closeBtn.style.backgroundColor = 'rgba(0,0,0,0.1)';
+        });
+        closeBtn.addEventListener('mouseleave', () => {
+            closeBtn.style.backgroundColor = 'transparent';
+        });
+        
+        // 5秒後に自動で閉じる
         setTimeout(() => {
-            if (message.parentNode) {
-                message.parentNode.removeChild(message);
+            if (toast.parentNode) {
+                toast.remove();
             }
         }, 5000);
     }
