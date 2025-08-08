@@ -1,6 +1,7 @@
 {
   "name": "markdown-viewer-with-mermaid_chrome-plugin",
   "version": "1.0.0",
+  "type": "module",
   "description": "",
   "main": "background.js",
   "directories": {
