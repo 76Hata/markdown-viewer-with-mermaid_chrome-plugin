@@ -21,10 +21,16 @@
   "exclude": [
     "node_modules",
     "dist",
+    "build",
+    "docs",
+    "coverage",
     "doc",
     "lib",
     "test*.js",
     "debug*.js",
-    "verify*.js"
+    "verify*.js",
+    "*-test.md",
+    "*-debug.md",
+    "*.min.js"
   ]
 }

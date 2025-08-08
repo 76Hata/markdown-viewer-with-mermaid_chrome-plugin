@@ -68,6 +68,18 @@ Chrome拡張機能として動作する高機能Markdownビューアー。Mermai
 # 依存関係のインストール
 npm install
 
+# コード品質チェック
+npm run lint          # ESLintでコードチェック
+npm run format:check   # Prettierで整形チェック
+npm run type-check     # TypeScriptで型チェック
+
+# コード修正
+npm run lint:fix       # ESLintで自動修正
+npm run format         # Prettierで自動整形
+
+# 全体的な検証
+npm run validate       # lint + format:check + type-check
+
 # ドキュメント生成
 npm run docs
 ```
@@ -77,6 +89,27 @@ npm run docs
 - **ファイル形式**: .md, .markdown, .mkd, .mdx
 - **依存ライブラリ**: marked.js, mermaid.js, jsPDF, html2canvas
 - **レスポンシブ**: CSS Grid/Flexbox対応
+
+## CI/CD
+
+### GitHub Actions
+このプロジェクトは GitHub Actions を使用した CI/CD パイプラインを採用しています。
+
+#### ワークフロー構成
+- **コード品質チェック**: ESLint、Prettier、TypeScript
+- **Chrome拡張機能検証**: manifest.json、必要ファイルの存在確認
+- **セキュリティスキャン**: npm audit、機密ファイルチェック
+- **ビルドテスト**: 拡張機能パッケージの作成
+
+#### バッジ
+```markdown
+![CI](https://github.com/76Hata/markdown-viewer-with-mermaid_chrome-plugin/workflows/CI/badge.svg)
+```
+
+#### 開発フロー
+1. `develop` ブランチでの開発
+2. Pull Request作成で自動CI実行
+3. `main` ブランチマージで本番デプロイ準備
 
 ## ライセンス
 ISC License

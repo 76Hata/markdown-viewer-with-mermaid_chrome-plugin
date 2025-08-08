@@ -8,9 +8,16 @@
     "lib": "lib"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "echo \"No tests implemented yet\"",
+    "lint": "eslint . --ext .js --ignore-path .gitignore",
+    "lint:fix": "eslint . --ext .js --ignore-path .gitignore --fix",
+    "format": "prettier --write \"**/*.{js,json,md,yml,yaml}\" --ignore-path .gitignore",
+    "format:check": "prettier --check \"**/*.{js,json,md,yml,yaml}\" --ignore-path .gitignore",
+    "type-check": "tsc --noEmit",
     "docs": "typedoc",
-    "docs:watch": "typedoc --watch"
+    "docs:watch": "typedoc --watch",
+    "validate": "npm run lint && npm run format:check && npm run type-check",
+    "prepare": "npm run validate"
   },
   "repository": {
     "type": "git",
@@ -25,6 +32,11 @@
   },
   "homepage": "https://github.com/76Hata/markdown-viewer-with-mermaid_chrome-plugin#readme",
   "devDependencies": {
-    "typedoc": "^0.28.9"
+    "typedoc": "^0.28.9",
+    "eslint": "^8.57.0",
+    "prettier": "^3.2.5",
+    "typescript": "^5.3.3",
+    "@typescript-eslint/eslint-plugin": "^7.0.0",
+    "@typescript-eslint/parser": "^7.0.0"
   }
 }
