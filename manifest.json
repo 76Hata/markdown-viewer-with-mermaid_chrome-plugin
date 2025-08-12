@@ -9,8 +9,25 @@
     "128": "icons/mdvier-icon_128.png"
   },
   "permissions": [
-    "storage"
+    "storage",
+    "notifications",
+    "contextMenus",
+    "management",
+    "permissions"
   ],
+  "action": {
+    "default_popup": "popup.html",
+    "default_title": "Markdown Viewer with Mermaid",
+    "default_icon": {
+      "16": "icons/mdvier-icon_16.png",
+      "32": "icons/mdvier-icon_48.png",
+      "48": "icons/mdvier-icon_48.png",
+      "128": "icons/mdvier-icon_128.png"
+    }
+  },
+  "background": {
+    "service_worker": "background.js"
+  },
   "host_permissions": [
     "file:///*",
     "http://*/*",
@@ -58,7 +75,8 @@
         "js/*.js",
         "css/*.css",
         "lib/*.js",
-        "icons/*.png"
+        "icons/*.png",
+        "doc/*.png"
       ],
       "matches": [
         "file:///*",

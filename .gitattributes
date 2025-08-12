@@ -1,0 +1,31 @@
+# 改行コードを LF に統一（全ファイル対象）
+* text eol=lf
+
+# 明示的に対象とするテキストファイル群
+*.js     text eol=lf
+*.jsx    text eol=lf
+*.ts     text eol=lf
+*.tsx    text eol=lf
+*.json   text eol=lf
+*.html   text eol=lf
+*.css    text eol=lf
+*.scss   text eol=lf
+*.md     text eol=lf
+*.yml    text eol=lf
+*.yaml   text eol=lf
+*.sh     text eol=lf
+*.txt    text eol=lf
+*.xml    text eol=lf
+
+# バイナリファイルは自動変換を無効化
+*.png    binary
+*.jpg    binary
+*.jpeg   binary
+*.gif    binary
+*.webp   binary
+*.ico    binary
+*.pdf    binary
+*.ttf    binary
+*.woff   binary
+*.woff2  binary
+*.eot    binary

@@ -149,6 +149,37 @@ li {
   margin-bottom: 0.5em;
 }
 
+/* Images optimization - 画像の画面枠内最適化表示 */
+/* Mermaidの中の画像は除外する */
+img:not(.mermaid img) {
+  max-width: 100%;
+  height: auto;
+  display: block;
+  margin: 1em auto;
+  border-radius: 4px;
+  box-shadow: 0 2px 8px var(--shadow);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+img:not(.mermaid img):hover {
+  transform: scale(1.02);
+  box-shadow: 0 4px 16px var(--shadow);
+  cursor: pointer;
+}
+
+/* 小さな画像の場合はインライン表示を維持（Mermaid以外） */
+img[width]:not(.mermaid img), 
+img[style*="width"]:not(.mermaid img) {
+  display: inline-block;
+  vertical-align: middle;
+}
+
+/* 画像が非常に大きい場合の制限（Mermaid以外） */
+img[src]:not(.mermaid img) {
+  max-height: 80vh;
+  object-fit: contain;
+}
+
 /* Mermaid diagrams */
 .mermaid {
   text-align: center;
@@ -179,7 +210,7 @@ li {
   justify-content: flex-end;
   padding: 0 15px;
   gap: 10px;
-  z-index: 1001;
+  z-index: 1000; /* メインツールバー - 最上位グループ */
   box-shadow: 0 4px 12px var(--shadow);
   cursor: move;
   user-select: none;
@@ -240,7 +271,7 @@ li {
   box-shadow: 0 4px 12px var(--shadow);
   padding: 10px;
   min-width: 200px;
-  z-index: 1002;
+  z-index: 1003; /* ツールバーグループ - テーマドロップダウン */
 }
 
 .theme-options {
@@ -298,8 +329,7 @@ li {
 }
 
 .theme-actions {
-  border-top: 1px solid var(--border-color);
-  padding-top: 10px;
+  /* 区切り線を削除 */
 }
 
 .auto-theme-button {
@@ -336,7 +366,7 @@ li {
   box-shadow: 0 4px 12px var(--shadow);
   padding: 10px;
   min-width: 150px;
-  z-index: 1002;
+  z-index: 1002; /* ツールバーグループ - エクスポートドロップダウン */
 }
 
 .export-options {
@@ -388,6 +418,7 @@ li {
   overflow-y: auto;
   box-shadow: 2px 0 5px var(--shadow);
   transition: width 0.3s ease;
+  z-index: 901; /* TOCグループ - メインパネル */
 }
 
 .toc-panel.collapsed {
@@ -498,7 +529,7 @@ li {
   border: 1px solid var(--toc-border-color);
   border-radius: 8px;
   cursor: pointer;
-  z-index: 1000;
+  z-index: 900; /* TOCグループ - フローティングボタン */
   display: flex;
   align-items: center;
   justify-content: center;
@@ -547,14 +578,20 @@ li {
 .toc-expand {
   position: absolute;
   left: -15px;
-  top: 50%;
-  transform: translateY(-50%);
+  top: 6px;                    /* 固定位置に変更：上端から6px */
+  transform: none;             /* 中央配置解除 */
   background: none;
   border: none;
   font-size: 10px;
   cursor: pointer;
   padding: 2px;
   color: var(--toc-text-color);
+  width: 12px;                 /* 幅を統一 */
+  height: 12px;                /* 高さを統一 */
+  display: flex;               /* フレックスボックスで中央配置 */
+  align-items: center;         /* 垂直中央配置 */
+  justify-content: center;     /* 水平中央配置 */
+  line-height: 1;              /* 行高を統一 */
 }
 
 .toc-link {
@@ -631,7 +668,7 @@ li {
   box-shadow: 0 4px 12px var(--shadow);
   padding: 15px;
   min-width: 300px;
-  z-index: 1002;
+  z-index: 1001; /* ツールバーグループ - 検索パネル */
 }
 
 .search-header {
@@ -762,7 +799,7 @@ li {
   left: 0;
   right: 0;
   bottom: 0;
-  z-index: 2000;
+  z-index: 1004; /* ツールバーグループ - 設定モーダル（最上位） */
 }
 
 .modal-overlay {

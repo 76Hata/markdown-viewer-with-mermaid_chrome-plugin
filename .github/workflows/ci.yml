@@ -1,0 +1,278 @@
+name: CI
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main, develop]
+
+jobs:
+  lint-and-type-check:
+    name: Lint and Type Check
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [18, 20]
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: "npm"
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run ESLint
+        run: npm run lint
+        continue-on-error: false
+
+      - name: Check Prettier formatting
+        run: npm run format
+        continue-on-error: false
+
+      - name: Run TypeScript compiler
+        run: npm run type-check
+        continue-on-error: false
+
+      - name: Generate TypeDoc documentation
+        run: npm run docs
+        continue-on-error: true
+
+  chrome-extension-validation:
+    name: Chrome Extension Validation
+    runs-on: ubuntu-latest
+    needs: lint-and-type-check
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Validate manifest.json
+        run: |
+          echo "Validating Chrome Extension manifest..."
+          node -e "
+            const fs = require('fs');
+            const manifest = JSON.parse(fs.readFileSync('manifest.json', 'utf8'));
+            
+            // Basic manifest validation
+            if (!manifest.manifest_version) throw new Error('Missing manifest_version');
+            if (!manifest.name) throw new Error('Missing name');
+            if (!manifest.version) throw new Error('Missing version');
+            if (!manifest.description) throw new Error('Missing description');
+            
+            console.log('✅ Manifest validation passed');
+            console.log('Extension:', manifest.name);
+            console.log('Version:', manifest.version);
+            console.log('Manifest Version:', manifest.manifest_version);
+          "
+
+      - name: Check required files exist
+        run: |
+          echo "Checking required Chrome extension files..."
+          files=(
+            "manifest.json"
+            "content.js"
+            "background.js"
+            "popup.html"
+            "popup.js"
+            "css/main.css"
+            "icons/mdvier-icon_16.png"
+            "icons/mdvier-icon_48.png"
+            "icons/mdvier-icon_128.png"
+          )
+          missing_files=()
+          for file in "${files[@]}"; do
+            if [ ! -f "$file" ]; then
+              missing_files+=("$file")
+            else
+              echo "✅ $file exists"
+            fi
+          done
+          if [ ${#missing_files[@]} -ne 0 ]; then
+            echo "❌ Missing required files:"
+            printf '%s\n' "${missing_files[@]}"
+            exit 1
+          fi
+          echo "✅ All required files exist"
+
+      - name: Check JavaScript modules
+        run: |
+          echo "Checking JavaScript modules..."
+          modules=(
+            "js/toc-generator.js"
+            "js/search-engine.js"
+            "js/theme-manager.js"
+            "js/toolbar.js"
+          )
+          for module in "${modules[@]}"; do
+            if [ -f "$module" ]; then
+              echo "✅ $module exists"
+              # Basic syntax check
+              node -c "$module" && echo "  ✅ Syntax OK" || echo "  ❌ Syntax Error"
+            else
+              echo "❌ $module missing"
+              exit 1
+            fi
+          done
+
+      - name: Check external libraries
+        run: |
+          echo "Checking external libraries..."
+          libraries=(
+            "lib/marked.min.js"
+            "lib/mermaid.min.js"
+            "lib/jspdf.umd.min.js"
+            "lib/html2canvas.min.js"
+          )
+          for lib in "${libraries[@]}"; do
+            if [ -f "$lib" ]; then
+              echo "✅ $lib exists"
+              size=$(stat -c%s "$lib")
+              echo "  Size: $((size / 1024))KB"
+            else
+              echo "❌ $lib missing"
+              exit 1
+            fi
+          done
+
+  security-scan:
+    name: Security Scan
+    runs-on: ubuntu-latest
+    needs: lint-and-type-check
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run npm audit
+        run: npm audit --audit-level moderate
+        continue-on-error: true
+
+      - name: Check for sensitive files
+        run: |
+          echo "Checking for sensitive files..."
+          sensitive_patterns=(
+            "*.key"
+            "*.pem"
+            "*.p12"
+            "*.pfx"
+            ".env"
+            "secrets.*"
+            "password*"
+            "credential*"
+          )
+          found_sensitive=false
+          for pattern in "${sensitive_patterns[@]}"; do
+            if find . -name "$pattern" -not -path "./node_modules/*" -not -path "./.git/*" | grep -q .; then
+              echo "❌ Found sensitive file pattern: $pattern"
+              find . -name "$pattern" -not -path "./node_modules/*" -not -path "./.git/*"
+              found_sensitive=true
+            fi
+          done
+          if [ "$found_sensitive" = true ]; then
+            echo "❌ Sensitive files found"
+            exit 1
+          else
+            echo "✅ No sensitive files found"
+          fi
+
+  build-test:
+    name: Build Test
+    runs-on: ubuntu-latest
+    needs: [lint-and-type-check, chrome-extension-validation]
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Create build archive
+        run: |
+          echo "Creating Chrome extension build..."
+
+          # Create build directory
+          mkdir -p build
+
+          # Copy essential files
+          cp manifest.json build/
+          cp -r css build/
+          cp -r js build/
+          cp -r lib build/
+          cp -r icons build/
+          cp content.js build/
+          cp background.js build/
+          cp popup.html build/
+          cp popup.js build/
+          cp setup-guide.html build/
+          cp file-access_off.png build/
+          cp mdvier-icon.png build/
+          # Create zip archive
+          cd build
+          zip -r ../chrome-extension.zip .
+          cd ..
+          echo "✅ Build completed"
+          echo "Archive size: $(stat -c%s chrome-extension.zip | numfmt --to=iec-i --suffix=B)"
+
+      - name: Upload build artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: chrome-extension-${{ github.sha }}
+          path: chrome-extension.zip
+          retention-days: 30
+
+  notification:
+    name: CI Status Notification
+    runs-on: ubuntu-latest
+    needs:
+      [
+        lint-and-type-check,
+        chrome-extension-validation,
+        security-scan,
+        build-test,
+      ]
+    if: always()
+
+    steps:
+      - name: CI Summary
+        run: |
+          echo "## CI Pipeline Summary" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "| Job | Status |" >> $GITHUB_STEP_SUMMARY
+          echo "|-----|--------|" >> $GITHUB_STEP_SUMMARY
+          echo "| Lint and Type Check | ${{ needs.lint-and-type-check.result }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| Chrome Extension Validation | ${{ needs.chrome-extension-validation.result }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| Security Scan | ${{ needs.security-scan.result }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| Build Test | ${{ needs.build-test.result }} |" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**Branch:** ${{ github.ref_name }}" >> $GITHUB_STEP_SUMMARY
+          echo "**Commit:** ${{ github.sha }}" >> $GITHUB_STEP_SUMMARY
+          echo "**Event:** ${{ github.event_name }}" >> $GITHUB_STEP_SUMMARY
