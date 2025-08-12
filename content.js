@@ -260,11 +260,30 @@
         }
     };
     
-    // マークダウンファイルかチェック
+    /**
+     * Markdownファイルかどうかを判定する関数
+     * 
+     * @function isMarkdownFile
+     * @description 現在のページがMarkdownファイルかどうかを判定します。
+     *              プロトコル（file:, http:, https:）とファイル拡張子をチェックし、
+     *              両方の条件を満たす場合にtrueを返します。
+     * @returns {boolean} Markdownファイルの場合true、そうでなければfalse
+     * @since 1.0.0
+     * 
+     * @example
+     * // 現在のページがMarkdownファイルかチェック
+     * if (isMarkdownFile()) {
+     *     console.log('Markdownファイルです');
+     * }
+     */
     function isMarkdownFile() {
+        /** @type {string} 現在のパス名（小文字変換済み） */
         const pathname = location.pathname.toLowerCase();
+        /** @type {string} 現在のプロトコル */
         const protocol = location.protocol;
+        /** @type {boolean} 有効なプロトコルかどうか */
         const isValidProtocol = protocol === 'file:' || protocol === 'http:' || protocol === 'https:';
+        /** @type {boolean} Markdown拡張子かどうか */
         const isMd = pathname.endsWith('.md') || 
                      pathname.endsWith('.mkd') || 
                      pathname.endsWith('.mdx') || 
@@ -274,18 +293,47 @@
         console.log('Protocol:', protocol);
         console.log('Is valid protocol:', isValidProtocol);
         console.log('Is markdown extension:', isMd);
+        /** @type {boolean} 最終判定結果 */
         const result = isValidProtocol && isMd;
         console.log('Final result:', result);
         return result;
     }
     
-    // GitHub raw URLかどうかをチェック
+    /**
+     * GitHub Raw URLかどうかを判定する関数
+     * 
+     * @function isGitHubRawURL
+     * @description 現在のURLがGitHubのrawファイルURLかどうかを判定します。
+     *              raw.githubusercontent.comドメインまたはgithub.com/rawパスをチェックします。
+     * @returns {boolean} GitHub Raw URLの場合true、そうでなければfalse
+     * @since 1.0.0
+     * 
+     * @example
+     * // GitHub Raw URLかチェック
+     * if (isGitHubRawURL()) {
+     *     console.log('GitHub Raw URLです');
+     * }
+     */
     function isGitHubRawURL() {
         return location.hostname.includes('raw.githubusercontent.com') || 
                (location.hostname.includes('github.com') && location.pathname.includes('/raw/'));
     }
     
-    // Check if running in a sandboxed environment that prevents script execution
+    /**
+     * サンドボックス環境の制限をチェックする関数
+     * 
+     * @function checkSandboxRestrictions
+     * @description サンドボックス環境でスクリプト実行が制限されているかをチェックします。
+     *              Chrome APIの利用可能性を確認し、制限がある場合に適切に対応します。
+     * @returns {boolean} サンドボックス制限がある場合true、ない場合false
+     * @since 1.0.0
+     * 
+     * @example
+     * // サンドボックス制限をチェック
+     * if (checkSandboxRestrictions()) {
+     *     console.log('サンドボックス制限があります');
+     * }
+     */
     function checkSandboxRestrictions() {
         try {
             // Check if we can access chrome APIs

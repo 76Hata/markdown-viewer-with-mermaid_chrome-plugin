@@ -49,10 +49,19 @@ class ThemeManager {
      * @since 1.0.0
      */
     constructor() {
+        /** @type {Map<string, Object>} テーマ情報のマップ */
         this.themes = new Map();
+        
+        /** @type {string} 現在適用中のテーマ名 */
         this.currentTheme = 'light';
+        
+        /** @type {string} カスタムCSS文字列 */
         this.customCSS = '';
+        
+        /** @type {MediaQueryList|null} システムダークテーマ検出用クエリ */
         this.systemThemeQuery = null;
+        
+        /** @type {Set<Function>} テーマ変更観察者のセット */
         this.observers = new Set();
         
         this.init();
@@ -85,9 +94,25 @@ class ThemeManager {
         this.applyTheme(this.currentTheme);
     }
     
+    /**
+     * テーマ設定をストレージから読み込む
+     * 
+     * @method loadSettings
+     * @async
+     * @description Chrome同期ストレージ、SafeStorage、またはデフォルト値から
+     *              テーマ設定とカスタムCSSを読み込みます。
+     *              優先順位: Chrome Storage → SafeStorage → デフォルト値
+     * @returns {Promise<void>} 設定読み込み完了のPromise
+     * @since 1.0.0
+     * 
+     * @example
+     * // 設定を手動で再読み込み
+     * await themeManager.loadSettings();
+     */
     async loadSettings() {
         try {
             if (typeof chrome !== 'undefined' && chrome.storage) {
+                /** @type {Object} Chrome同期ストレージから取得した設定 */
                 const result = await chrome.storage.sync.get(['theme', 'customCSS']);
                 this.currentTheme = result.theme || 'light';
                 this.customCSS = result.customCSS || '';
