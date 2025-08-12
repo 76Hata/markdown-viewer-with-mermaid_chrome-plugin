@@ -293,9 +293,9 @@ function setupEventListeners() {
  * 
  * @example
  * // インターバルをクリアする場合
- * clearInterval(statusUpdateInterval);
+ * clearInterval(_statusUpdateInterval);
  */
-const statusUpdateInterval = setInterval(() => {
+const _statusUpdateInterval = setInterval(() => {
   checkFileAccessStatus();
   checkCipherStatus();
 }, 3000);
