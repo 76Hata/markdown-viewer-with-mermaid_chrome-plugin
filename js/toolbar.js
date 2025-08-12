@@ -35,16 +35,46 @@
  * @since 1.0.0
  */
 class Toolbar {
+    /**
+     * Toolbarクラスのコンストラクタ
+     * 
+     * @constructor
+     * @param {Element} container - ツールバーを配置するコンテナ要素
+     * @description ツールバーインスタンスを初期化します。
+     *              各種プロパティを設定し、init()メソッドを呼び出します。
+     * @since 1.0.0
+     */
     constructor(container) {
+        /** @type {Element} ツールバーを配置するコンテナ要素 */
         this.container = container || document.body;
+        
+        /** @type {HTMLElement|null} ツールバーのDOM要素 */
         this.toolbarElement = null;
+        
+        /** @type {ThemeManager|null} テーマ管理インスタンス */
         this.themeManager = null;
+        
+        /** @type {SearchEngine|null} 検索エンジンインスタンス */
         this.searchEngine = null;
+        
+        /** @type {TOCGenerator|null} 目次生成インスタンス */
         this.tocGenerator = null;
         
         this.init();
     }
     
+    /**
+     * ツールバーの初期化処理
+     * 
+     * @method init
+     * @description ツールバーの初期化を行います。以下の順序で処理を実行します：
+     *              1. コンテナ要素の存在確認
+     *              2. ツールバー要素の作成
+     *              3. イベントバインディング
+     *              4. 関連コンポーネントの初期化
+     * @returns {void} 戻り値なし
+     * @since 1.0.0
+     */
     init() {
         // DOM要素の存在確認
         if (!this.container) {
@@ -182,9 +212,33 @@ class Toolbar {
         container.appendChild(themeSelector);
     }
     
+    /**
+     * ツールバーのイベントリスナーをバインド
+     * 
+     * @method bindEvents
+     * @description ツールバーの各ボタンおよびキーボードショートカットのイベントハンドラーを設定します：
+     * - 検索ボタン: 検索パネルを表示
+     * - 印刷ボタン: 印刷ダイアログを開く
+     * - エクスポートセレクター: 形式選択とエクスポート実行
+     * - 設定ボタン: 設定パネルを開く
+     * - 非表示ボタン: ツールバーを隠す
+     * - キーボードショートカット: 各種操作の高速実行
+     * 
+     * @example
+     * // イベントリスナーのバインド例
+     * this.bindEvents();
+     * 
+     * // 設定されるキーボードショートカット：
+     * // - Ctrl/Cmd + Shift + P → 印刷実行
+     * // - Ctrl/Cmd + T → 目次トグル
+     * // - F11 → ツールバー表示/非表示
+     * // - Escape → ツールバー表示（非表示時のみ）
+     * 
+     * @since 1.0.0
+     */
     bindEvents() {
         
-        // Search
+        // 検索ボタンのクリックイベントハンドラー
         const searchBtn = this.toolbarElement.querySelector('#search-btn');
         if (searchBtn) {
             searchBtn.addEventListener('click', () => {
@@ -197,52 +251,56 @@ class Toolbar {
             });
         }
         
-        // Print
+        // 印刷ボタンのクリックイベントハンドラー
         const printBtn = this.toolbarElement.querySelector('#print-btn');
         printBtn.addEventListener('click', () => {
             this.handlePrint();
         });
         
-        // Export Selector
+        // エクスポートセレクターのイベントバインディング
         const exportSelector = this.toolbarElement.querySelector('.export-selector');
         if (exportSelector) {
             this.bindExportEvents(exportSelector);
         }
         
-        // Settings
+        // 設定ボタンのクリックイベントハンドラー
         const settingsBtn = this.toolbarElement.querySelector('#settings-btn');
         settingsBtn.addEventListener('click', () => {
             this.openSettings();
         });
         
-        // Hide toolbar
+        // ツールバー非表示ボタンのクリックイベントハンドラー
         const hideBtn = this.toolbarElement.querySelector('#hide-toolbar-btn');
         hideBtn.addEventListener('click', () => {
             this.hideToolbar();
         });
         
-        // Theme selector events will be bound after theme selector is created
+        // テーマセレクターのイベントは作成後に別途バインドされます
         
-        // Keyboard shortcuts
+        // ドキュメント全体のキーボードショートカットハンドラー
         document.addEventListener('keydown', (e) => {
+            // Ctrl/Cmd + Shift の組み合わせショートカット
             if ((e.ctrlKey || e.metaKey) && e.shiftKey) {
                 switch (e.key) {
-                    case 'P':
+                    case 'P': // Ctrl+Shift+P: 印刷実行
                         e.preventDefault();
                         this.handlePrint();
                         break;
                 }
             } else if (e.ctrlKey || e.metaKey) {
+                // Ctrl/Cmd の単体ショートカット
                 switch (e.key) {
-                    case 't':
+                    case 't': // Ctrl+T: 目次トグル
                         e.preventDefault();
                         this.toggleTOC();
                         break;
                 }
             } else if (e.key === 'F11') {
+                // F11: ツールバー表示/非表示切り替え
                 e.preventDefault();
                 this.toggleToolbar();
             } else if (e.key === 'Escape' && this.isToolbarHidden()) {
+                // Escape: ツールバー表示（非表示時のみ有効）
                 e.preventDefault();
                 this.showToolbar();
             }

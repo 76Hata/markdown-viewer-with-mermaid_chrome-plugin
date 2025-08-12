@@ -41,6 +41,19 @@ chrome.runtime.onInstalled.addListener(details => {
   }
 });
 
+/**
+ * 初回インストール時の処理を実行する関数
+ * 
+ * @function handleFirstInstall
+ * @description 拡張機能が初回インストールされた際に実行される処理を定義します。
+ *              ウェルカム通知の表示と、1秒遅延後のセットアップガイド表示を行います。
+ * @returns {void} 戻り値なし
+ * @since 1.0.0
+ * 
+ * @example
+ * // 初回インストール処理を手動実行
+ * handleFirstInstall();
+ */
 function handleFirstInstall() {
   // Show welcome notification
   showWelcomeNotification();
@@ -53,16 +66,44 @@ function handleFirstInstall() {
   }, 1000);
 }
 
+/**
+ * 拡張機能更新時の処理を実行する関数
+ * 
+ * @function handleUpdate
+ * @description 拡張機能が更新された際に実行される処理を定義します。
+ *              現在はログ出力のみですが、将来的に更新通知機能を実装可能です。
+ * @param {string} previousVersion - 更新前のバージョン番号文字列
+ * @returns {void} 戻り値なし
+ * @since 1.0.0
+ * 
+ * @example
+ * // 更新処理を手動実行（バージョン文字列を指定）
+ * handleUpdate('1.9.0');
+ */
 function handleUpdate(previousVersion) {
   console.log(`Updated from version ${previousVersion}`);
   // Could show update notification here if needed
 }
 
-// Show welcome notification with setup reminder
+/**
+ * ウェルカム通知を表示する関数
+ * 
+ * @function showWelcomeNotification
+ * @description 拡張機能インストール後のウェルカム通知を表示します。
+ *              開発環境では通知をスキップし、本番環境でのみ通知を表示します。
+ *              通知にはセットアップリマインダーとアクションボタンが含まれます。
+ * @returns {void} 戻り値なし
+ * @since 1.0.0
+ * 
+ * @example
+ * // ウェルカム通知を手動表示
+ * showWelcomeNotification();
+ */
 function showWelcomeNotification() {
   // Check if this is likely a development environment
   if (chrome.management) {
     chrome.management.getSelf(info => {
+      /** @type {boolean} 開発環境かどうかの判定フラグ */
       const isDevelopment = info.installType === 'development';
       console.log('Extension install type:', info.installType);
 
@@ -84,8 +125,22 @@ function showWelcomeNotification() {
   }
 }
 
-// Handle notification button clicks
+/**
+ * 通知ボタンクリックイベントハンドラーの設定
+ * 
+ * @description Chrome通知APIのボタンクリックイベントをリッスンし、
+ *              適切なアクションを実行します。ウェルカム通知の「設定を開く」
+ *              ボタンクリック時には拡張機能設定ページを開きます。
+ * @since 1.0.0
+ */
 if (chrome.notifications) {
+  /**
+   * 通知ボタンクリック時の処理
+   * 
+   * @param {string} notificationId - 通知の識別ID
+   * @param {number} buttonIndex - クリックされたボタンのインデックス（0ベース）
+   * @returns {void}
+   */
   chrome.notifications.onButtonClicked.addListener(
     (notificationId, buttonIndex) => {
       if (notificationId === 'welcome') {
@@ -128,10 +183,26 @@ chrome.contextMenus.onClicked.addListener((info, _tab) => {
   }
 });
 
-// Badge update based on file access status
+/**
+ * バッジ表示をファイルアクセス状態に基づいて更新する関数
+ * 
+ * @function updateBadge
+ * @description Chrome拡張機能のファイルアクセス権限状態をチェックし、
+ *              拡張機能アイコンのバッジとツールチップを適切に更新します。
+ *              アクセス権がある場合はバッジを非表示、ない場合は警告バッジを表示します。
+ * @returns {void} 戻り値なし
+ * @since 1.0.0
+ * 
+ * @example
+ * // バッジを手動更新
+ * updateBadge();
+ * 
+ * @see {@link https://developer.chrome.com/docs/extensions/reference/action/} Chrome Action API
+ */
 function updateBadge() {
   try {
     if (chrome.extension && chrome.extension.isAllowedFileSchemeAccess) {
+      /** @type {boolean} ファイルアクセス権限の有無 */
       const hasAccess = chrome.extension.isAllowedFileSchemeAccess();
 
       if (hasAccess) {
@@ -158,7 +229,22 @@ setInterval(updateBadge, 5000);
 // Update badge on startup
 updateBadge();
 
-// Cipher auto-start functionality
+/**
+ * Cipherサービスを初期化する関数
+ * 
+ * @function initializeCipher
+ * @description Cipherサービスの自動起動機能を初期化し、
+ *              ローカルストレージに設定を保存します。
+ *              拡張機能起動時に実行され、自動起動フラグと初期化タイムスタンプを設定します。
+ * @returns {void} 戻り値なし
+ * @since 1.0.0
+ * 
+ * @example
+ * // Cipher初期化を手動実行
+ * initializeCipher();
+ * 
+ * @see {@link https://developer.chrome.com/docs/extensions/reference/storage/} Chrome Storage API
+ */
 function initializeCipher() {
   try {
     // Initialize cipher service on extension startup
@@ -167,7 +253,9 @@ function initializeCipher() {
     // Set up cipher auto-start
     chrome.storage.local.set(
       {
+        /** @type {boolean} Cipher自動起動フラグ */
         cipher_auto_start: true,
+        /** @type {number} 初期化実行時刻のタイムスタンプ */
         cipher_initialized: Date.now(),
       },
       () => {
@@ -189,9 +277,33 @@ function initializeCipher() {
 // Start cipher service on extension startup
 initializeCipher();
 
-// テスト用の関数群（開発時のみ使用）
+/**
+ * テスト用関数群（開発・デバッグ用途）
+ * 
+ * @namespace testFunctions
+ * @description 開発時のテストとデバッグに使用する関数群を提供します。
+ *              本番環境でも利用可能ですが、主に開発者向けの機能です。
+ * @since 1.0.0
+ * 
+ * @example
+ * // コンソールからテスト実行
+ * testFunctions.testWelcomeNotification();
+ */
 window.testFunctions = {
-  // 通知テスト
+  /**
+   * ウェルカム通知のテスト表示
+   * 
+   * @method testWelcomeNotification
+   * @memberof testFunctions
+   * @description テスト用のウェルカム通知を表示します。
+   *              本番の通知と区別するため「[テスト]」マークが付きます。
+   * @returns {void} 戻り値なし
+   * @since 1.0.0
+   * 
+   * @example
+   * // ウェルカム通知をテスト
+   * testFunctions.testWelcomeNotification();
+   */
   testWelcomeNotification: function () {
     console.log('🧪 Testing welcome notification...');
     if (chrome.notifications) {
@@ -206,7 +318,15 @@ window.testFunctions = {
     }
   },
 
-  // セットアップガイド表示テスト
+  /**
+   * セットアップガイド表示のテスト
+   * 
+   * @method testSetupGuide
+   * @memberof testFunctions
+   * @description セットアップガイドページを新しいタブで開くテストを実行します。
+   * @returns {void} 戻り値なし
+   * @since 1.0.0
+   */
   testSetupGuide: function () {
     console.log('🧪 Testing setup guide...');
     chrome.tabs.create({
@@ -214,7 +334,15 @@ window.testFunctions = {
     });
   },
 
-  // バッジ表示テスト
+  /**
+   * バッジ表示のテスト
+   * 
+   * @method testBadge
+   * @memberof testFunctions
+   * @description 警告バッジとタイトルを強制的に表示してテストします。
+   * @returns {void} 戻り値なし
+   * @since 1.0.0
+   */
   testBadge: function () {
     console.log('🧪 Testing badge...');
     chrome.action.setBadgeText({ text: '!' });
@@ -225,7 +353,15 @@ window.testFunctions = {
     });
   },
 
-  // バッジクリア
+  /**
+   * バッジをクリアする
+   * 
+   * @method clearBadge
+   * @memberof testFunctions
+   * @description 表示中のバッジを削除し、デフォルトタイトルに戻します。
+   * @returns {void} 戻り値なし
+   * @since 1.0.0
+   */
   clearBadge: function () {
     console.log('🧪 Clearing badge...');
     chrome.action.setBadgeText({ text: '' });
@@ -234,18 +370,43 @@ window.testFunctions = {
     });
   },
 
-  // onInstalledイベントのシミュレート
+  /**
+   * インストールイベントをシミュレート
+   * 
+   * @method simulateInstall
+   * @memberof testFunctions
+   * @description 初回インストール処理を手動実行してテストします。
+   * @returns {void} 戻り値なし
+   * @since 1.0.0
+   */
   simulateInstall: function () {
     console.log('🧪 Simulating fresh install...');
     handleFirstInstall();
   },
 
-  // Cipher関連テスト
+  /**
+   * Cipher初期化テスト
+   * 
+   * @method testCipherInit
+   * @memberof testFunctions
+   * @description Cipherサービスの初期化処理をテスト実行します。
+   * @returns {void} 戻り値なし
+   * @since 1.0.0
+   */
   testCipherInit: function () {
     console.log('🧪 Testing cipher initialization...');
     initializeCipher();
   },
 
+  /**
+   * Cipher状態確認テスト
+   * 
+   * @method testCipherStatus
+   * @memberof testFunctions
+   * @description Cipherサービスの状態をローカルストレージから取得してコンソール出力します。
+   * @returns {void} 戻り値なし
+   * @since 1.0.0
+   */
   testCipherStatus: function () {
     console.log('🧪 Testing cipher status check...');
     chrome.storage.local.get(

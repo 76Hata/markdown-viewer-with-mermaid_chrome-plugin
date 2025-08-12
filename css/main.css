@@ -578,14 +578,20 @@ img[src]:not(.mermaid img) {
 .toc-expand {
   position: absolute;
   left: -15px;
-  top: 50%;
-  transform: translateY(-50%);
+  top: 6px;                    /* 固定位置に変更：上端から6px */
+  transform: none;             /* 中央配置解除 */
   background: none;
   border: none;
   font-size: 10px;
   cursor: pointer;
   padding: 2px;
   color: var(--toc-text-color);
+  width: 12px;                 /* 幅を統一 */
+  height: 12px;                /* 高さを統一 */
+  display: flex;               /* フレックスボックスで中央配置 */
+  align-items: center;         /* 垂直中央配置 */
+  justify-content: center;     /* 水平中央配置 */
+  line-height: 1;              /* 行高を統一 */
 }
 
 .toc-link {
