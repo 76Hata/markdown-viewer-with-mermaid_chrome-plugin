@@ -33,8 +33,6 @@ Thumbs.db
 *.pem
 
 # Test files
-mermaid-debug.md
-search-test.md
 
 # Temporary files
 *.tmp

@@ -11,9 +11,7 @@
   "permissions": [
     "storage",
     "notifications",
-    "contextMenus",
-    "management",
-    "permissions"
+    "contextMenus"
   ],
   "action": {
     "default_popup": "popup.html",
@@ -54,10 +52,7 @@
         "https://*/*.markdown"
       ],
       "js": [
-        "lib/marked.min.js", 
-        "lib/mermaid.min.js",
-        "lib/jspdf.umd.min.js",
-        "lib/html2canvas.min.js",
+        "lib/marked.min.js",
         "js/toc-generator.js",
         "js/theme-manager.js",
         "js/search-engine.js",

@@ -1391,19 +1391,49 @@ class Toolbar {
     
     async loadPDFLibraries() {
         try {
-            // ライブラリはmanifest.jsonで既にローカルで読み込まれているはず
-            console.log('Checking if PDF libraries are loaded...');
-            
+            // 既に読み込み済みかチェック
             const jsPDFAvailable = typeof window.jsPDF !== 'undefined' || typeof window.jspdf !== 'undefined' || typeof jsPDF !== 'undefined';
             const html2canvasAvailable = typeof window.html2canvas !== 'undefined';
             
-            console.log('jsPDF available:', jsPDFAvailable);
-            console.log('html2canvas available:', html2canvasAvailable);
+            if (jsPDFAvailable && html2canvasAvailable) {
+                console.log('✅ PDF libraries already loaded');
+                return true;
+            }
             
-            return jsPDFAvailable && html2canvasAvailable;
+            console.log('🔄 Loading PDF libraries dynamically...');
+            
+            // LibraryLoaderが利用可能かチェック（content.js由来）
+            if (typeof LibraryLoader !== 'undefined' && LibraryLoader.loadExportLibraries) {
+                return await LibraryLoader.loadExportLibraries();
+            }
+            
+            // フォールバック: 独自実装で動的読み込み
+            const loadScript = (src) => {
+                return new Promise((resolve, reject) => {
+                    const script = document.createElement('script');
+                    script.src = chrome.runtime.getURL(src);
+                    script.onload = () => {
+                        console.log(`✅ Loaded: ${src}`);
+                        resolve();
+                    };
+                    script.onerror = () => {
+                        console.error(`❌ Failed to load: ${src}`);
+                        reject(new Error(`Failed to load ${src}`));
+                    };
+                    document.head.appendChild(script);
+                });
+            };
+            
+            await Promise.all([
+                loadScript('lib/jspdf.umd.min.js'),
+                loadScript('lib/html2canvas.min.js')
+            ]);
+            
+            console.log('✅ PDF libraries loaded successfully');
+            return true;
             
         } catch (error) {
-            console.error('Failed to check PDF libraries:', error);
+            console.error('❌ Failed to load PDF libraries:', error);
             return false;
         }
     }

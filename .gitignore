@@ -37,7 +37,5 @@ build/
 # Test files
 *-test.md
 *-debug.md
-mermaid-debug.md
-search-test.md
 
 .claude

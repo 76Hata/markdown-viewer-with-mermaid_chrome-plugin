@@ -1,6 +1,6 @@
 {
   "name": "markdown-viewer-with-mermaid_chrome-plugin",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "type": "commonjs",
   "description": "",
   "main": "background.js",
@@ -26,7 +26,6 @@
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "type": "commonjs",
   "bugs": {
     "url": "https://github.com/76Hata/markdown-viewer-with-mermaid_chrome-plugin/issues"
   },
@@ -36,5 +35,11 @@
     "prettier": "^3.6.2",
     "typedoc": "^0.28.9",
     "typescript": "^5.9.2"
+  },
+  "dependencies": {
+    "marked": "^5.1.1",
+    "mermaid": "^10.0.0",
+    "jspdf": "^2.5.1",
+    "html2canvas": "^1.4.1"
   }
 }

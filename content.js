@@ -43,8 +43,8 @@
         // Sandbox detection failed - continue normal execution
     }
     
-    // Wait for libraries to load if needed
-    if (typeof marked === 'undefined' || typeof mermaid === 'undefined') {
+    // Wait for marked library to load if needed
+    if (typeof marked === 'undefined') {
         setTimeout(() => {
             initMarkdownViewer();
         }, 100);
@@ -646,10 +646,98 @@
         return html;
     }
     
+    /**
+     * 動的ライブラリ読み込み管理
+     * パフォーマンス最適化のため、必要時のみライブラリを読み込む
+     */
+    const LibraryLoader = {
+        mermaidLoaded: false,
+        exportLibrariesLoaded: false,
+        
+        /**
+         * Mermaidライブラリを動的に読み込む
+         * @returns {Promise<boolean>} 読み込み成功時true
+         */
+        async loadMermaid() {
+            if (typeof mermaid !== 'undefined' || this.mermaidLoaded) {
+                return true;
+            }
+            
+            try {
+                console.log('🔄 Loading Mermaid library dynamically...');
+                const script = document.createElement('script');
+                script.src = chrome.runtime.getURL('lib/mermaid.min.js');
+                
+                return new Promise((resolve, reject) => {
+                    script.onload = () => {
+                        console.log('✅ Mermaid library loaded successfully');
+                        this.mermaidLoaded = true;
+                        resolve(true);
+                    };
+                    script.onerror = () => {
+                        console.error('❌ Failed to load Mermaid library');
+                        reject(false);
+                    };
+                    document.head.appendChild(script);
+                });
+            } catch (error) {
+                console.error('❌ Mermaid loading error:', error);
+                return false;
+            }
+        },
+        
+        /**
+         * エクスポート関連ライブラリ（jsPDF, html2canvas）を動的に読み込む
+         * @returns {Promise<boolean>} 読み込み成功時true
+         */
+        async loadExportLibraries() {
+            if (this.exportLibrariesLoaded) {
+                return true;
+            }
+            
+            try {
+                console.log('🔄 Loading export libraries dynamically...');
+                const loadScript = (src) => {
+                    return new Promise((resolve, reject) => {
+                        const script = document.createElement('script');
+                        script.src = chrome.runtime.getURL(src);
+                        script.onload = resolve;
+                        script.onerror = reject;
+                        document.head.appendChild(script);
+                    });
+                };
+                
+                await Promise.all([
+                    loadScript('lib/jspdf.umd.min.js'),
+                    loadScript('lib/html2canvas.min.js')
+                ]);
+                
+                console.log('✅ Export libraries loaded successfully');
+                this.exportLibrariesLoaded = true;
+                return true;
+            } catch (error) {
+                console.error('❌ Export libraries loading error:', error);
+                return false;
+            }
+        }
+    };
+    
+    // LibraryLoaderをグローバルに公開（他のモジュールから利用可能）
+    window.LibraryLoader = LibraryLoader;
+
     // Mermaid図の描画
     async function renderMermaidDiagrams() {
-        if (typeof mermaid === 'undefined') {
-            console.log('Mermaid not available');
+        // Mermaidが必要かチェック
+        const mermaidElements = document.querySelectorAll('.mermaid');
+        if (mermaidElements.length === 0) {
+            console.log('No Mermaid diagrams found, skipping library load');
+            return;
+        }
+        
+        // Mermaidライブラリを動的読み込み
+        const loaded = await LibraryLoader.loadMermaid();
+        if (!loaded || typeof mermaid === 'undefined') {
+            console.error('Mermaid library not available');
             return;
         }
         
@@ -692,7 +780,6 @@
             console.warn('Mermaid re-initialization warning:', initError);
         }
         
-        const mermaidElements = document.querySelectorAll('.mermaid');
         console.log(`Found ${mermaidElements.length} mermaid elements`);
         console.log('Mermaid version:', mermaid.version || 'Version unknown');
         

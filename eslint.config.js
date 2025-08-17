@@ -97,8 +97,20 @@ module.exports = [
       },
     },
     rules: {
-      // TypeScript-specific rules can be added here
+      // TypeScript-specific rules
       'no-unused-vars': 'off', // TypeScript handles this
+      '@typescript-eslint/no-unused-vars': ['error', {
+        argsIgnorePattern: '^_',
+        varsIgnorePattern: '^_',
+      }],
+      '@typescript-eslint/no-explicit-any': 'warn',
+      '@typescript-eslint/explicit-function-return-type': 'warn',
+      '@typescript-eslint/no-implicit-any-catch': 'error',
+      '@typescript-eslint/prefer-nullish-coalescing': 'error',
+      '@typescript-eslint/prefer-optional-chain': 'error',
+      '@typescript-eslint/strict-boolean-expressions': 'warn',
+      
+      // General rules
       'no-console': [
         'warn',
         {
@@ -110,6 +122,12 @@ module.exports = [
       'no-var': 'error',
       eqeqeq: 'warn',
       curly: 'error',
+      
+      // Accessibility rules (for web components)
+      'jsx-a11y/alt-text': 'error',
+      'jsx-a11y/click-events-have-key-events': 'error',
+      'jsx-a11y/no-noninteractive-element-interactions': 'error',
+      'jsx-a11y/role-has-required-aria-props': 'error',
     },
   },
 ];
