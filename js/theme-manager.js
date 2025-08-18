@@ -389,4 +389,4 @@ class ThemeManager {
 }
 
 // Ensure class is available globally
-window.ThemeManager = ThemeManager;
+(window /** @type {any} */ ).ThemeManager = ThemeManager;

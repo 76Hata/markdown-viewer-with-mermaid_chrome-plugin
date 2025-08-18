@@ -86,7 +86,7 @@ const ServiceWorkerMonitor = {
       } catch (error) {
         console.log(
           '- ServiceWorker Registration Check: ❌ Cannot access from Service Worker context:',
-          error.message
+          /** @type {Error} */ (error).message
         );
       }
 
@@ -113,7 +113,7 @@ const ServiceWorkerMonitor = {
       } catch (error) {
         console.log(
           '  - Location: ❌ Cannot access location in Service Worker context:',
-          error.message
+          /** @type {Error} */ (error).message
         );
       }
     } catch (error) {
@@ -140,7 +140,7 @@ const ServiceWorkerMonitor = {
           'meta[http-equiv="Content-Security-Policy"]'
         );
         if (cspMeta) {
-          console.log('6. CSP Meta tag found:', cspMeta.content);
+          console.log('6. CSP Meta tag found:', /** @type {HTMLMetaElement} */ (cspMeta).content);
         }
       } else {
         console.log(
@@ -189,7 +189,7 @@ const ServiceWorkerLifecycle = {
   handleActivation() {
     console.log('🔄 Service Worker Activated');
     // Claim all clients immediately
-    return self.clients.claim();
+    return (self /** @type {any} */ ).clients.claim();
   },
 
   /**
@@ -198,7 +198,7 @@ const ServiceWorkerLifecycle = {
   handleInstallation() {
     console.log('📦 Service Worker Installing');
     // Skip waiting to activate immediately
-    return self.skipWaiting();
+    return (self /** @type {any} */ ).skipWaiting();
   },
 
   /**
@@ -207,19 +207,19 @@ const ServiceWorkerLifecycle = {
   init() {
     self.addEventListener('install', event => {
       console.log('📦 Service Worker Install Event');
-      event.waitUntil(this.handleInstallation());
+      (event /** @type {any} */ ).waitUntil(this.handleInstallation());
     });
 
     self.addEventListener('activate', event => {
       console.log('🔄 Service Worker Activate Event');
-      event.waitUntil(this.handleActivation());
+      (event /** @type {any} */ ).waitUntil(this.handleActivation());
     });
 
     // Log Service Worker state changes（Service Workerコンテキストでは利用不可）
     try {
       if (typeof navigator !== 'undefined' && 'serviceWorker' in navigator) {
         navigator.serviceWorker.addEventListener('statechange', event => {
-          console.log('🔄 Service Worker State Change:', event.target.state);
+          console.log('🔄 Service Worker State Change:', (event.target /** @type {any} */ ).state);
         });
       } else {
         console.log(
@@ -425,11 +425,11 @@ chrome.contextMenus.onClicked.addListener((info, _tab) => {
  *
  * @see {@link https://developer.chrome.com/docs/extensions/reference/action/} Chrome Action API
  */
-function updateBadge() {
+async function updateBadge() {
   try {
     if (chrome.extension && chrome.extension.isAllowedFileSchemeAccess) {
       /** @type {boolean} ファイルアクセス権限の有無 */
-      const hasAccess = chrome.extension.isAllowedFileSchemeAccess();
+      const hasAccess = await chrome.extension.isAllowedFileSchemeAccess();
 
       if (hasAccess) {
         chrome.action.setBadgeText({ text: '' });
@@ -646,7 +646,7 @@ const testFunctions = {
 };
 
 // Service Worker グローバルスコープに testFunctions を追加
-self.testFunctions = testFunctions;
+(self /** @type {any} */ ).testFunctions = testFunctions;
 
 // コンソールからテストできるように
 console.log('🧪 Test functions available:');

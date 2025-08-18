@@ -41,15 +41,15 @@ document.addEventListener('DOMContentLoaded', function () {
  * // ファイルアクセス権限の状態を手動で再確認する場合
  * checkFileAccessStatus();
  */
-function checkFileAccessStatus() {
+async function checkFileAccessStatus() {
   /** @type {HTMLElement} ステータスメッセージを表示するコンテナ要素 */
-  const statusContainer = document.getElementById('status-container');
+  const statusContainer = document.getElementById('status-container') /** @type {HTMLElement} */ ;
 
   try {
     // Chrome拡張機能APIを使用してファイルアクセス権限をチェック
     if (chrome.extension && chrome.extension.isAllowedFileSchemeAccess) {
       /** @type {boolean} ファイルアクセス権限の有無 */
-      const hasAccess = chrome.extension.isAllowedFileSchemeAccess();
+      const hasAccess = await chrome.extension.isAllowedFileSchemeAccess();
 
       if (hasAccess) {
         statusContainer.innerHTML = `

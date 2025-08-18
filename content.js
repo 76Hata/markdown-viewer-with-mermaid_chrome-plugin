@@ -48,8 +48,8 @@
   // Wait for marked library to load if needed
   if (typeof marked === 'undefined') {
     setTimeout(() => {
-      initMarkdownViewer();
-    }, TIMEOUTS.SHORT_DELAY);
+      initializeMarkdownViewer();
+    }, window.TIMEOUTS ? window.TIMEOUTS.SHORT_DELAY : 100);
     return;
   }
 
@@ -64,7 +64,7 @@
    * @author 76Hata
    * @since 1.0.0
    */
-  window.FileAccessChecker = {
+  const FileAccessChecker = {
     /**
      * ファイルアクセス権限をチェックする
      * Chrome拡張機能のファイルアクセス設定を確認し、コンソールに結果を出力します。
@@ -177,6 +177,9 @@
       return needs;
     },
   };
+  
+  // FileAccessCheckerをwindowに割り当て（TypeScript型チェックのため）
+  (window /** @type {any} */ ).FileAccessChecker = FileAccessChecker;
 
   /**
    * セーフストレージユーティリティ
@@ -200,7 +203,7 @@
    *     console.log('取得した値:', value);
    * });
    */
-  window.SafeStorage = {
+  const SafeStorage = {
     /**
      * データを安全にストレージに保存する
      *
@@ -284,6 +287,9 @@
       }
     },
   };
+  
+  // SafeStorageをwindowに割り当て（TypeScript型チェックのため）
+  (window /** @type {any} */ ).SafeStorage = SafeStorage;
 
   /**
    * Markdownファイルかどうかを判定する関数
@@ -503,7 +509,7 @@
       }
       const content = await response.text();
       console.log('Fetched content length:', content.length);
-      console.log('First 100 chars:', content.substring(0, SIZES.MEDIUM));
+      console.log('First 100 chars:', content.substring(0, window.SIZES?.MEDIUM || 100));
       return content;
     } catch (error) {
       console.error('Failed to fetch markdown content:', error);
@@ -523,7 +529,7 @@
       xhr.setRequestHeader('Accept', 'text/plain, text/markdown, */*');
 
       xhr.onload = function () {
-        if (xhr.status >= SIZES.LARGE && xhr.status < TIMEOUTS.STANDARD_DELAY) {
+        if (xhr.status >= (window.SIZES?.LARGE || 200) && xhr.status < (window.TIMEOUTS?.STANDARD_DELAY || 300)) {
           console.log('XHR succeeded with status:', xhr.status);
           console.log('Response length:', xhr.responseText.length);
           resolve(xhr.responseText);
@@ -936,7 +942,7 @@
 
         console.log(
           `Rendering mermaid ${i}:`,
-          graphDefinition.substring(0, SIZES.SMALL)
+          graphDefinition.substring(0, window.SIZES?.SMALL || 50)
         );
 
         // 図表タイプを検出
@@ -1071,7 +1077,7 @@ ${element.dataset.mermaidCode ? decodeURIComponent(element.dataset.mermaidCode) 
             console.log(
               `Toolbar class not yet available, retry ${toolbarInitAttempts}/${maxToolbarAttempts}`
             );
-            setTimeout(initToolbar, TIMEOUTS.LONG_DELAY);
+            setTimeout(initToolbar, window.TIMEOUTS?.LONG_DELAY || 500);
           } else {
             console.error(
               '❌ Toolbar class not available after retries - check manifest.json'
@@ -1139,7 +1145,7 @@ ${element.dataset.mermaidCode ? decodeURIComponent(element.dataset.mermaidCode) 
       if (fallbackNotice.parentNode) {
         fallbackNotice.parentNode.removeChild(fallbackNotice);
       }
-    }, TIMEOUTS.MAX_TIMEOUT);
+    }, window.TIMEOUTS?.MAX_TIMEOUT || 10000);
   }
 
   // Basic HTML export for sandboxed environments
@@ -1214,14 +1220,14 @@ ${element.dataset.mermaidCode ? decodeURIComponent(element.dataset.mermaidCode) 
 
         const link = document.createElement('a');
         link.href = url;
-        link.download = `markdown-export-${new Date().toISOString().slice(0, SIZES.ANIMATION_OFFSET).replace(/:/g, '-')}.html`;
+        link.download = `markdown-export-${new Date().toISOString().slice(0, window.SIZES?.ANIMATION_OFFSET || 19).replace(/:/g, '-')}.html`;
         link.style.display = 'none';
 
         document.body.appendChild(link);
         link.click();
         document.body.removeChild(link);
 
-        setTimeout(() => URL.revokeObjectURL(url), TIMEOUTS.VERY_LONG_DELAY);
+        setTimeout(() => URL.revokeObjectURL(url), window.TIMEOUTS?.VERY_LONG_DELAY || 1000);
         showExportSuccess();
       } catch (downloadError) {
         console.warn('Download failed, showing in new window:', downloadError);
@@ -1331,9 +1337,9 @@ ${element.dataset.mermaidCode ? decodeURIComponent(element.dataset.mermaidCode) 
                 <div style="margin-top: 10px; text-align: center;">
                     <button onclick="
                         const textarea = this.previousElementSibling.previousElementSibling;
-                        textarea.select();
+                        (textarea /** @type {HTMLTextAreaElement} */ ).select();
                         if (navigator.clipboard && navigator.clipboard.writeText) {
-                            navigator.clipboard.writeText(textarea.value).then(() => {
+                            navigator.clipboard.writeText((textarea /** @type {HTMLTextAreaElement} */ ).value).then(() => {
                                 showToastMessage('コピーしました！', 'success');
                             }).catch(() => {
                                 showToastMessage('コピーに失敗しました', 'error');
@@ -1357,7 +1363,7 @@ ${element.dataset.mermaidCode ? decodeURIComponent(element.dataset.mermaidCode) 
   // サンドボックス環境の制限を徹底調査する関数
   function investigateSandboxLimitations() {
     console.log('🔍 SANDBOX INVESTIGATION START');
-    console.log('='.repeat(SIZES.SMALL));
+    console.log('='.repeat(window.SIZES?.SMALL || 50));
 
     // 基本情報
     console.log('📍 Environment Info:');
@@ -1452,7 +1458,7 @@ ${element.dataset.mermaidCode ? decodeURIComponent(element.dataset.mermaidCode) 
       console.error('  Event test FAILED:', error);
     }
 
-    console.log('='.repeat(SIZES.SMALL));
+    console.log('='.repeat(window.SIZES?.SMALL || 50));
     console.log('🔍 SANDBOX INVESTIGATION END');
 
     return {
@@ -1765,15 +1771,15 @@ ${element.dataset.mermaidCode ? decodeURIComponent(element.dataset.mermaidCode) 
   window.tryLegacyClipboard = async function (htmlContent) {
     try {
       const textarea = document.createElement('textarea');
-      textarea.value = htmlContent;
+      (textarea /** @type {HTMLTextAreaElement} */ ).value = htmlContent;
       textarea.style.cssText = 'position:fixed;top:-9999px;left:-9999px;';
       document.body.appendChild(textarea);
-      textarea.select();
+      (textarea /** @type {HTMLTextAreaElement} */ ).select();
 
       let success = false;
       if (navigator.clipboard && navigator.clipboard.writeText) {
         try {
-          await navigator.clipboard.writeText(textarea.value);
+          await navigator.clipboard.writeText((textarea /** @type {HTMLTextAreaElement} */ ).value);
           success = true;
         } catch (error) {
           console.warn('Modern clipboard API failed:', error);
@@ -1815,9 +1821,9 @@ ${element.dataset.mermaidCode ? decodeURIComponent(element.dataset.mermaidCode) 
                     <div style="margin-top: 10px; text-align: center;">
                         <button onclick="
                         const textarea = this.previousElementSibling.previousElementSibling;
-                        textarea.select();
+                        (textarea /** @type {HTMLTextAreaElement} */ ).select();
                         if (navigator.clipboard && navigator.clipboard.writeText) {
-                            navigator.clipboard.writeText(textarea.value).then(() => {
+                            navigator.clipboard.writeText((textarea /** @type {HTMLTextAreaElement} */ ).value).then(() => {
                                 showToastMessage('コピーしました！', 'success');
                             }).catch(() => {
                                 showToastMessage('コピーに失敗しました', 'error');
@@ -1836,7 +1842,7 @@ ${element.dataset.mermaidCode ? decodeURIComponent(element.dataset.mermaidCode) 
       // テキストエリアを自動選択
       const textarea = modal.querySelector('textarea');
       textarea.focus();
-      textarea.select();
+      (textarea /** @type {HTMLTextAreaElement} */ ).select();
 
       showExportSuccess('モーダルでHTMLコードを表示しました');
       return true;
@@ -1917,14 +1923,14 @@ ${element.dataset.mermaidCode ? decodeURIComponent(element.dataset.mermaidCode) 
 
     // アイコンのスタイル
     const iconElement = toast.querySelector('.toast-icon');
-    iconElement.style.cssText = `
+    (iconElement /** @type {HTMLElement} */ ).style.cssText = `
             font-size: 20px;
             flex-shrink: 0;
         `;
 
     // メッセージのスタイル
     const messageElement = toast.querySelector('.toast-message');
-    messageElement.style.cssText = `
+    (messageElement /** @type {HTMLElement} */ ).style.cssText = `
             flex: 1;
             font-size: 14px;
             line-height: 1.4;
@@ -1933,7 +1939,7 @@ ${element.dataset.mermaidCode ? decodeURIComponent(element.dataset.mermaidCode) 
 
     // 閉じるボタンのスタイル
     const closeBtn = toast.querySelector('.toast-close');
-    closeBtn.style.cssText = `
+    (closeBtn /** @type {HTMLElement} */ ).style.cssText = `
             background: none;
             border: none;
             font-size: 18px;
@@ -2060,7 +2066,7 @@ ${element.dataset.mermaidCode ? decodeURIComponent(element.dataset.mermaidCode) 
 
     // 閉じるボタンのスタイル - 印刷エラートーストと全く同じ
     const closeBtn = toast.querySelector('.toast-close');
-    closeBtn.style.cssText = `
+    (closeBtn /** @type {HTMLElement} */ ).style.cssText = `
             background: none;
             border: none;
             font-size: 18px;
@@ -2108,10 +2114,10 @@ ${element.dataset.mermaidCode ? decodeURIComponent(element.dataset.mermaidCode) 
 
     // ホバー効果を追加 - 印刷エラートーストと全く同じ
     closeBtn.addEventListener('mouseenter', () => {
-      closeBtn.style.backgroundColor = 'rgba(133, 100, 4, 0.1)';
+      (closeBtn /** @type {HTMLElement} */ ).style.backgroundColor = 'rgba(133, 100, 4, 0.1)';
     });
     closeBtn.addEventListener('mouseleave', () => {
-      closeBtn.style.backgroundColor = 'transparent';
+      (closeBtn /** @type {HTMLElement} */ ).style.backgroundColor = 'transparent';
     });
 
     // 5秒後に自動で閉じる - 印刷エラートーストと全く同じ
