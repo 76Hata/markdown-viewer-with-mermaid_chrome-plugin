@@ -3,13 +3,29 @@
  *
  * アプリケーション全体で使用される定数値を定義
  * マジックナンバーの使用を避け、保守性を向上させる
+ *
+ * @fileoverview 定数値の集約ファイル
  */
 
 // ===========================================
 // タイミング関連の定数
 // ===========================================
 
-/** タイムアウト関連 */
+/** 
+ * @typedef {Object} TimeoutConfig
+ * @property {number} SHORT_DELAY - 短い遅延（アニメーション等）
+ * @property {number} STANDARD_DELAY - 標準的な遅延
+ * @property {number} LONG_DELAY - 長い遅延（API呼び出し等）
+ * @property {number} VERY_LONG_DELAY - 非常に長い遅延（重い処理等）
+ * @property {number} NETWORK_TIMEOUT - ネットワークタイムアウト
+ * @property {number} HEAVY_PROCESS_TIMEOUT - 重い処理のタイムアウト
+ * @property {number} MAX_TIMEOUT - 最大タイムアウト
+ * @property {number} NOTIFICATION_DURATION - 通知の表示時間
+ * @property {number} DEBOUNCE_SHORT - デバウンス用の短い遅延
+ * @property {number} DEBOUNCE_STANDARD - デバウンス用の標準遅延
+ * @property {number} FILE_ACCESS_CHECK_INTERVAL - ファイルアクセスチェックの間隔
+ */
+/** @type {TimeoutConfig} タイムアウト関連 */
 const TIMEOUTS = {
   /** 短い遅延（アニメーション等） */
   SHORT_DELAY: 100,
@@ -45,7 +61,15 @@ const TIMEOUTS = {
   FILE_ACCESS_CHECK_INTERVAL: 2000,
 };
 
-/** インターバル関連 */
+/** 
+ * @typedef {Object} IntervalConfig
+ * @property {number} UI_UPDATE - UI更新の間隔
+ * @property {number} STATUS_CHECK - 状態チェックの間隔
+ * @property {number} PERIODIC_PROCESS - 定期処理の間隔
+ * @property {number} HEAVY_PROCESS - 重い処理の間隔
+ * @property {number} MAX_INTERVAL - 最大インターバル
+ */
+/** @type {IntervalConfig} インターバル関連 */
 const INTERVALS = {
   /** UI更新の間隔 */
   UI_UPDATE: 100,
@@ -67,7 +91,25 @@ const INTERVALS = {
 // サイズ・寸法関連の定数
 // ===========================================
 
-/** サイズ関連 */
+/** 
+ * @typedef {Object} SizeConfig
+ * @property {number} SMALL - 小さいサイズ
+ * @property {number} MEDIUM - 中サイズ
+ * @property {number} LARGE - 大サイズ
+ * @property {number} MAX_SEARCH_RESULTS - 検索結果の最大表示数
+ * @property {number} MAX_TOC_ITEMS - TOCの最大表示項目数
+ * @property {number} ANIMATION_OFFSET - アニメーション用の小さな値
+ * @property {number} SCROLL_OFFSET - スクロール用のオフセット
+ * @property {number} MARGIN_SMALL - 小マージン
+ * @property {number} MARGIN_MEDIUM - 中マージン
+ * @property {number} MARGIN_LARGE - 大マージン
+ * @property {number} MARGIN_XLARGE - 特大マージン
+ * @property {number} FONT_SMALL - 小フォント
+ * @property {number} FONT_MEDIUM - 中フォント
+ * @property {number} FONT_LARGE - 大フォント
+ * @property {number} FONT_XLARGE - 特大フォント
+ */
+/** @type {SizeConfig} サイズ関連 */
 const SIZES = {
   /** 小さいサイズ */
   SMALL: 50,

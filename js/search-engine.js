@@ -41,7 +41,7 @@ class SearchEngine {
    * SearchEngineクラスのコンストラクタ
    *
    * @constructor
-   * @param {Element} container - 検索対象となるコンテナ要素
+   * @param {Element|HTMLElement} container - 検索対象となるコンテナ要素
    * @description 検索エンジンインスタンスを初期化します。
    *              プロパティの初期化を行い、init()メソッドを呼び出します。
    * @since 1.0.0

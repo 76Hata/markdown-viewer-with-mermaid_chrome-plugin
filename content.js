@@ -35,14 +35,17 @@
 
   // Check for sandboxed environment and GitHub Raw URLs
   try {
+    /** @type {boolean} サンドボックス環境の検出フラグ */
     const _isSandboxed =
       window.parent !== window.self &&
       window.location !== window.parent.location;
+    /** @type {boolean} GitHub Raw URLの検出フラグ */
     const _isGitHubRaw = location.hostname.includes(
       'raw.githubusercontent.com'
     );
-  } catch {
+  } catch (error) {
     // Sandbox detection failed - continue normal execution
+    console.warn('Sandbox detection failed:', error);
   }
 
   // Wait for marked library to load if needed

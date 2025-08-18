@@ -150,7 +150,7 @@ const ServiceWorkerMonitor = {
     } catch (error) {
       console.log(
         '6. CSP Meta tag check: ❌ Document not available in Service Worker:',
-        error.message
+        error instanceof Error ? error.message : String(error)
       );
     }
 
@@ -189,7 +189,7 @@ const ServiceWorkerLifecycle = {
   handleActivation() {
     console.log('🔄 Service Worker Activated');
     // Claim all clients immediately
-    return (self /** @type {any} */ ).clients.claim();
+    return /** @type {any} */ (self).clients.claim();
   },
 
   /**
@@ -198,7 +198,7 @@ const ServiceWorkerLifecycle = {
   handleInstallation() {
     console.log('📦 Service Worker Installing');
     // Skip waiting to activate immediately
-    return (self /** @type {any} */ ).skipWaiting();
+    return /** @type {any} */ (self).skipWaiting();
   },
 
   /**
@@ -207,19 +207,19 @@ const ServiceWorkerLifecycle = {
   init() {
     self.addEventListener('install', event => {
       console.log('📦 Service Worker Install Event');
-      (event /** @type {any} */ ).waitUntil(this.handleInstallation());
+      /** @type {ExtendedEvent} */ (event).waitUntil(this.handleInstallation());
     });
 
     self.addEventListener('activate', event => {
       console.log('🔄 Service Worker Activate Event');
-      (event /** @type {any} */ ).waitUntil(this.handleActivation());
+      /** @type {ExtendedEvent} */ (event).waitUntil(this.handleActivation());
     });
 
     // Log Service Worker state changes（Service Workerコンテキストでは利用不可）
     try {
       if (typeof navigator !== 'undefined' && 'serviceWorker' in navigator) {
         navigator.serviceWorker.addEventListener('statechange', event => {
-          console.log('🔄 Service Worker State Change:', (event.target /** @type {any} */ ).state);
+          console.log('🔄 Service Worker State Change:', event.target && /** @type {EventTarget} */ (event.target).state);
         });
       } else {
         console.log(
@@ -229,7 +229,7 @@ const ServiceWorkerLifecycle = {
     } catch (error) {
       console.log(
         '📝 Service Worker state monitoring: Cannot access navigator in Service Worker context:',
-        error.message
+        error instanceof Error ? error.message : String(error)
       );
     }
   },
@@ -307,7 +307,7 @@ function handleFirstInstall() {
  * handleUpdate('1.9.0');
  */
 function handleUpdate(previousVersion) {
-  console.log(`Updated from version ${previousVersion}`);
+  console.log(`Updated from version ${previousVersion || 'unknown'}`);
   // Could show update notification here if needed
 }
 
@@ -424,6 +424,9 @@ chrome.contextMenus.onClicked.addListener((info, _tab) => {
  * updateBadge();
  *
  * @see {@link https://developer.chrome.com/docs/extensions/reference/action/} Chrome Action API
+ */
+/**
+ * @returns {Promise<void>}
  */
 async function updateBadge() {
   try {
@@ -646,7 +649,7 @@ const testFunctions = {
 };
 
 // Service Worker グローバルスコープに testFunctions を追加
-(self /** @type {any} */ ).testFunctions = testFunctions;
+/** @type {any} */ (self).testFunctions = testFunctions;
 
 // コンソールからテストできるように
 console.log('🧪 Test functions available:');
