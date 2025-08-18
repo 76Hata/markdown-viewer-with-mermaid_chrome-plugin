@@ -233,8 +233,6 @@ jobs:
           cp popup.html build/
           cp popup.js build/
           cp setup-guide.html build/
-          cp file-access_off.png build/
-          cp mdvier-icon.png build/
           # Create zip archive
           cd build
           zip -r ../chrome-extension.zip .

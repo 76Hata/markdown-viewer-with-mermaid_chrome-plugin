@@ -1,13 +1,13 @@
 /**
  * @fileoverview Popup Script - Markdown Viewer with Mermaid Chrome拡張機能
- * 
+ *
  * このファイルは、Chrome拡張機能のポップアップウィンドウの動作を制御します。
  * ファイルアクセス権限の確認、Cipher状態の確認、各種テスト機能の提供を行います。
- * 
+ *
  * @author 76Hata
  * @version 2.0.0
  * @since 1.0.0
- * 
+ *
  * @requires chrome.extension - Chrome拡張機能API
  * @requires chrome.runtime - Chrome拡張機能ランタイムAPI
  * @requires chrome.tabs - Chrome拡張機能タブAPI
@@ -16,7 +16,7 @@
 /**
  * DOMContentLoadedイベントリスナー
  * ポップアップウィンドウが読み込み完了したときに実行される初期化関数
- * 
+ *
  * @description ファイルアクセス状態の確認、Cipher状態の確認、イベントリスナーの設定を行います
  * @listens DOMContentLoaded
  * @since 1.0.0
@@ -29,27 +29,27 @@ document.addEventListener('DOMContentLoaded', function () {
 
 /**
  * ファイルアクセス権限の状態を確認して表示する関数
- * 
+ *
  * @description Chrome拡張機能の「ファイルのURLへのアクセスを許可する」設定を確認し、
  *              ポップアップウィンドウに適切な状態メッセージを表示します。
  * @function checkFileAccessStatus
  * @since 1.0.0
- * 
+ *
  * @returns {void} 戻り値なし。DOM要素を直接更新します。
- * 
+ *
  * @example
  * // ファイルアクセス権限の状態を手動で再確認する場合
  * checkFileAccessStatus();
  */
-function checkFileAccessStatus() {
+async function checkFileAccessStatus() {
   /** @type {HTMLElement} ステータスメッセージを表示するコンテナ要素 */
-  const statusContainer = document.getElementById('status-container');
+  const statusContainer = document.getElementById('status-container') /** @type {HTMLElement} */ ;
 
   try {
     // Chrome拡張機能APIを使用してファイルアクセス権限をチェック
     if (chrome.extension && chrome.extension.isAllowedFileSchemeAccess) {
       /** @type {boolean} ファイルアクセス権限の有無 */
-      const hasAccess = chrome.extension.isAllowedFileSchemeAccess();
+      const hasAccess = await chrome.extension.isAllowedFileSchemeAccess();
 
       if (hasAccess) {
         statusContainer.innerHTML = `
@@ -88,14 +88,14 @@ function checkFileAccessStatus() {
 
 /**
  * Cipherサービスの状態を確認して表示する関数
- * 
+ *
  * @description バックグラウンドスクリプトにメッセージを送信してCipherサービスの
  *              自動起動設定と初期化状態を確認し、ポップアップに表示します。
  * @function checkCipherStatus
  * @since 1.0.0
- * 
+ *
  * @returns {void} 戻り値なし。DOM要素を直接更新します。
- * 
+ *
  * @example
  * // Cipherサービスの状態を手動で再確認する場合
  * checkCipherStatus();
@@ -156,14 +156,14 @@ function checkCipherStatus() {
 
 /**
  * イベントリスナーを設定する関数
- * 
+ *
  * @description ポップアップウィンドウ内の各ボタンとUI要素にイベントリスナーを設定し、
  *              ユーザーの操作に応じた処理を定義します。
  * @function setupEventListeners
  * @since 1.0.0
- * 
+ *
  * @returns {void} 戻り値なし
- * 
+ *
  * @example
  * // ポップアップ初期化時に呼び出される
  * setupEventListeners();
@@ -195,7 +195,7 @@ function setupEventListeners() {
     .addEventListener('click', function () {
       /** @type {HTMLElement} デバッグセクション要素 */
       const debugSection = document.getElementById('debug-section');
-      
+
       /** @type {HTMLElement} 切り替えボタン要素 */
       const toggleButton = document.getElementById('toggle-debug');
 
@@ -285,12 +285,12 @@ function setupEventListeners() {
 
 /**
  * 定期的な状態更新処理
- * 
+ *
  * @description ポップアップが開いている間、3秒おきに
  *              ファイルアクセス権限とCipherサービスの状態を更新します。
  * @type {number} インターバルID（必要に応じてクリア可能）
  * @since 1.0.0
- * 
+ *
  * @example
  * // インターバルをクリアする場合
  * clearInterval(_statusUpdateInterval);

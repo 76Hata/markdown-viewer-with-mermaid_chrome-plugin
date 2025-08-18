@@ -23,6 +23,7 @@ desktop.ini
 # Test files (if any)
 test/
 coverage/
+dist/
 
 # TypeDoc output
 docs/
@@ -30,6 +31,7 @@ docs/
 # CI/CD artifacts
 chrome-extension.zip
 build/
+web-ext-artifacts/
 
 # ESLint cache
 .eslintcache
@@ -37,7 +39,5 @@ build/
 # Test files
 *-test.md
 *-debug.md
-mermaid-debug.md
-search-test.md
 
 .claude
