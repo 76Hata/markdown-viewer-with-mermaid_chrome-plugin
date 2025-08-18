@@ -15,14 +15,7 @@
   "excludeExternals": true,
   "excludePrivate": false,
   "excludeProtected": false,
-  "exclude": [
-    "**/node_modules/**",
-    "**/doc/**",
-    "**/lib/**",
-    "**/test*",
-    "**/debug*",
-    "**/verify*"
-  ],
+  "exclude": ["**/node_modules/**", "**/doc/**", "**/lib/**", "**/test*", "**/debug*", "**/verify*"],
   "hideGenerator": false,
   "theme": "default",
   "plugin": [],
@@ -64,9 +57,5 @@
     "@description",
     "@fileoverview"
   ],
-  "inlineTags": [
-    "@link",
-    "@linkcode",
-    "@linkplain"
-  ]
+  "inlineTags": ["@link", "@linkcode", "@linkplain"]
 }

@@ -37,7 +37,6 @@
 │   ├── mermaid.min.js        # 図表レンダリング
 │   ├── jspdf.umd.min.js      # PDF生成
 │   └── html2canvas.min.js    # HTML→Canvas変換
-└── file-access_off.png       # ファイルアクセス警告用画像
 ```
 
 ### JavaScript機能モジュール
