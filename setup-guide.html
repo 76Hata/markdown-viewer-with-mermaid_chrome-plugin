@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Markdown Viewer with Mermaid - セットアップガイド</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            line-height: 1.6;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            color: #333;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-radius: 10px;
+        }
+        
+        .header h1 {
+            margin: 0;
+            font-size: 24px;
+        }
+        
+        .header p {
+            margin: 10px 0 0 0;
+            opacity: 0.9;
+        }
+        
+        .step {
+            background: white;
+            border: 1px solid #e1e5e9;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        .step-number {
+            display: inline-block;
+            width: 30px;
+            height: 30px;
+            background: #007bff;
+            color: white;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 30px;
+            font-weight: bold;
+            margin-right: 15px;
+        }
+        
+        .step-title {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+        }
+        
+        .step-content {
+            margin-left: 45px;
+        }
+        
+        .button {
+            display: inline-block;
+            padding: 10px 20px;
+            background: #007bff;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            margin: 10px 10px 10px 0;
+            border: none;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        
+        .button:hover {
+            background: #0056b3;
+        }
+        
+        .button.secondary {
+            background: #6c757d;
+        }
+        
+        .button.secondary:hover {
+            background: #545b62;
+        }
+        
+        .warning {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            color: #856404;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 20px 0;
+        }
+        
+        .success {
+            background: #d4edda;
+            border: 1px solid #c3e6cb;
+            color: #155724;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 20px 0;
+        }
+        
+        .screenshot {
+            max-width: 100%;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            margin: 10px 0;
+        }
+        
+        .footer {
+            text-align: center;
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 1px solid #eee;
+            color: #6c757d;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>📝 Markdown Viewer with Mermaid</h1>
+        <p>セットアップガイド - ローカルファイルで使用するための設定</p>
+    </div>
+    
+    <div class="warning">
+        <strong>⚠️ 重要:</strong> ローカルのMarkdownファイル（file://）で使用するには、以下の設定が必要です。
+    </div>
+    
+    <div class="step">
+        <div class="step-title">
+            <span class="step-number">1</span>
+            拡張機能管理ページを開く
+        </div>
+        <div class="step-content">
+            以下のいずれかの方法で拡張機能管理ページを開きます：
+            <ul>
+                <li>このページの「設定ページを開く」ボタンをクリック</li>
+                <li>アドレスバーに <code>chrome://extensions/</code> と入力</li>
+                <li>拡張機能アイコンを右クリック → 「拡張機能を管理」</li>
+            </ul>
+            <button class="button" id="open-extensions">⚙️ 設定ページを開く</button>
+        </div>
+    </div>
+    
+    <div class="step">
+        <div class="step-title">
+            <span class="step-number">2</span>
+            Markdown Viewerを見つける
+        </div>
+        <div class="step-content">
+            拡張機能一覧から「<strong>Markdown Viewer with Mermaid</strong>」を見つけて、「詳細」をクリックします。
+        </div>
+    </div>
+    
+    <div class="step">
+        <div class="step-title">
+            <span class="step-number">3</span>
+            ファイルアクセスを有効にする
+        </div>
+        <div class="step-content">
+            <p>詳細ページで「<strong>ファイルのURLへのアクセスを許可する</strong>」の項目を見つけて、<strong>ONにします</strong>。</p>
+            <div class="warning">
+                <strong>注意:</strong> この設定をONにしないと、ローカルのMarkdownファイルでは拡張機能が動作しません。
+            </div>
+        </div>
+    </div>
+    
+    <div class="step">
+        <div class="step-title">
+            <span class="step-number">4</span>
+            テストファイルで動作確認
+        </div>
+        <div class="step-content">
+            <p>設定完了後、テストファイルを開いて正常に動作するか確認してください。</p>
+            <button class="button secondary" id="open-test-file">📄 テストファイルを開く</button>
+        </div>
+    </div>
+    
+    <div class="success">
+        <strong>✅ 設定完了後の機能:</strong>
+        <ul>
+            <li>ローカルMarkdownファイルの自動プレビュー</li>
+            <li>Mermaid図表の描画</li>
+            <li>目次（TOC）の自動生成</li>
+            <li>検索機能</li>
+            <li>テーマ切り替え</li>
+            <li>PDF/HTMLエクスポート</li>
+        </ul>
+    </div>
+    
+    <div class="warning">
+        <strong>💡 ヒント:</strong> 設定後は拡張機能アイコンをクリックすると、現在の設定状態を確認できます。
+    </div>
+    
+    <div class="footer">
+        <p>問題が発生した場合は、拡張機能アイコンから状態を確認してください。</p>
+    </div>
+
+    <script>
+        document.getElementById('open-extensions').addEventListener('click', function() {
+            chrome.tabs.create({
+                url: `chrome://extensions/?id=${chrome.runtime.id}`
+            });
+        });
+        
+        document.getElementById('open-test-file').addEventListener('click', function() {
+            const testFileUrl = chrome.runtime.getURL('test-file-access.md');
+            chrome.tabs.create({
+                url: testFileUrl
+            });
+        });
+    </script>
+</body>
+</html>
