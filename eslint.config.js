@@ -58,6 +58,24 @@ module.exports = [
       'no-var': 'error',
       eqeqeq: 'warn',
       curly: 'error',
+
+      // Security
+      'no-script-url': 'error',
+      'no-new-wrappers': 'error',
+      'no-caller': 'error',
+      'no-proto': 'error',
+
+      // Performance
+      'no-inner-declarations': 'error',
+      'no-loop-func': 'error',
+      'no-dupe-keys': 'error',
+      'no-duplicate-case': 'error',
+
+      // Best practices
+      'no-magic-numbers': ['warn', { ignore: [-1, 0, 1, 2] }],
+      'no-multi-assign': 'error',
+      'no-self-compare': 'error',
+      'no-sequences': 'error',
     },
   },
   {
@@ -78,56 +96,5 @@ module.exports = [
       '*-test.md',
       '*-debug.md',
     ],
-  },
-  // TypeScript configuration
-  {
-    files: ["**/*.ts", "**/*.tsx"],
-    languageOptions: {
-      ecmaVersion: 2020,
-      sourceType: "module",
-      globals: {
-        // Browser globals
-        window: 'readonly',
-        document: 'readonly',
-        console: 'readonly',
-        
-        // Chrome Extension APIs
-        chrome: 'readonly',
-        browser: 'readonly',
-      },
-    },
-    rules: {
-      // TypeScript-specific rules
-      'no-unused-vars': 'off', // TypeScript handles this
-      '@typescript-eslint/no-unused-vars': ['error', {
-        argsIgnorePattern: '^_',
-        varsIgnorePattern: '^_',
-      }],
-      '@typescript-eslint/no-explicit-any': 'warn',
-      '@typescript-eslint/explicit-function-return-type': 'warn',
-      '@typescript-eslint/no-implicit-any-catch': 'error',
-      '@typescript-eslint/prefer-nullish-coalescing': 'error',
-      '@typescript-eslint/prefer-optional-chain': 'error',
-      '@typescript-eslint/strict-boolean-expressions': 'warn',
-      
-      // General rules
-      'no-console': [
-        'warn',
-        {
-          allow: ['warn', 'error'],
-        },
-      ],
-      'no-debugger': 'error',
-      'prefer-const': 'error',
-      'no-var': 'error',
-      eqeqeq: 'warn',
-      curly: 'error',
-      
-      // Accessibility rules (for web components)
-      'jsx-a11y/alt-text': 'error',
-      'jsx-a11y/click-events-have-key-events': 'error',
-      'jsx-a11y/no-noninteractive-element-interactions': 'error',
-      'jsx-a11y/role-has-required-aria-props': 'error',
-    },
   },
 ];

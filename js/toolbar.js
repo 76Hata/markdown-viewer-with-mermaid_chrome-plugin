@@ -1,9 +1,9 @@
 /**
  * @fileoverview ツールバークラス - Markdown Viewerのメインツールバー機能を提供
- * 
+ *
  * このファイルは、Chrome拡張機能「Markdown Viewer with Mermaid」のツールバー管理を実装します。
  * 検索、テーマ切り替え、印刷、エクスポート、設定などの機能へのアクセスを提供します。
- * 
+ *
  * @author 76Hata
  * @version 2.0.0
  * @since 1.0.0
@@ -12,86 +12,86 @@
 /**
  * ツールバークラス
  * Markdownビューアーのメインツールバーインターフェースを作成・管理します
- * 
+ *
  * @class Toolbar
  * @description このクラスは以下の機能を提供します：
  * - フローティングツールバーの作成と配置
  * - 検索機能へのアクセス
  * - テーマ切り替え機能
  * - 印刷機能
- * - エクスポート機能（HTML/PDF）
+ * - エクスポート機能（HTML）
  * - 設定パネルへのアクセス
  * - ツールバーのドラッグ移動
  * - キーボードショートカット
- * 
+ *
  * @example
  * // ツールバーを初期化
  * const toolbar = new Toolbar(document.body);
- * 
+ *
  * // 特定のコンテナにツールバーを作成
  * const toolbar = new Toolbar(document.getElementById('content'));
- * 
+ *
  * @author 76Hata
  * @since 1.0.0
  */
 class Toolbar {
-    /**
-     * Toolbarクラスのコンストラクタ
-     * 
-     * @constructor
-     * @param {Element} container - ツールバーを配置するコンテナ要素
-     * @description ツールバーインスタンスを初期化します。
-     *              各種プロパティを設定し、init()メソッドを呼び出します。
-     * @since 1.0.0
-     */
-    constructor(container) {
-        /** @type {Element} ツールバーを配置するコンテナ要素 */
-        this.container = container || document.body;
-        
-        /** @type {HTMLElement|null} ツールバーのDOM要素 */
-        this.toolbarElement = null;
-        
-        /** @type {ThemeManager|null} テーマ管理インスタンス */
-        this.themeManager = null;
-        
-        /** @type {SearchEngine|null} 検索エンジンインスタンス */
-        this.searchEngine = null;
-        
-        /** @type {TOCGenerator|null} 目次生成インスタンス */
-        this.tocGenerator = null;
-        
-        this.init();
+  /**
+   * Toolbarクラスのコンストラクタ
+   *
+   * @constructor
+   * @param {Element} container - ツールバーを配置するコンテナ要素
+   * @description ツールバーインスタンスを初期化します。
+   *              各種プロパティを設定し、init()メソッドを呼び出します。
+   * @since 1.0.0
+   */
+  constructor(container) {
+    /** @type {Element} ツールバーを配置するコンテナ要素 */
+    this.container = container || document.body;
+
+    /** @type {HTMLElement|null} ツールバーのDOM要素 */
+    this.toolbarElement = null;
+
+    /** @type {ThemeManager|null} テーマ管理インスタンス */
+    this.themeManager = null;
+
+    /** @type {SearchEngine|null} 検索エンジンインスタンス */
+    this.searchEngine = null;
+
+    /** @type {TOCGenerator|null} 目次生成インスタンス */
+    this.tocGenerator = null;
+
+    this.init();
+  }
+
+  /**
+   * ツールバーの初期化処理
+   *
+   * @method init
+   * @description ツールバーの初期化を行います。以下の順序で処理を実行します：
+   *              1. コンテナ要素の存在確認
+   *              2. ツールバー要素の作成
+   *              3. イベントバインディング
+   *              4. 関連コンポーネントの初期化
+   * @returns {void} 戻り値なし
+   * @since 1.0.0
+   */
+  init() {
+    // DOM要素の存在確認
+    if (!this.container) {
+      console.error('Toolbar container not found');
+      return;
     }
-    
-    /**
-     * ツールバーの初期化処理
-     * 
-     * @method init
-     * @description ツールバーの初期化を行います。以下の順序で処理を実行します：
-     *              1. コンテナ要素の存在確認
-     *              2. ツールバー要素の作成
-     *              3. イベントバインディング
-     *              4. 関連コンポーネントの初期化
-     * @returns {void} 戻り値なし
-     * @since 1.0.0
-     */
-    init() {
-        // DOM要素の存在確認
-        if (!this.container) {
-            console.error('Toolbar container not found');
-            return;
-        }
-        
-        this.createToolbar();
-        this.bindEvents();
-        this.initializeComponents();
-    }
-    
-    createToolbar() {
-        this.toolbarElement = document.createElement('div');
-        this.toolbarElement.className = 'main-toolbar';
-        this.toolbarElement.title = 'ドラッグで移動可能';
-        this.toolbarElement.innerHTML = `
+
+    this.createToolbar();
+    this.bindEvents();
+    this.initializeComponents();
+  }
+
+  createToolbar() {
+    this.toolbarElement = document.createElement('div');
+    this.toolbarElement.className = 'main-toolbar';
+    this.toolbarElement.title = 'ドラッグで移動可能';
+    this.toolbarElement.innerHTML = `
             <div class="toolbar-drag-handle" title="ツールバーをドラッグして移動">⋮⋮</div>
             <button class="toolbar-btn" id="search-btn" title="検索 (Ctrl+F)">
                 🔍
@@ -101,21 +101,9 @@ class Toolbar {
                 🖨️
             </button>
             <div class="export-selector">
-                <button class="toolbar-btn export-selector-button" title="エクスポート">
+                <button class="toolbar-btn" id="export-btn" title="HTMLエクスポート">
                     📤
                 </button>
-                <div class="export-dropdown" style="display: none;">
-                    <div class="export-options">
-                        <div class="export-option" data-type="html">
-                            <div class="export-preview">📄</div>
-                            <span class="export-option-label">HTML</span>
-                        </div>
-                        <div class="export-option" data-type="pdf">
-                            <div class="export-preview">📋</div>
-                            <span class="export-option-label">PDF</span>
-                        </div>
-                    </div>
-                </div>
             </div>
             <button class="toolbar-btn" id="settings-btn" title="設定">
                 ⚙️
@@ -124,64 +112,68 @@ class Toolbar {
                 ✕
             </button>
         `;
-        
-        this.container.appendChild(this.toolbarElement);
-        this.createShowButton();
-        this.makeDraggable(this.toolbarElement);
-        this.restoreToolbarPosition();
-    }
-    
-    initializeComponents() {
-        try {
-            // Theme Manager
-            if (typeof ThemeManager !== 'undefined') {
-                this.themeManager = new ThemeManager();
-            } else {
-                console.warn('ThemeManager not available');
-            }
-            
-            // Theme Selector
-            const themeContainer = this.toolbarElement?.querySelector('.theme-selector-container');
-            if (themeContainer) {
-                this.createThemeSelector(themeContainer);
-                // テーマセレクター作成後にイベントをバインド
-                setTimeout(() => {
-                    this.bindThemeEvents();
-                }, 50);
-            }
-            
-            // Search Engine (using fixed version)
-            if (typeof SearchEngine !== 'undefined') {
-                this.searchEngine = new SearchEngine();
-            } else {
-                console.warn('SearchEngine not available');
-            }
-            
-            // TOC Generator (if headings exist)
-            setTimeout(() => {
-                const headings = document.querySelectorAll('h1, h2, h3, h4, h5, h6');
-                console.log(`Found ${headings.length} headings for TOC`);
-                
-                if (headings.length > 0 && typeof TOCGenerator !== 'undefined') {
-                    try {
-                        this.tocGenerator = new TOCGenerator();
-                        console.log('✅ TOC Generator initialized');
-                    } catch (error) {
-                        console.error('❌ TOC Generator initialization failed:', error);
-                    }
-                } else {
-                    console.warn('TOC Generator disabled: no headings or class not available');
-                }
-            }, 100);
-        } catch (error) {
-            console.error('Error initializing components:', error);
+
+    this.container.appendChild(this.toolbarElement);
+    this.createShowButton();
+    this.makeDraggable(this.toolbarElement);
+    this.restoreToolbarPosition();
+  }
+
+  initializeComponents() {
+    try {
+      // Theme Manager
+      if (typeof ThemeManager !== 'undefined') {
+        this.themeManager = new ThemeManager();
+      } else {
+        console.warn('ThemeManager not available');
+      }
+
+      // Theme Selector
+      const themeContainer = this.toolbarElement?.querySelector(
+        '.theme-selector-container'
+      );
+      if (themeContainer) {
+        this.createThemeSelector(themeContainer);
+        // テーマセレクター作成後にイベントをバインド
+        setTimeout(() => {
+          this.bindThemeEvents();
+        }, 50);
+      }
+
+      // Search Engine (using fixed version)
+      if (typeof SearchEngine !== 'undefined') {
+        this.searchEngine = new SearchEngine();
+      } else {
+        console.warn('SearchEngine not available');
+      }
+
+      // TOC Generator (if headings exist)
+      setTimeout(() => {
+        const headings = document.querySelectorAll('h1, h2, h3, h4, h5, h6');
+        console.log(`Found ${headings.length} headings for TOC`);
+
+        if (headings.length > 0 && typeof TOCGenerator !== 'undefined') {
+          try {
+            this.tocGenerator = new TOCGenerator();
+            console.log('✅ TOC Generator initialized');
+          } catch (error) {
+            console.error('❌ TOC Generator initialization failed:', error);
+          }
+        } else {
+          console.warn(
+            'TOC Generator disabled: no headings or class not available'
+          );
         }
+      }, 100);
+    } catch (error) {
+      console.error('Error initializing components:', error);
     }
-    
-    createThemeSelector(container) {
-        const themeSelector = document.createElement('div');
-        themeSelector.className = 'theme-selector';
-        themeSelector.innerHTML = `
+  }
+
+  createThemeSelector(container) {
+    const themeSelector = document.createElement('div');
+    themeSelector.className = 'theme-selector';
+    themeSelector.innerHTML = `
             <button class="toolbar-btn theme-selector-button" title="テーマを選択">
                 🎨 <span class="theme-name">Light</span>
             </button>
@@ -208,351 +200,311 @@ class Toolbar {
                 </div>
             </div>
         `;
-        
-        container.appendChild(themeSelector);
-    }
-    
-    /**
-     * ツールバーのイベントリスナーをバインド
-     * 
-     * @method bindEvents
-     * @description ツールバーの各ボタンおよびキーボードショートカットのイベントハンドラーを設定します：
-     * - 検索ボタン: 検索パネルを表示
-     * - 印刷ボタン: 印刷ダイアログを開く
-     * - エクスポートセレクター: 形式選択とエクスポート実行
-     * - 設定ボタン: 設定パネルを開く
-     * - 非表示ボタン: ツールバーを隠す
-     * - キーボードショートカット: 各種操作の高速実行
-     * 
-     * @example
-     * // イベントリスナーのバインド例
-     * this.bindEvents();
-     * 
-     * // 設定されるキーボードショートカット：
-     * // - Ctrl/Cmd + Shift + P → 印刷実行
-     * // - Ctrl/Cmd + T → 目次トグル
-     * // - F11 → ツールバー表示/非表示
-     * // - Escape → ツールバー表示（非表示時のみ）
-     * 
-     * @since 1.0.0
-     */
-    bindEvents() {
-        
-        // 検索ボタンのクリックイベントハンドラー
-        const searchBtn = this.toolbarElement.querySelector('#search-btn');
-        if (searchBtn) {
-            searchBtn.addEventListener('click', () => {
-                console.log('Search button clicked');
-                if (this.searchEngine) {
-                    this.searchEngine.show();
-                } else {
-                    console.warn('Search Engine not available');
-                }
-            });
+
+    container.appendChild(themeSelector);
+  }
+
+  /**
+   * ツールバーのイベントリスナーをバインド
+   *
+   * @method bindEvents
+   * @description ツールバーの各ボタンおよびキーボードショートカットのイベントハンドラーを設定します：
+   * - 検索ボタン: 検索パネルを表示
+   * - 印刷ボタン: 印刷ダイアログを開く
+   * - エクスポートセレクター: 形式選択とエクスポート実行
+   * - 設定ボタン: 設定パネルを開く
+   * - 非表示ボタン: ツールバーを隠す
+   * - キーボードショートカット: 各種操作の高速実行
+   *
+   * @example
+   * // イベントリスナーのバインド例
+   * this.bindEvents();
+   *
+   * // 設定されるキーボードショートカット：
+   * // - Ctrl/Cmd + Shift + P → 印刷実行
+   * // - Ctrl/Cmd + T → 目次トグル
+   * // - F11 → ツールバー表示/非表示
+   * // - Escape → ツールバー表示（非表示時のみ）
+   *
+   * @since 1.0.0
+   */
+  bindEvents() {
+    // 検索ボタンのクリックイベントハンドラー
+    const searchBtn = this.toolbarElement.querySelector('#search-btn');
+    if (searchBtn) {
+      searchBtn.addEventListener('click', () => {
+        console.log('Search button clicked');
+        if (this.searchEngine) {
+          this.searchEngine.show();
+        } else {
+          console.warn('Search Engine not available');
         }
-        
-        // 印刷ボタンのクリックイベントハンドラー
-        const printBtn = this.toolbarElement.querySelector('#print-btn');
-        printBtn.addEventListener('click', () => {
+      });
+    }
+
+    // 印刷ボタンのクリックイベントハンドラー
+    const printBtn = this.toolbarElement.querySelector('#print-btn');
+    printBtn.addEventListener('click', () => {
+      this.handlePrint();
+    });
+
+    // エクスポートセレクターのイベントバインディング
+    // エクスポートボタンのイベントリスナーを設定
+    this.bindExportEvents();
+
+    // 設定ボタンのクリックイベントハンドラー
+    const settingsBtn = this.toolbarElement.querySelector('#settings-btn');
+    settingsBtn.addEventListener('click', () => {
+      this.openSettings();
+    });
+
+    // ツールバー非表示ボタンのクリックイベントハンドラー
+    const hideBtn = this.toolbarElement.querySelector('#hide-toolbar-btn');
+    hideBtn.addEventListener('click', () => {
+      this.hideToolbar();
+    });
+
+    // テーマセレクターのイベントは作成後に別途バインドされます
+
+    // ドキュメント全体のキーボードショートカットハンドラー
+    document.addEventListener('keydown', e => {
+      // Ctrl/Cmd + Shift の組み合わせショートカット
+      if ((e.ctrlKey || e.metaKey) && e.shiftKey) {
+        switch (e.key) {
+          case 'P': // Ctrl+Shift+P: 印刷実行
+            e.preventDefault();
             this.handlePrint();
-        });
-        
-        // エクスポートセレクターのイベントバインディング
-        const exportSelector = this.toolbarElement.querySelector('.export-selector');
-        if (exportSelector) {
-            this.bindExportEvents(exportSelector);
+            break;
         }
-        
-        // 設定ボタンのクリックイベントハンドラー
-        const settingsBtn = this.toolbarElement.querySelector('#settings-btn');
-        settingsBtn.addEventListener('click', () => {
-            this.openSettings();
-        });
-        
-        // ツールバー非表示ボタンのクリックイベントハンドラー
-        const hideBtn = this.toolbarElement.querySelector('#hide-toolbar-btn');
-        hideBtn.addEventListener('click', () => {
-            this.hideToolbar();
-        });
-        
-        // テーマセレクターのイベントは作成後に別途バインドされます
-        
-        // ドキュメント全体のキーボードショートカットハンドラー
-        document.addEventListener('keydown', (e) => {
-            // Ctrl/Cmd + Shift の組み合わせショートカット
-            if ((e.ctrlKey || e.metaKey) && e.shiftKey) {
-                switch (e.key) {
-                    case 'P': // Ctrl+Shift+P: 印刷実行
-                        e.preventDefault();
-                        this.handlePrint();
-                        break;
-                }
-            } else if (e.ctrlKey || e.metaKey) {
-                // Ctrl/Cmd の単体ショートカット
-                switch (e.key) {
-                    case 't': // Ctrl+T: 目次トグル
-                        e.preventDefault();
-                        this.toggleTOC();
-                        break;
-                }
-            } else if (e.key === 'F11') {
-                // F11: ツールバー表示/非表示切り替え
-                e.preventDefault();
-                this.toggleToolbar();
-            } else if (e.key === 'Escape' && this.isToolbarHidden()) {
-                // Escape: ツールバー表示（非表示時のみ有効）
-                e.preventDefault();
-                this.showToolbar();
-            }
-        });
-    }
-    
-    bindThemeEvents() {
-        const themeSelector = this.toolbarElement.querySelector('.theme-selector');
-        if (!themeSelector) {
-            console.warn('Theme selector not found');
-            return;
+      } else if (e.ctrlKey || e.metaKey) {
+        // Ctrl/Cmd の単体ショートカット
+        switch (e.key) {
+          case 't': // Ctrl+T: 目次トグル
+            e.preventDefault();
+            this.toggleTOC();
+            break;
         }
-        
-        const button = themeSelector.querySelector('.theme-selector-button');
-        const dropdown = themeSelector.querySelector('.theme-dropdown');
-        
-        if (!button || !dropdown) {
-            console.warn('Theme selector components not found');
-            return;
-        }
-        
-        button.addEventListener('click', (e) => {
-            e.stopPropagation();
-            this.toggleThemeDropdown();
-        });
-        
-        dropdown.addEventListener('click', (e) => {
-            if (e.target.closest('.theme-option')) {
-                const themeKey = e.target.closest('.theme-option').dataset.theme;
-                this.selectTheme(themeKey);
-            }
-            
-            // 自動切り替えボタンのイベントハンドラを削除
-        });
-        
-        document.addEventListener('click', (e) => {
-            if (!themeSelector.contains(e.target)) {
-                this.closeThemeDropdown();
-            }
-        });
-        
-        // Theme change observer
-        this.themeManager.addObserver((event, data) => {
-            if (event === 'themeChanged') {
-                this.updateThemeDisplay(data.theme);
-            }
-        });
+      } else if (e.key === 'F11') {
+        // F11: ツールバー表示/非表示切り替え
+        e.preventDefault();
+        this.toggleToolbar();
+      } else if (e.key === 'Escape' && this.isToolbarHidden()) {
+        // Escape: ツールバー表示（非表示時のみ有効）
+        e.preventDefault();
+        this.showToolbar();
+      }
+    });
+  }
+
+  bindThemeEvents() {
+    const themeSelector = this.toolbarElement.querySelector('.theme-selector');
+    if (!themeSelector) {
+      console.warn('Theme selector not found');
+      return;
     }
-    
-    toggleThemeDropdown() {
-        const dropdown = this.toolbarElement.querySelector('.theme-dropdown');
-        const isVisible = dropdown.style.display !== 'none';
-        dropdown.style.display = isVisible ? 'none' : 'block';
+
+    const button = themeSelector.querySelector('.theme-selector-button');
+    const dropdown = themeSelector.querySelector('.theme-dropdown');
+
+    if (!button || !dropdown) {
+      console.warn('Theme selector components not found');
+      return;
     }
-    
-    closeThemeDropdown() {
-        const dropdown = this.toolbarElement.querySelector('.theme-dropdown');
-        dropdown.style.display = 'none';
+
+    button.addEventListener('click', e => {
+      e.stopPropagation();
+      this.toggleThemeDropdown();
+    });
+
+    dropdown.addEventListener('click', e => {
+      if (e.target.closest('.theme-option')) {
+        const themeKey = e.target.closest('.theme-option').dataset.theme;
+        this.selectTheme(themeKey);
+      }
+
+      // 自動切り替えボタンのイベントハンドラを削除
+    });
+
+    document.addEventListener('click', e => {
+      if (!themeSelector.contains(e.target)) {
+        this.closeThemeDropdown();
+      }
+    });
+
+    // Theme change observer
+    this.themeManager.addObserver((event, data) => {
+      if (event === 'themeChanged') {
+        this.updateThemeDisplay(data.theme);
+      }
+    });
+  }
+
+  toggleThemeDropdown() {
+    const dropdown = this.toolbarElement.querySelector('.theme-dropdown');
+    const isVisible = dropdown.style.display !== 'none';
+    dropdown.style.display = isVisible ? 'none' : 'block';
+  }
+
+  closeThemeDropdown() {
+    const dropdown = this.toolbarElement.querySelector('.theme-dropdown');
+    dropdown.style.display = 'none';
+  }
+
+  async selectTheme(themeKey) {
+    if (this.themeManager) {
+      await this.themeManager.applyTheme(themeKey);
+      this.closeThemeDropdown();
     }
-    
-    async selectTheme(themeKey) {
-        if (this.themeManager) {
-            await this.themeManager.applyTheme(themeKey);
-            this.closeThemeDropdown();
-        }
+  }
+
+  // toggleAutoTheme関数を削除
+
+  updateThemeDisplay(themeName) {
+    const themeNameElement = this.toolbarElement.querySelector('.theme-name');
+    const themeNames = {
+      light: 'Light',
+      dark: 'Dark',
+      sepia: 'Sepia',
+    };
+
+    themeNameElement.textContent = themeNames[themeName] || themeName;
+
+    // Update active state
+    this.toolbarElement.querySelectorAll('.theme-option').forEach(option => {
+      option.classList.toggle('active', option.dataset.theme === themeName);
+    });
+
+    // 自動切り替えボタンの更新コードを削除
+  }
+
+  // エクスポートボタンのイベントリスナーを設定
+  bindExportEvents() {
+    const exportBtn = this.toolbarElement.querySelector('#export-btn');
+    if (!exportBtn) {
+      console.warn('Export button not found');
+      return;
     }
-    
-    // toggleAutoTheme関数を削除
-    
-    updateThemeDisplay(themeName) {
-        const themeNameElement = this.toolbarElement.querySelector('.theme-name');
-        const themeNames = {
-            'light': 'Light',
-            'dark': 'Dark',
-            'sepia': 'Sepia'
-        };
-        
-        themeNameElement.textContent = themeNames[themeName] || themeName;
-        
-        // Update active state
-        this.toolbarElement.querySelectorAll('.theme-option').forEach(option => {
-            option.classList.toggle('active', option.dataset.theme === themeName);
-        });
-        
-        // 自動切り替えボタンの更新コードを削除
+
+    exportBtn.addEventListener('click', e => {
+      e.stopPropagation();
+      console.log('Export button clicked - executing HTML export');
+      this.exportAsHTML();
+    });
+  }
+
+  // ドロップダウン関連メソッドを削除（直接エクスポートに変更）
+
+  toggleTOC() {
+    if (!this.tocGenerator) {
+      return;
     }
-    
-    bindExportEvents(exportSelector) {
-        const button = exportSelector.querySelector('.export-selector-button');
-        const dropdown = exportSelector.querySelector('.export-dropdown');
-        
-        if (!button || !dropdown) {
-            console.warn('Export selector components not found');
-            return;
-        }
-        
-        button.addEventListener('click', (e) => {
-            e.stopPropagation();
-            this.toggleExportDropdown();
-        });
-        
-        dropdown.addEventListener('click', (e) => {
-            if (e.target.closest('.export-option')) {
-                const exportType = e.target.closest('.export-option').dataset.type;
-                this.handleExportSelection(exportType);
-            }
-        });
-        
-        document.addEventListener('click', (e) => {
-            if (!exportSelector.contains(e.target)) {
-                this.closeExportDropdown();
-            }
-        });
+
+    const tocPanel = document.querySelector('.toc-panel');
+    if (tocPanel) {
+      const isVisible = tocPanel.style.display !== 'none';
+      tocPanel.style.display = isVisible ? 'none' : 'block';
+
+      // Update content margin
+      const content =
+        document.querySelector('#markdown-content') || document.body;
+      if (isVisible) {
+        content.style.marginLeft = '';
+      } else {
+        content.style.marginLeft = 'calc(250px + 20px)';
+      }
     }
-    
-    toggleExportDropdown() {
-        const dropdown = this.toolbarElement.querySelector('.export-dropdown');
-        const isVisible = dropdown.style.display !== 'none';
-        dropdown.style.display = isVisible ? 'none' : 'block';
+  }
+
+  handlePrint() {
+    // サンドボックス環境の検出
+    const isSandboxed = this.detectSandboxEnvironment();
+
+    if (isSandboxed) {
+      // サンドボックス環境では直接エラーメッセージを表示
+      console.log('Print blocked in sandbox environment');
+      this.showPrintErrorToast();
+      return;
     }
-    
-    closeExportDropdown() {
-        const dropdown = this.toolbarElement.querySelector('.export-dropdown');
-        dropdown.style.display = 'none';
+
+    try {
+      window.print();
+      console.log('Print dialog opened');
+
+      // コンソールエラーを監視（短時間）
+      this.monitorPrintErrors();
+    } catch (error) {
+      console.error('Print failed:', error);
+      this.showPrintErrorToast();
     }
-    
-    handleExportSelection(exportType) {
-        console.log('Export type selected:', exportType);
-        
-        switch (exportType) {
-            case 'html':
-                this.exportAsHTML();
-                break;
-            case 'pdf':
-                this.exportAsPDF();
-                break;
-            default:
-                console.warn('Unknown export type:', exportType);
-        }
-        
-        this.closeExportDropdown();
+  }
+
+  safePrint() {
+    // サンドボックス環境の検出
+    const isSandboxed = this.detectSandboxEnvironment();
+
+    if (isSandboxed) {
+      // サンドボックス環境では直接エラーメッセージを表示
+      this.showPrintErrorToast();
+      return;
     }
-    
-    toggleTOC() {
-        if (!this.tocGenerator) {
-            return;
-        }
-        
-        const tocPanel = document.querySelector('.toc-panel');
-        if (tocPanel) {
-            const isVisible = tocPanel.style.display !== 'none';
-            tocPanel.style.display = isVisible ? 'none' : 'block';
-            
-            // Update content margin
-            const content = document.querySelector('#markdown-content') || document.body;
-            if (isVisible) {
-                content.style.marginLeft = '';
-            } else {
-                content.style.marginLeft = 'calc(250px + 20px)';
-            }
-            
-        }
+
+    try {
+      // 通常環境では印刷を試行
+      window.print();
+
+      // コンソールエラーを監視（短時間）
+      this.monitorPrintErrors();
+    } catch (error) {
+      console.warn('Print function error:', error);
+      this.showPrintErrorToast();
     }
-    
-    handlePrint() {
-        // サンドボックス環境の検出
-        const isSandboxed = this.detectSandboxEnvironment();
-        
-        if (isSandboxed) {
-            // サンドボックス環境では直接エラーメッセージを表示
-            console.log('Print blocked in sandbox environment');
-            this.showPrintErrorToast();
-            return;
-        }
-        
-        try {
-            window.print();
-            console.log('Print dialog opened');
-            
-            // コンソールエラーを監視（短時間）
-            this.monitorPrintErrors();
-            
-        } catch (error) {
-            console.error('Print failed:', error);
-            this.showPrintErrorToast();
-        }
-    }
-    
-    safePrint() {
-        // サンドボックス環境の検出
-        const isSandboxed = this.detectSandboxEnvironment();
-        
-        if (isSandboxed) {
-            // サンドボックス環境では直接エラーメッセージを表示
-            this.showPrintErrorToast();
-            return;
-        }
-        
-        try {
-            // 通常環境では印刷を試行
-            window.print();
-            
-            // コンソールエラーを監視（短時間）
-            this.monitorPrintErrors();
-            
-        } catch (error) {
-            console.warn('Print function error:', error);
-            this.showPrintErrorToast();
-        }
-    }
-    
-    detectSandboxEnvironment() {
-        // 既知のサンドボックス環境をチェック
-        return location.hostname.includes('raw.githubusercontent.com') || 
-               location.hostname.includes('githubusercontent.com') ||
-               document.documentElement.hasAttribute('sandbox') ||
-               (window.parent !== window && window.parent.location.hostname !== location.hostname);
-    }
-    
-    monitorPrintErrors() {
-        const originalConsoleError = console.error;
-        let errorDetected = false;
-        
-        // コンソールエラーを一時的に監視
-        console.error = (...args) => {
-            const errorMessage = args.join(' ');
-            if (errorMessage.includes('print') || 
-                errorMessage.includes('sandboxed') ||
-                errorMessage.includes('allow-modals') ||
-                errorMessage.includes('Blocked') ||
-                errorMessage.includes('Ignored call')) {
-                errorDetected = true;
-            }
-            originalConsoleError.apply(console, args);
-        };
-        
-        // 500ms後にチェック
-        setTimeout(() => {
-            console.error = originalConsoleError;
-            if (errorDetected) {
-                this.showPrintErrorToast();
-            }
-        }, 500);
-    }
-    
-    
-    downloadPrintableVersion() {
-        const printContent = document.getElementById('markdown-content').innerHTML;
-        const currentTitle = document.title || 'markdown-document';
-        const timestamp = new Date().toISOString().slice(0, 19).replace(/:/g, '-');
-        
-        const htmlContent = `<!DOCTYPE html>
+  }
+
+  detectSandboxEnvironment() {
+    // 既知のサンドボックス環境をチェック
+    return (
+      location.hostname.includes('raw.githubusercontent.com') ||
+      location.hostname.includes('githubusercontent.com') ||
+      document.documentElement.hasAttribute('sandbox') ||
+      (window.parent !== window &&
+        window.parent.location.hostname !== location.hostname)
+    );
+  }
+
+  monitorPrintErrors() {
+    const originalConsoleError = console.error;
+    let errorDetected = false;
+
+    // コンソールエラーを一時的に監視
+    console.error = (...args) => {
+      const errorMessage = args.join(' ');
+      if (
+        errorMessage.includes('print') ||
+        errorMessage.includes('sandboxed') ||
+        errorMessage.includes('allow-modals') ||
+        errorMessage.includes('Blocked') ||
+        errorMessage.includes('Ignored call')
+      ) {
+        errorDetected = true;
+      }
+      originalConsoleError.apply(console, args);
+    };
+
+    // 500ms後にチェック
+    setTimeout(() => {
+      console.error = originalConsoleError;
+      if (errorDetected) {
+        this.showPrintErrorToast();
+      }
+    }, 500);
+  }
+
+  downloadPrintableVersion() {
+    const printContent = document.getElementById('markdown-content').innerHTML;
+    const currentTitle = document.title || 'markdown-document';
+    const timestamp = new Date().toISOString().slice(0, 19).replace(/:/g, '-');
+
+    const htmlContent = `<!DOCTYPE html>
 <html>
 <head>
     <meta charset="UTF-8">
@@ -668,30 +620,30 @@ class Toolbar {
 </body>
 </html>`;
 
-        // Create blob and download
-        const blob = new Blob([htmlContent], { type: 'text/html;charset=utf-8' });
-        const url = URL.createObjectURL(blob);
-        
-        // Create download link
-        const downloadLink = document.createElement('a');
-        downloadLink.href = url;
-        downloadLink.download = `markdown-document-${timestamp}.html`;
-        downloadLink.style.display = 'none';
-        
-        document.body.appendChild(downloadLink);
-        downloadLink.click();
-        document.body.removeChild(downloadLink);
-        
-        // Clean up
-        setTimeout(() => URL.revokeObjectURL(url), 1000);
-        
-        // Show success message
-        this.showDownloadSuccess();
-    }
-    
-    showDownloadSuccess() {
-        const message = document.createElement('div');
-        message.style.cssText = `
+    // Create blob and download
+    const blob = new Blob([htmlContent], { type: 'text/html;charset=utf-8' });
+    const url = URL.createObjectURL(blob);
+
+    // Create download link
+    const downloadLink = document.createElement('a');
+    downloadLink.href = url;
+    downloadLink.download = `markdown-document-${timestamp}.html`;
+    downloadLink.style.display = 'none';
+
+    document.body.appendChild(downloadLink);
+    downloadLink.click();
+    document.body.removeChild(downloadLink);
+
+    // Clean up
+    setTimeout(() => URL.revokeObjectURL(url), TIMEOUTS.VERY_LONG_DELAY);
+
+    // Show success message
+    this.showDownloadSuccess();
+  }
+
+  showDownloadSuccess() {
+    const message = document.createElement('div');
+    message.style.cssText = `
             position: fixed;
             top: 20px;
             right: 20px;
@@ -704,7 +656,7 @@ class Toolbar {
             font-size: 14px;
             max-width: 350px;
         `;
-        message.innerHTML = `
+    message.innerHTML = `
             <div style="display: flex; align-items: center;">
                 <span style="font-size: 18px; margin-right: 10px;">✅</span>
                 <div>
@@ -713,19 +665,19 @@ class Toolbar {
                 </div>
             </div>
         `;
-        document.body.appendChild(message);
-        
-        // Auto-hide after 5 seconds
-        setTimeout(() => {
-            if (message.parentNode) {
-                message.parentNode.removeChild(message);
-            }
-        }, 5000);
-    }
-    
-    showPrintFallback() {
-        const message = document.createElement('div');
-        message.style.cssText = `
+    document.body.appendChild(message);
+
+    // Auto-hide after 5 seconds
+    setTimeout(() => {
+      if (message.parentNode) {
+        message.parentNode.removeChild(message);
+      }
+    }, 5000);
+  }
+
+  showPrintFallback() {
+    const message = document.createElement('div');
+    message.style.cssText = `
             position: fixed;
             top: 50%;
             left: 50%;
@@ -739,7 +691,7 @@ class Toolbar {
             text-align: center;
             max-width: 400px;
         `;
-        message.innerHTML = `
+    message.innerHTML = `
             <h3>印刷機能について</h3>
             <p>この環境では印刷機能が制限されています。</p>
             <p>以下の方法をお試しください：</p>
@@ -758,34 +710,34 @@ class Toolbar {
                 margin-top: 10px;
             ">閉じる</button>
         `;
-        document.body.appendChild(message);
-        
-        // 閉じるボタンのイベントリスナーを追加
-        const fallbackCloseBtn = message.querySelector('.fallback-close-btn');
-        if (fallbackCloseBtn) {
-            fallbackCloseBtn.addEventListener('click', () => {
-                message.remove();
-            });
-        }
-        
-        // Auto-hide after 10 seconds
-        setTimeout(() => {
-            if (message.parentNode) {
-                message.parentNode.removeChild(message);
-            }
-        }, 10000);
+    document.body.appendChild(message);
+
+    // 閉じるボタンのイベントリスナーを追加
+    const fallbackCloseBtn = message.querySelector('.fallback-close-btn');
+    if (fallbackCloseBtn) {
+      fallbackCloseBtn.addEventListener('click', () => {
+        message.remove();
+      });
     }
-    
-    showPrintErrorToast() {
-        // 既存のトーストがあれば削除
-        const existingToast = document.querySelector('.print-error-toast');
-        if (existingToast) {
-            existingToast.remove();
-        }
-        
-        const toast = document.createElement('div');
-        toast.className = 'print-error-toast';
-        toast.innerHTML = `
+
+    // Auto-hide after 10 seconds
+    setTimeout(() => {
+      if (message.parentNode) {
+        message.parentNode.removeChild(message);
+      }
+    }, 10000);
+  }
+
+  showPrintErrorToast() {
+    // 既存のトーストがあれば削除
+    const existingToast = document.querySelector('.print-error-toast');
+    if (existingToast) {
+      existingToast.remove();
+    }
+
+    const toast = document.createElement('div');
+    toast.className = 'print-error-toast';
+    toast.innerHTML = `
             <div class="toast-content">
                 <div class="toast-icon">⚠️</div>
                 <div class="toast-message">
@@ -796,9 +748,9 @@ class Toolbar {
                 <button class="toast-close">×</button>
             </div>
         `;
-        
-        // スタイルを設定
-        toast.style.cssText = `
+
+    // スタイルを設定
+    toast.style.cssText = `
             position: fixed;
             top: 80px;
             right: 20px;
@@ -811,35 +763,35 @@ class Toolbar {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
             animation: slideInRight 0.3s ease;
         `;
-        
-        // コンテンツのスタイル
-        const content = toast.querySelector('.toast-content');
-        content.style.cssText = `
+
+    // コンテンツのスタイル
+    const content = toast.querySelector('.toast-content');
+    content.style.cssText = `
             display: flex;
             align-items: flex-start;
             padding: 16px;
             gap: 12px;
         `;
-        
-        // アイコンのスタイル
-        const icon = toast.querySelector('.toast-icon');
-        icon.style.cssText = `
+
+    // アイコンのスタイル
+    const icon = toast.querySelector('.toast-icon');
+    icon.style.cssText = `
             font-size: 20px;
             flex-shrink: 0;
         `;
-        
-        // メッセージのスタイル
-        const message = toast.querySelector('.toast-message');
-        message.style.cssText = `
+
+    // メッセージのスタイル
+    const message = toast.querySelector('.toast-message');
+    message.style.cssText = `
             flex: 1;
             font-size: 14px;
             line-height: 1.4;
             color: #856404;
         `;
-        
-        // 閉じるボタンのスタイル
-        const closeBtn = toast.querySelector('.toast-close');
-        closeBtn.style.cssText = `
+
+    // 閉じるボタンのスタイル
+    const closeBtn = toast.querySelector('.toast-close');
+    closeBtn.style.cssText = `
             background: none;
             border: none;
             font-size: 18px;
@@ -854,12 +806,12 @@ class Toolbar {
             border-radius: 4px;
             flex-shrink: 0;
         `;
-        
-        // CSSアニメーションを追加
-        if (!document.querySelector('#toast-animations')) {
-            const style = document.createElement('style');
-            style.id = 'toast-animations';
-            style.textContent = `
+
+    // CSSアニメーションを追加
+    if (!document.querySelector('#toast-animations')) {
+      const style = document.createElement('style');
+      style.id = 'toast-animations';
+      style.textContent = `
                 @keyframes slideInRight {
                     from {
                         transform: translateX(100%);
@@ -875,29 +827,29 @@ class Toolbar {
                     background: rgba(0,0,0,0.1) !important;
                 }
             `;
-            document.head.appendChild(style);
-        }
-        
-        // 閉じるボタンのイベントリスナーを追加
-        closeBtn.addEventListener('click', () => {
-            toast.remove();
-        });
-        
-        document.body.appendChild(toast);
-        
-        // 8秒後に自動で消す
-        setTimeout(() => {
-            if (toast.parentElement) {
-                toast.style.animation = 'slideInRight 0.3s ease reverse';
-                setTimeout(() => {
-                    toast.remove();
-                }, 300);
-            }
-        }, 8000);
+      document.head.appendChild(style);
     }
-    
-    addPrintStyles() {
-        const printStyles = `
+
+    // 閉じるボタンのイベントリスナーを追加
+    closeBtn.addEventListener('click', () => {
+      toast.remove();
+    });
+
+    document.body.appendChild(toast);
+
+    // 8秒後に自動で消す
+    setTimeout(() => {
+      if (toast.parentElement) {
+        toast.style.animation = 'slideInRight 0.3s ease reverse';
+        setTimeout(() => {
+          toast.remove();
+        }, 300);
+      }
+    }, 8000);
+  }
+
+  addPrintStyles() {
+    const printStyles = `
             @media print {
                 .main-toolbar,
                 .toc-panel,
@@ -937,26 +889,26 @@ class Toolbar {
                 }
             }
         `;
-        
-        const existingPrintStyle = document.getElementById('print-styles');
-        if (!existingPrintStyle) {
-            const style = document.createElement('style');
-            style.id = 'print-styles';
-            style.textContent = printStyles;
-            document.head.appendChild(style);
-        }
+
+    const existingPrintStyle = document.getElementById('print-styles');
+    if (!existingPrintStyle) {
+      const style = document.createElement('style');
+      style.id = 'print-styles';
+      style.textContent = printStyles;
+      document.head.appendChild(style);
     }
-    
-    openSettings() {
-        // Create settings modal
-        const modal = this.createSettingsModal();
-        document.body.appendChild(modal);
-    }
-    
-    createSettingsModal() {
-        const modal = document.createElement('div');
-        modal.className = 'settings-modal';
-        modal.innerHTML = `
+  }
+
+  openSettings() {
+    // Create settings modal
+    const modal = this.createSettingsModal();
+    document.body.appendChild(modal);
+  }
+
+  createSettingsModal() {
+    const modal = document.createElement('div');
+    modal.className = 'settings-modal';
+    modal.innerHTML = `
             <div class="modal-overlay">
                 <div class="modal-content">
                     <div class="modal-header">
@@ -1000,72 +952,77 @@ class Toolbar {
                 </div>
             </div>
         `;
-        
-        // Color selection events with immediate application
-        modal.querySelectorAll('.color-option').forEach(option => {
-            option.addEventListener('click', () => {
-                // Remove previous selection
-                modal.querySelectorAll('.color-option').forEach(opt => opt.classList.remove('selected'));
-                // Select current option
-                option.classList.add('selected');
-                // Update hidden input
-                const hiddenInput = modal.querySelector('#setting-highlight-color');
-                hiddenInput.value = option.dataset.color;
-                
-                // Apply immediately
-                this.applyHighlightColor(option.dataset.color);
-            });
-        });
-        
-        // Set initial selection
-        const defaultColor = '#ffff00';
-        const defaultOption = modal.querySelector(`[data-color="${defaultColor}"]`);
-        if (defaultOption) {
-            defaultOption.classList.add('selected');
-        }
-        
-        // Modal events
-        modal.addEventListener('click', (e) => {
-            if (e.target.classList.contains('modal-overlay') || 
-                e.target.classList.contains('modal-close')) {
-                modal.remove();
-            }
-        });
-        
-        return modal;
+
+    // Color selection events with immediate application
+    modal.querySelectorAll('.color-option').forEach(option => {
+      option.addEventListener('click', () => {
+        // Remove previous selection
+        modal
+          .querySelectorAll('.color-option')
+          .forEach(opt => opt.classList.remove('selected'));
+        // Select current option
+        option.classList.add('selected');
+        // Update hidden input
+        const hiddenInput = modal.querySelector('#setting-highlight-color');
+        hiddenInput.value = option.dataset.color;
+
+        // Apply immediately
+        this.applyHighlightColor(option.dataset.color);
+      });
+    });
+
+    // Set initial selection
+    const defaultColor = '#ffff00';
+    const defaultOption = modal.querySelector(`[data-color="${defaultColor}"]`);
+    if (defaultOption) {
+      defaultOption.classList.add('selected');
     }
-    
-    applyHighlightColor(color) {
-        // Remove existing highlight style
-        const existingStyle = document.getElementById('custom-highlight-style');
-        if (existingStyle) {
-            existingStyle.remove();
-        }
-        
-        // Apply new highlight style
-        const style = document.createElement('style');
-        style.id = 'custom-highlight-style';
-        style.textContent = `.search-highlight { background-color: ${color} !important; }`;
-        document.head.appendChild(style);
-        
-        console.log('Highlight color applied:', color);
+
+    // Modal events
+    modal.addEventListener('click', e => {
+      if (
+        e.target.classList.contains('modal-overlay') ||
+        e.target.classList.contains('modal-close')
+      ) {
+        modal.remove();
+      }
+    });
+
+    return modal;
+  }
+
+  applyHighlightColor(color) {
+    // Remove existing highlight style
+    const existingStyle = document.getElementById('custom-highlight-style');
+    if (existingStyle) {
+      existingStyle.remove();
     }
-    
-    disableTOCButton() {
-        const tocBtn = this.toolbarElement?.querySelector('#toggle-toc-btn');
-        if (tocBtn) {
-            tocBtn.disabled = true;
-            tocBtn.style.opacity = '0.5';
-            tocBtn.title = '目次生成不可（見出しがありません）';
-        }
+
+    // Apply new highlight style
+    const style = document.createElement('style');
+    style.id = 'custom-highlight-style';
+    style.textContent = `.search-highlight { background-color: ${color} !important; }`;
+    document.head.appendChild(style);
+
+    console.log('Highlight color applied:', color);
+  }
+
+  disableTOCButton() {
+    const tocBtn = this.toolbarElement?.querySelector('#toggle-toc-btn');
+    if (tocBtn) {
+      tocBtn.disabled = true;
+      tocBtn.style.opacity = '0.5';
+      tocBtn.title = '目次生成不可（見出しがありません）';
     }
-    
-    createShowButton() {
-        this.showButtonElement = document.createElement('button');
-        this.showButtonElement.className = 'toolbar-show-btn';
-        this.showButtonElement.innerHTML = '📋';
-        this.showButtonElement.title = 'ツールバーを表示 (F11 または Esc) - ドラッグで移動可能';
-        this.showButtonElement.style.cssText = `
+  }
+
+  createShowButton() {
+    this.showButtonElement = document.createElement('button');
+    this.showButtonElement.className = 'toolbar-show-btn';
+    this.showButtonElement.innerHTML = '📋';
+    this.showButtonElement.title =
+      'ツールバーを表示 (F11 または Esc) - ドラッグで移動可能';
+    this.showButtonElement.style.cssText = `
             position: fixed;
             top: 20px;
             right: 20px;
@@ -1083,180 +1040,196 @@ class Toolbar {
             font-size: 18px;
             user-select: none;
         `;
-        
-        this.showButtonElement.addEventListener('click', (_e) => {
-            // ドラッグ操作でない場合のみツールバーを表示
-            if (!this.isDragging) {
-                this.showToolbar();
-            }
-        });
-        
-        this.makeDraggable(this.showButtonElement);
-        this.container.appendChild(this.showButtonElement);
-    }
-    
-    makeDraggable(element) {
-        let isDragging = false;
-        let startX, startY, startLeft, startTop;
-        const isToolbar = element === this.toolbarElement;
-        
-        // ツールバーの場合はドラッグハンドルまたはツールバー自体でドラッグ開始
-        const dragTrigger = isToolbar ? element : element;
-        
-        dragTrigger.addEventListener('mousedown', (e) => {
-            // ツールバーの場合、ボタンクリックは無視
-            if (isToolbar && (e.target.tagName === 'BUTTON' || e.target.closest('button'))) {
-                return;
-            }
-            
-            e.preventDefault();
-            isDragging = false;
-            startX = e.clientX;
-            startY = e.clientY;
-            
-            const rect = element.getBoundingClientRect();
-            startLeft = rect.left;
-            startTop = rect.top;
-            
-            document.addEventListener('mousemove', handleMouseMove);
-            document.addEventListener('mouseup', handleMouseUp);
-        });
-        
-        const handleMouseMove = (e) => {
-            const deltaX = e.clientX - startX;
-            const deltaY = e.clientY - startY;
-            
-            // 5px以上移動したらドラッグとみなす
-            if (!isDragging && (Math.abs(deltaX) > 5 || Math.abs(deltaY) > 5)) {
-                isDragging = true;
-                this.isDragging = true;
-            }
-            
-            if (isDragging) {
-                const elementWidth = element.offsetWidth;
-                const elementHeight = element.offsetHeight;
-                const newLeft = Math.max(0, Math.min(window.innerWidth - elementWidth, startLeft + deltaX));
-                const newTop = Math.max(0, Math.min(window.innerHeight - elementHeight, startTop + deltaY));
-                
-                element.style.left = `${newLeft}px`;
-                element.style.top = `${newTop}px`;
-                element.style.right = 'auto';
-                
-                // 位置を保存
-                if (isToolbar) {
-                    this.saveToolbarPosition(newLeft, newTop);
-                }
-            }
-        };
-        
-        const handleMouseUp = () => {
-            document.removeEventListener('mousemove', handleMouseMove);
-            document.removeEventListener('mouseup', handleMouseUp);
-            
-            // ドラッグ終了後、少し遅らせてクリックフラグをクリア
-            setTimeout(() => {
-                this.isDragging = false;
-            }, 100);
-        };
-    }
-    
-    saveToolbarPosition(left, top) {
-        if (window.SafeStorage) {
-            window.SafeStorage.setItem('toolbar-position', JSON.stringify({ left, top }));
+
+    this.showButtonElement.addEventListener('click', _e => {
+      // ドラッグ操作でない場合のみツールバーを表示
+      if (!this.isDragging) {
+        this.showToolbar();
+      }
+    });
+
+    this.makeDraggable(this.showButtonElement);
+    this.container.appendChild(this.showButtonElement);
+  }
+
+  makeDraggable(element) {
+    let isDragging = false;
+    let startX, startY, startLeft, startTop;
+    const isToolbar = element === this.toolbarElement;
+
+    // ツールバーの場合はドラッグハンドルまたはツールバー自体でドラッグ開始
+    const dragTrigger = isToolbar ? element : element;
+
+    dragTrigger.addEventListener('mousedown', e => {
+      // ツールバーの場合、ボタンクリックは無視
+      if (
+        isToolbar &&
+        (e.target.tagName === 'BUTTON' || e.target.closest('button'))
+      ) {
+        return;
+      }
+
+      e.preventDefault();
+      isDragging = false;
+      startX = e.clientX;
+      startY = e.clientY;
+
+      const rect = element.getBoundingClientRect();
+      startLeft = rect.left;
+      startTop = rect.top;
+
+      document.addEventListener('mousemove', handleMouseMove);
+      document.addEventListener('mouseup', handleMouseUp);
+    });
+
+    const handleMouseMove = e => {
+      const deltaX = e.clientX - startX;
+      const deltaY = e.clientY - startY;
+
+      // 5px以上移動したらドラッグとみなす
+      if (!isDragging && (Math.abs(deltaX) > 5 || Math.abs(deltaY) > 5)) {
+        isDragging = true;
+        this.isDragging = true;
+      }
+
+      if (isDragging) {
+        const elementWidth = element.offsetWidth;
+        const elementHeight = element.offsetHeight;
+        const newLeft = Math.max(
+          0,
+          Math.min(window.innerWidth - elementWidth, startLeft + deltaX)
+        );
+        const newTop = Math.max(
+          0,
+          Math.min(window.innerHeight - elementHeight, startTop + deltaY)
+        );
+
+        element.style.left = `${newLeft}px`;
+        element.style.top = `${newTop}px`;
+        element.style.right = 'auto';
+
+        // 位置を保存
+        if (isToolbar) {
+          this.saveToolbarPosition(newLeft, newTop);
         }
+      }
+    };
+
+    const handleMouseUp = () => {
+      document.removeEventListener('mousemove', handleMouseMove);
+      document.removeEventListener('mouseup', handleMouseUp);
+
+      // ドラッグ終了後、少し遅らせてクリックフラグをクリア
+      setTimeout(() => {
+        this.isDragging = false;
+      }, 100);
+    };
+  }
+
+  saveToolbarPosition(left, top) {
+    if (window.SafeStorage) {
+      window.SafeStorage.setItem(
+        'toolbar-position',
+        JSON.stringify({ left, top })
+      );
     }
-    
-    restoreToolbarPosition() {
-        if (window.SafeStorage) {
-            window.SafeStorage.getItem('toolbar-position', (saved) => {
-                this.applyToolbarPosition(saved);
-            });
-        } else {
-            this.applyToolbarPosition(null);
-        }
+  }
+
+  restoreToolbarPosition() {
+    if (window.SafeStorage) {
+      window.SafeStorage.getItem('toolbar-position', saved => {
+        this.applyToolbarPosition(saved);
+      });
+    } else {
+      this.applyToolbarPosition(null);
     }
-    
-    applyToolbarPosition(saved) {
-        if (saved) {
-            try {
-                const { left, top } = JSON.parse(saved);
-                this.toolbarElement.style.left = `${left}px`;
-                this.toolbarElement.style.top = `${top}px`;
-                this.toolbarElement.style.right = 'auto';
-            } catch (e) {
-                console.warn('Failed to restore toolbar position:', e);
-            }
-        }
+  }
+
+  applyToolbarPosition(saved) {
+    if (saved) {
+      try {
+        const { left, top } = JSON.parse(saved);
+        this.toolbarElement.style.left = `${left}px`;
+        this.toolbarElement.style.top = `${top}px`;
+        this.toolbarElement.style.right = 'auto';
+      } catch (e) {
+        console.warn('Failed to restore toolbar position:', e);
+      }
     }
-    
-    hideToolbar() {
-        // ツールバーの位置を表示ボタンに反映（右端に合わせる）
-        const _toolbarRect = this.toolbarElement.getBoundingClientRect();
-        const showButtonWidth = 50; // 表示ボタンの幅
-        
-        if (this.toolbarElement.style.left && this.toolbarElement.style.top) {
-            // ツールバーの右端から表示ボタンの幅を引いて位置調整
-            const toolbarLeft = parseInt(this.toolbarElement.style.left);
-            const toolbarWidth = this.toolbarElement.offsetWidth;
-            const showButtonLeft = toolbarLeft + toolbarWidth - showButtonWidth;
-            
-            this.showButtonElement.style.left = `${showButtonLeft}px`;
-            this.showButtonElement.style.top = this.toolbarElement.style.top;
-            this.showButtonElement.style.right = 'auto';
-        }
-        
-        this.toolbarElement.style.display = 'none';
-        this.showButtonElement.style.display = 'flex';
-        this.hideToolbarHint();
+  }
+
+  hideToolbar() {
+    // ツールバーの位置を表示ボタンに反映（右端に合わせる）
+    const _toolbarRect = this.toolbarElement.getBoundingClientRect();
+    const showButtonWidth = 50; // 表示ボタンの幅
+
+    if (this.toolbarElement.style.left && this.toolbarElement.style.top) {
+      // ツールバーの右端から表示ボタンの幅を引いて位置調整
+      const toolbarLeft = parseInt(this.toolbarElement.style.left);
+      const toolbarWidth = this.toolbarElement.offsetWidth;
+      const showButtonLeft = toolbarLeft + toolbarWidth - showButtonWidth;
+
+      this.showButtonElement.style.left = `${showButtonLeft}px`;
+      this.showButtonElement.style.top = this.toolbarElement.style.top;
+      this.showButtonElement.style.right = 'auto';
     }
-    
-    showToolbar() {
-        // 表示ボタンの位置からツールバーの位置を計算（右端に合わせる）
-        if (this.showButtonElement.style.left && this.showButtonElement.style.top) {
-            const showButtonLeft = parseInt(this.showButtonElement.style.left);
-            const showButtonWidth = 50; // 表示ボタンの幅
-            
-            // ツールバーが表示された後に幅を取得するため、一時的に表示
-            this.toolbarElement.style.display = 'flex';
-            this.toolbarElement.style.visibility = 'hidden';
-            
-            const toolbarWidth = this.toolbarElement.offsetWidth;
-            
-            // ツールバーの左端位置を計算（表示ボタンの右端がツールバーの右端になるように）
-            const toolbarLeft = showButtonLeft + showButtonWidth - toolbarWidth;
-            
-            this.toolbarElement.style.left = `${toolbarLeft}px`;
-            this.toolbarElement.style.top = this.showButtonElement.style.top;
-            this.toolbarElement.style.right = 'auto';
-            this.toolbarElement.style.visibility = 'visible';
-            
-            // 新しい位置を保存
-            this.saveToolbarPosition(toolbarLeft, parseInt(this.showButtonElement.style.top));
-        } else {
-            this.toolbarElement.style.display = 'flex';
-        }
-        
-        this.showButtonElement.style.display = 'none';
-        this.hideToolbarHint();
+
+    this.toolbarElement.style.display = 'none';
+    this.showButtonElement.style.display = 'flex';
+    this.hideToolbarHint();
+  }
+
+  showToolbar() {
+    // 表示ボタンの位置からツールバーの位置を計算（右端に合わせる）
+    if (this.showButtonElement.style.left && this.showButtonElement.style.top) {
+      const showButtonLeft = parseInt(this.showButtonElement.style.left);
+      const showButtonWidth = 50; // 表示ボタンの幅
+
+      // ツールバーが表示された後に幅を取得するため、一時的に表示
+      this.toolbarElement.style.display = 'flex';
+      this.toolbarElement.style.visibility = 'hidden';
+
+      const toolbarWidth = this.toolbarElement.offsetWidth;
+
+      // ツールバーの左端位置を計算（表示ボタンの右端がツールバーの右端になるように）
+      const toolbarLeft = showButtonLeft + showButtonWidth - toolbarWidth;
+
+      this.toolbarElement.style.left = `${toolbarLeft}px`;
+      this.toolbarElement.style.top = this.showButtonElement.style.top;
+      this.toolbarElement.style.right = 'auto';
+      this.toolbarElement.style.visibility = 'visible';
+
+      // 新しい位置を保存
+      this.saveToolbarPosition(
+        toolbarLeft,
+        parseInt(this.showButtonElement.style.top)
+      );
+    } else {
+      this.toolbarElement.style.display = 'flex';
     }
-    
-    toggleToolbar() {
-        if (this.isToolbarHidden()) {
-            this.showToolbar();
-        } else {
-            this.hideToolbar();
-        }
+
+    this.showButtonElement.style.display = 'none';
+    this.hideToolbarHint();
+  }
+
+  toggleToolbar() {
+    if (this.isToolbarHidden()) {
+      this.showToolbar();
+    } else {
+      this.hideToolbar();
     }
-    
-    isToolbarHidden() {
-        return this.toolbarElement.style.display === 'none';
-    }
-    
-    showToolbarHint() {
-        const hint = document.createElement('div');
-        hint.id = 'toolbar-hint';
-        hint.innerHTML = '📌 ツールバーが隠れています。<kbd>F11</kbd> または <kbd>Esc</kbd> で表示';
-        hint.style.cssText = `
+  }
+
+  isToolbarHidden() {
+    return this.toolbarElement.style.display === 'none';
+  }
+
+  showToolbarHint() {
+    const hint = document.createElement('div');
+    hint.id = 'toolbar-hint';
+    hint.innerHTML =
+      '📌 ツールバーが隠れています。<kbd>F11</kbd> または <kbd>Esc</kbd> で表示';
+    hint.style.cssText = `
             position: fixed;
             top: 10px;
             right: 10px;
@@ -1269,1806 +1242,225 @@ class Toolbar {
             opacity: 0.9;
             font-family: inherit;
         `;
-        
-        // 既存のヒントを削除
-        this.hideToolbarHint();
-        
-        document.body.appendChild(hint);
-        
-        // 5秒後に自動的に隠す
-        setTimeout(() => {
-            this.hideToolbarHint();
-        }, 5000);
+
+    // 既存のヒントを削除
+    this.hideToolbarHint();
+
+    document.body.appendChild(hint);
+
+    // 5秒後に自動的に隠す
+    setTimeout(() => {
+      this.hideToolbarHint();
+    }, 5000);
+  }
+
+  hideToolbarHint() {
+    const hint = document.getElementById('toolbar-hint');
+    if (hint) {
+      hint.remove();
     }
-    
-    hideToolbarHint() {
-        const hint = document.getElementById('toolbar-hint');
-        if (hint) {
-            hint.remove();
-        }
+  }
+
+  destroy() {
+    if (this.toolbarElement) {
+      this.toolbarElement.remove();
     }
-    
-    destroy() {
-        if (this.toolbarElement) {
-            this.toolbarElement.remove();
-        }
-        
-        if (this.themeManager) {
-            this.themeManager.destroy();
-        }
-        
-        if (this.searchEngine) {
-            this.searchEngine.destroy();
-        }
-        
-        if (this.tocGenerator) {
-            this.tocGenerator.destroy();
-        }
-        
-        document.body.style.paddingTop = '';
+
+    if (this.themeManager) {
+      this.themeManager.destroy();
     }
-    
-    exportAsHTML() {
+
+    if (this.searchEngine) {
+      this.searchEngine.destroy();
+    }
+
+    if (this.tocGenerator) {
+      this.tocGenerator.destroy();
+    }
+
+    document.body.style.paddingTop = '';
+  }
+
+  exportAsHTML() {
+    try {
+      console.log('HTML Export attempted');
+
+      // サンドボックス環境の検出
+      const isSandboxed = this.detectSandboxEnvironment();
+
+      if (isSandboxed) {
+        console.log('HTML export blocked in sandbox environment');
+        this.showExportErrorMessage();
+        return;
+      }
+
+      // HTML生成とダウンロード
+      const htmlContent = this.generateCompleteHTML();
+      this.downloadHTMLFile(htmlContent);
+      this.showExportSuccessMessage();
+    } catch (error) {
+      console.error('HTML export failed:', error);
+      this.showExportErrorMessage();
+    }
+  }
+
+  // PDFエクスポート機能を削除しました
+  // コメントアウトされたコードはコード簡素化のため削除
+
+  // 以下のメソッドは、PDF関連の大量コードを削除しました:
+  // - exportAsPDF()
+  // - generatePDF()
+  // - loadPDFLibraries()
+  // - generateImageBasedPDF()
+  // - generateDirectPDF()
+  // - addElementToPDF()
+  // - addTextToPDF()
+  // - getTextHeight()
+  // - prepareElementsForPDF()
+  // - renderOptimizedPDF()
+  // - renderSafePDF()
+  // - fallbackToPrintDialog()
+  // - applyPrintStyles()
+  // - removePrintStyles()
+  // - showPDFGeneratingMessage()
+  // - showPDFDirectSuccessMessage()
+  // - showPDFSuccessMessage()
+  // - removePDFMessages()
+  // - showPDFErrorMessage()
+
+  // 重複した旧showExportSuccessMessageメソッドを削除しました
+
+  /**
+   * 完全なHTMLファイルを生成する
+   * @returns {string} HTMLコンテンツ
+   */
+  generateCompleteHTML() {
+    const markdownContent = document.getElementById('markdown-content');
+    if (!markdownContent) {
+      throw new Error('Markdown content not found');
+    }
+
+    // ページタイトルを取得
+    const title = document.title || 'Markdown Document';
+
+    // 現在のスタイルを取得
+    const styles = Array.from(document.styleSheets)
+      .map(sheet => {
         try {
-            console.log('HTML Export attempted');
-            
-            // サンドボックス環境の検出
-            const isSandboxed = this.detectSandboxEnvironment();
-            
-            if (isSandboxed) {
-                console.log('HTML export blocked in sandbox environment');
-                this.showExportErrorMessage();
-                return;
-            }
-            
-            // HTML生成とダウンロード
-            const htmlContent = this.generateCompleteHTML();
-            this.downloadHTMLFile(htmlContent);
-            this.showExportSuccessMessage();
-            
-        } catch (error) {
-            console.error('HTML export failed:', error);
-            this.showExportErrorMessage();
+          return Array.from(sheet.cssRules)
+            .map(rule => rule.cssText)
+            .join('\n');
+        } catch {
+          // CORSエラーやアクセスできないスタイルシートをスキップ
+          return '';
         }
-    }
-    
-    exportAsPDF() {
-        // サンドボックス環境の検出
-        const isSandboxed = this.detectSandboxEnvironment();
-        
-        if (isSandboxed) {
-            console.log('PDF export blocked in sandbox environment');
-            this.showPDFErrorMessage();
-            return;
-        }
-        
-        try {
-            console.log('PDF Export attempted');
-            this.generatePDF();
-        } catch (error) {
-            console.error('PDF export failed:', error);
-            this.showPDFErrorMessage();
-        }
-    }
-    
-    async generatePDF() {
-        try {
-            // デバッグ情報を出力
-            console.log('PDF generation started');
-            console.log('window.jsPDF:', typeof window.jsPDF);
-            console.log('window.html2canvas:', typeof window.html2canvas);
-            
-            // 必要なライブラリを動的に読み込み
-            const librariesLoaded = await this.loadPDFLibraries();
-            
-            if (!librariesLoaded) {
-                console.warn('PDF libraries not available, falling back to print dialog');
-                this.fallbackToPrintDialog();
-                return;
-            }
-            
-            // 生成開始メッセージを表示
-            this.showPDFGeneratingMessage();
-            console.log('Starting image-based PDF generation...');
-            
-            // 画像ベースでPDF生成を試行（日本語文字化け対策）
-            const success = await this.generateImageBasedPDF();
-            
-            if (success) {
-                console.log('Direct PDF generation successful');
-                this.showPDFDirectSuccessMessage();
-            } else {
-                console.log('Direct PDF generation failed, falling back to print dialog');
-                // 失敗した場合は印刷ダイアログにフォールバック
-                this.fallbackToPrintDialog();
-            }
-            
-        } catch (error) {
-            console.error('PDF generation failed:', error);
-            this.fallbackToPrintDialog();
-        }
-    }
-    
-    async loadPDFLibraries() {
-        try {
-            // 既に読み込み済みかチェック
-            const jsPDFAvailable = typeof window.jsPDF !== 'undefined' || typeof window.jspdf !== 'undefined' || typeof jsPDF !== 'undefined';
-            const html2canvasAvailable = typeof window.html2canvas !== 'undefined';
-            
-            if (jsPDFAvailable && html2canvasAvailable) {
-                console.log('✅ PDF libraries already loaded');
-                return true;
-            }
-            
-            console.log('🔄 Loading PDF libraries dynamically...');
-            
-            // LibraryLoaderが利用可能かチェック（content.js由来）
-            if (typeof LibraryLoader !== 'undefined' && LibraryLoader.loadExportLibraries) {
-                return await LibraryLoader.loadExportLibraries();
-            }
-            
-            // フォールバック: 独自実装で動的読み込み
-            const loadScript = (src) => {
-                return new Promise((resolve, reject) => {
-                    const script = document.createElement('script');
-                    script.src = chrome.runtime.getURL(src);
-                    script.onload = () => {
-                        console.log(`✅ Loaded: ${src}`);
-                        resolve();
-                    };
-                    script.onerror = () => {
-                        console.error(`❌ Failed to load: ${src}`);
-                        reject(new Error(`Failed to load ${src}`));
-                    };
-                    document.head.appendChild(script);
-                });
-            };
-            
-            await Promise.all([
-                loadScript('lib/jspdf.umd.min.js'),
-                loadScript('lib/html2canvas.min.js')
-            ]);
-            
-            console.log('✅ PDF libraries loaded successfully');
-            return true;
-            
-        } catch (error) {
-            console.error('❌ Failed to load PDF libraries:', error);
-            return false;
-        }
-    }
-    
-    loadScript(src) {
-        return new Promise((resolve, reject) => {
-            const script = document.createElement('script');
-            script.src = src;
-            script.onload = resolve;
-            script.onerror = reject;
-            document.head.appendChild(script);
-        });
-    }
-    
-    async generateImageBasedPDF() {
-        try {
-            const markdownContent = document.getElementById('markdown-content');
-            if (!markdownContent) {
-                throw new Error('Markdown content not found');
-            }
-            
-            // より安全な改ページ制御でPDFを生成
-            const canvas = await this.renderSafePDF(markdownContent);
-            
-            // jsPDFインスタンスを作成
-            let jsPDFClass;
-            if (window.jsPDF) {
-                jsPDFClass = window.jsPDF.jsPDF || window.jsPDF;
-            } else if (window.jspdf) {
-                jsPDFClass = window.jspdf.jsPDF || window.jspdf;
-            } else if (typeof jsPDF !== 'undefined') {
-                jsPDFClass = jsPDF;
-            }
-            
-            const pdf = new jsPDFClass('p', 'mm', 'a4');
-            const pageWidth = pdf.internal.pageSize.getWidth();
-            const pageHeight = pdf.internal.pageSize.getHeight();
-            const marginX = 4; // 横の余白を4mmに
-            const marginY = 5; // 縦の余白を5mmに
-            
-            // キャンバスのサイズを取得
-            const canvasWidth = canvas.width;
-            const canvasHeight = canvas.height;
-            
-            // PDFページサイズに合わせてスケール計算
-            const availableWidth = pageWidth - (marginX * 2);
-            const availableHeight = pageHeight - (marginY * 2);
-            
-            // 画像を縮小して表示（65%のサイズ）
-            const imgWidth = availableWidth * 0.65;
-            const imgHeight = (canvasHeight * imgWidth) / canvasWidth;
-            
-            // 中央配置のためのオフセット
-            const offsetX = marginX + (availableWidth - imgWidth) / 2;
-            
-            // 必要なページ数を計算
-            const totalPages = Math.ceil(imgHeight / availableHeight);
-            
-            for (let page = 0; page < totalPages; page++) {
-                if (page > 0) {
-                    pdf.addPage();
-                }
-                
-                // 各ページの開始位置を計算
-                const sourceY = (page * availableHeight * canvasHeight) / imgHeight;
-                const sourceHeight = Math.min(
-                    (availableHeight * canvasHeight) / imgHeight,
-                    canvasHeight - sourceY
-                );
-                
-                // ページごとのキャンバスを作成
-                const pageCanvas = document.createElement('canvas');
-                const pageCtx = pageCanvas.getContext('2d');
-                pageCanvas.width = canvasWidth;
-                pageCanvas.height = sourceHeight;
-                
-                // 元のキャンバスから該当部分をコピー
-                pageCtx.drawImage(
-                    canvas,
-                    0, sourceY, canvasWidth, sourceHeight,
-                    0, 0, canvasWidth, sourceHeight
-                );
-                
-                // ページの実際の高さ
-                const pageImgHeight = (sourceHeight * imgWidth) / canvasWidth;
-                
-                // PDFに画像を追加（中央配置）
-                const pageImgData = pageCanvas.toDataURL('image/jpeg', 0.85);
-                pdf.addImage(pageImgData, 'JPEG', offsetX, marginY, imgWidth, pageImgHeight);
-            }
-            
-            // ファイル名を生成
-            const timestamp = new Date().toISOString().slice(0, 19).replace(/:/g, '-');
-            const title = document.title || 'markdown-document';
-            const filename = `${title.replace(/[^a-zA-Z0-9]/g, '_')}-${timestamp}.pdf`;
-            
-            // PDFをダウンロード
-            pdf.save(filename);
-            
-            return true;
-            
-        } catch (error) {
-            console.error('Image-based PDF generation failed:', error);
-            return false;
-        }
-    }
-    
-    async generateDirectPDF() {
-        try {
-            const markdownContent = document.getElementById('markdown-content');
-            if (!markdownContent) {
-                throw new Error('Markdown content not found');
-            }
-            
-            // jsPDFインスタンスを作成
-            let jsPDFClass;
-            if (window.jsPDF) {
-                jsPDFClass = window.jsPDF.jsPDF || window.jsPDF;
-            } else if (window.jspdf) {
-                jsPDFClass = window.jspdf.jsPDF || window.jspdf;
-            } else if (typeof jsPDF !== 'undefined') {
-                jsPDFClass = jsPDF;
-            }
-            
-            console.log('jsPDFClass:', jsPDFClass);
-            const pdf = new jsPDFClass('p', 'mm', 'a4');
-            const pageWidth = pdf.internal.pageSize.getWidth();
-            const pageHeight = pdf.internal.pageSize.getHeight();
-            const marginX = 4;
-            const marginY = 5;
-            const availableWidth = pageWidth - (marginX * 2);
-            const availableHeight = pageHeight - (marginY * 2);
-            
-            let currentY = marginY;
-            let _currentPage = 1;
-            
-            // デフォルトフォントを設定（日本語対応）
-            pdf.setFontSize(12);
-            // helveticaは限定的ですが基本的な日本語文字を表示できます
-            pdf.setFont('helvetica', 'normal');
-            
-            // ヘッダーを追加
-            const title = document.title || 'Markdown Document';
-            pdf.setFontSize(16);
-            pdf.setFont('helvetica', 'bold');
-            currentY += this.addTextToPDF(pdf, title, marginX, currentY, availableWidth);
-            currentY += 10;
-            
-            // 日付を追加
-            pdf.setFontSize(10);
-            pdf.setFont('helvetica', 'normal');
-            const date = new Date().toLocaleString();
-            currentY += this.addTextToPDF(pdf, `生成日時: ${date}`, marginX, currentY, availableWidth);
-            currentY += 10;
-            
-            // 区切り線
-            pdf.line(marginX, currentY, pageWidth - marginX, currentY);
-            currentY += 10;
-            
-            // コンテンツを要素ごとに処理
-            const elements = markdownContent.children;
-            for (let i = 0; i < elements.length; i++) {
-                const element = elements[i];
-                const result = await this.addElementToPDF(pdf, element, marginX, currentY, availableWidth, availableHeight, pageHeight);
-                currentY = result.y;
-                
-                // ページが変わった場合の処理
-                if (result.newPage) {
-                    _currentPage++;
-                    currentY = marginY + 10; // 新しいページの開始位置
-                }
-            }
-            
-            // ファイル名を生成
-            const timestamp = new Date().toISOString().slice(0, 19).replace(/:/g, '-');
-            const filename = `${title.replace(/[^a-zA-Z0-9]/g, '_')}-${timestamp}.pdf`;
-            
-            // PDFをダウンロード
-            pdf.save(filename);
-            
-            return true;
-            
-        } catch (error) {
-            console.error('Direct PDF generation failed:', error);
-            return false;
-        }
-    }
-    
-    async addElementToPDF(pdf, element, x, y, maxWidth, maxHeight, pageHeight) {
-        const tagName = element.tagName.toLowerCase();
-        let currentY = y;
-        let newPage = false;
-        
-        // ページの残り高さをチェック
-        const checkPageBreak = (requiredHeight) => {
-            if (currentY + requiredHeight > pageHeight - 15) {
-                pdf.addPage();
-                currentY = 15 + 20; // マージン + ヘッダー空間
-                return true;
-            }
-            return false;
-        };
-        
-        switch (tagName) {
-            case 'h1':
-            case 'h2':
-            case 'h3':
-            case 'h4':
-            case 'h5':
-            case 'h6':
-                const level = parseInt(tagName.charAt(1));
-                const fontSize = Math.max(16 - level, 10);
-                
-                newPage = checkPageBreak(fontSize + 10);
-                
-                pdf.setFontSize(fontSize);
-                pdf.setFont('helvetica', 'bold');
-                currentY += this.addTextToPDF(pdf, element.textContent, x, currentY, maxWidth);
-                currentY += 8;
-                
-                // H1とH2には下線を追加
-                if (level <= 2) {
-                    pdf.line(x, currentY - 3, x + maxWidth, currentY - 3);
-                    currentY += 5;
-                }
-                break;
-                
-            case 'p':
-                newPage = checkPageBreak(20);
-                
-                pdf.setFontSize(12);
-                pdf.setFont('helvetica', 'normal');
-                currentY += this.addTextToPDF(pdf, element.textContent, x, currentY, maxWidth);
-                currentY += 6;
-                break;
-                
-            case 'ul':
-            case 'ol':
-                newPage = checkPageBreak(30);
-                
-                const listItems = element.querySelectorAll('li');
-                for (let i = 0; i < listItems.length; i++) {
-                    const item = listItems[i];
-                    const prefix = tagName === 'ul' ? '• ' : `${i + 1}. `;
-                    
-                    pdf.setFontSize(12);
-                    pdf.setFont('helvetica', 'normal');
-                    currentY += this.addTextToPDF(pdf, prefix + item.textContent, x + 10, currentY, maxWidth - 10);
-                    currentY += 3;
-                    
-                    // リスト項目でもページブレークをチェック
-                    if (checkPageBreak(15)) {
-                        newPage = true;
-                    }
-                }
-                currentY += 6;
-                break;
-                
-            case 'blockquote':
-                newPage = checkPageBreak(25);
-                
-                pdf.setFontSize(11);
-                pdf.setFont('helvetica', 'normal');
-                
-                // 左側に縦線を描画
-                pdf.line(x, currentY, x, currentY + 20);
-                
-                currentY += this.addTextToPDF(pdf, element.textContent, x + 10, currentY, maxWidth - 10);
-                currentY += 8;
-                break;
-                
-            case 'pre':
-            case 'code':
-                newPage = checkPageBreak(30);
-                
-                pdf.setFontSize(10);
-                pdf.setFont('courier', 'normal');
-                
-                // 背景色を設定（薄いグレー）
-                pdf.setFillColor(245, 245, 245);
-                const textHeight = this.getTextHeight(pdf, element.textContent, maxWidth - 20);
-                pdf.rect(x, currentY - 2, maxWidth, textHeight + 8, 'F');
-                
-                currentY += this.addTextToPDF(pdf, element.textContent, x + 5, currentY + 3, maxWidth - 10);
-                currentY += 10;
-                break;
-                
-            case 'table':
-                // テーブルは画像として処理
-                try {
-                    const canvas = await html2canvas(element, {
-                        useCORS: true,
-                        backgroundColor: '#ffffff'
-                    });
-                    
-                    const imgData = canvas.toDataURL('image/png');
-                    const imgWidth = maxWidth;
-                    const imgHeight = (canvas.height * maxWidth) / canvas.width;
-                    
-                    newPage = checkPageBreak(imgHeight + 10);
-                    
-                    pdf.addImage(imgData, 'PNG', x, currentY, imgWidth, imgHeight);
-                    currentY += imgHeight + 10;
-                } catch (error) {
-                    console.warn('Failed to render table as image:', error);
-                    // フォールバック: テーブルをテキストとして処理
-                    currentY += this.addTextToPDF(pdf, element.textContent, x, currentY, maxWidth);
-                    currentY += 10;
-                }
-                break;
-                
-            case 'div':
-                // Mermaid図などの特殊要素
-                if (element.classList.contains('mermaid')) {
-                    try {
-                        const canvas = await html2canvas(element, {
-                            useCORS: true,
-                            backgroundColor: '#ffffff'
-                        });
-                        
-                        const imgData = canvas.toDataURL('image/png');
-                        const imgWidth = maxWidth;
-                        const imgHeight = (canvas.height * maxWidth) / canvas.width;
-                        
-                        newPage = checkPageBreak(imgHeight + 10);
-                        
-                        pdf.addImage(imgData, 'PNG', x, currentY, imgWidth, imgHeight);
-                        currentY += imgHeight + 10;
-                    } catch (error) {
-                        console.warn('Failed to render mermaid diagram:', error);
-                    }
-                } else {
-                    // 通常のdivは再帰的に処理
-                    for (const child of element.children) {
-                        const result = await this.addElementToPDF(pdf, child, x, currentY, maxWidth, maxHeight, pageHeight);
-                        currentY = result.y;
-                        if (result.newPage) {
-                            newPage = true;
-                        }
-                    }
-                }
-                break;
-                
-            default:
-                // その他の要素はテキストとして処理
-                if (element.textContent.trim()) {
-                    pdf.setFontSize(12);
-                    pdf.setFont('helvetica', 'normal');
-                    currentY += this.addTextToPDF(pdf, element.textContent, x, currentY, maxWidth);
-                    currentY += 6;
-                }
-                break;
-        }
-        
-        return { y: currentY, newPage };
-    }
-    
-    addTextToPDF(pdf, text, x, y, maxWidth) {
-        const lines = pdf.splitTextToSize(text, maxWidth);
-        pdf.text(lines, x, y);
-        return lines.length * 5; // 行の高さ × 行数
-    }
-    
-    getTextHeight(pdf, text, maxWidth) {
-        const lines = pdf.splitTextToSize(text, maxWidth);
-        return lines.length * 5;
-    }
-    
-    async prepareElementsForPDF(markdownContent) {
-        // PDF用に要素を分析・分類
-        const elements = [];
-        const children = Array.from(markdownContent.children);
-        
-        for (const child of children) {
-            const elementInfo = await this.analyzeElement(child);
-            elements.push(elementInfo);
-        }
-        
-        console.log('Analyzed elements for PDF:', elements.length);
-        return elements;
-    }
-    
-    async analyzeElement(element) {
-        const rect = element.getBoundingClientRect();
-        const tagName = element.tagName.toLowerCase();
-        
-        // 要素タイプの判定
-        let elementType = 'text';
-        let breakBehavior = 'allow'; // allow, avoid, force-before
-        
-        // より詳細な要素検出
-        if (tagName === 'pre' || element.classList.contains('highlight') || element.classList.contains('code')) {
-            elementType = 'code';
-            breakBehavior = 'avoid';
-        } else if (element.classList.contains('mermaid') || element.querySelector('.mermaid')) {
-            elementType = 'diagram';
-            breakBehavior = 'avoid';
-        } else if (tagName === 'table') {
-            elementType = 'table';
-            breakBehavior = 'avoid';
-        } else if (tagName.match(/^h[1-6]$/)) {
-            elementType = 'heading';
-            breakBehavior = 'force-before';
-        } else if (tagName === 'blockquote') {
-            elementType = 'quote';
-            breakBehavior = 'avoid';
-        } else if (tagName === 'img') {
-            elementType = 'image';
-            breakBehavior = 'avoid';
-        } else if (element.querySelector('img, svg, canvas')) {
-            // 内部に画像要素を含む場合
-            elementType = 'image-container';
-            breakBehavior = 'avoid';
-        } else if (element.querySelector('pre, .mermaid, table')) {
-            // 内部に分割禁止要素を含む場合
-            elementType = 'container';
-            breakBehavior = 'avoid';
-        }
-        
-        // デバッグ情報を追加
-        if (breakBehavior === 'avoid') {
-            console.log(`Found avoid-break element: ${elementType}, height: ${rect.height}px, class: ${element.className}`);
-        }
-        
-        return {
-            element: element,
-            type: elementType,
-            breakBehavior: breakBehavior,
-            height: rect.height,
-            width: rect.width,
-            tagName: tagName
-        };
-    }
-    
-    async renderOptimizedPDF(elements) {
-        // 一時的なコンテナを作成
-        const tempContainer = document.createElement('div');
-        tempContainer.style.cssText = `
-            position: absolute;
-            top: -10000px;
-            left: -10000px;
-            width: 800px;
-            background: white;
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            line-height: 1.8;
-            letter-spacing: 0.5px;
-            word-spacing: 1px;
-            font-size: 14px;
-        `;
-        
-        document.body.appendChild(tempContainer);
-        
-        try {
-            // ページごとに要素を配置
-            const pages = await this.layoutElementsIntoPages(elements, tempContainer);
-            
-            // 各ページをレンダリング
-            const pageCanvases = [];
-            for (const page of pages) {
-                const canvas = await this.renderPage(page, tempContainer);
-                pageCanvases.push(canvas);
-            }
-            
-            // 全ページを結合
-            const combinedCanvas = this.combinePageCanvases(pageCanvases);
-            
-            return combinedCanvas;
-            
-        } finally {
-            document.body.removeChild(tempContainer);
-        }
-    }
-    
-    async layoutElementsIntoPages(elements, _container) {
-        const pages = [];
-        let currentPage = [];
-        let currentPageHeight = 0;
-        const pageHeight = 800; // より小さなページ高さで安全マージンを確保
-        const safetyMargin = 100; // 安全マージン
-        
-        console.log('Starting page layout with', elements.length, 'elements');
-        
-        for (let i = 0; i < elements.length; i++) {
-            const elementInfo = elements[i];
-            const elementHeight = Math.max(elementInfo.height, 30);
-            
-            console.log(`Processing element ${i}: ${elementInfo.type}, height: ${elementHeight}px, breakBehavior: ${elementInfo.breakBehavior}`);
-            
-            // 見出しの前は改ページを推奨
-            if (elementInfo.breakBehavior === 'force-before' && currentPage.length > 0) {
-                console.log('Force page break before heading');
-                pages.push([...currentPage]);
-                currentPage = [];
-                currentPageHeight = 0;
-            }
-            
-            // 要素がページに収まるかチェック
-            const willFitInCurrentPage = (currentPageHeight + elementHeight + safetyMargin) <= pageHeight;
-            
-            if (!willFitInCurrentPage && currentPage.length > 0) {
-                if (elementInfo.breakBehavior === 'avoid') {
-                    // 分割できない要素は必ず新しいページに
-                    console.log(`Moving ${elementInfo.type} to new page (avoid break)`);
-                    pages.push([...currentPage]);
-                    currentPage = [];
-                    currentPageHeight = 0;
-                } else {
-                    // 分割可能な要素も基本的には新しいページに
-                    console.log(`Moving ${elementInfo.type} to new page (normal break)`);
-                    pages.push([...currentPage]);
-                    currentPage = [];
-                    currentPageHeight = 0;
-                }
-            }
-            
-            // 要素が単体でページ高さを超える場合の警告
-            if (elementHeight > pageHeight) {
-                console.warn(`Element ${elementInfo.type} (${elementHeight}px) exceeds page height (${pageHeight}px)`);
-            }
-            
-            currentPage.push(elementInfo);
-            currentPageHeight += elementHeight;
-            
-            console.log(`Added to page, current height: ${currentPageHeight}px`);
-        }
-        
-        // 最後のページを追加
-        if (currentPage.length > 0) {
-            pages.push(currentPage);
-        }
-        
-        console.log(`Created ${pages.length} pages with optimized layout`);
-        console.log('Pages:', pages.map((page, i) => `Page ${i + 1}: ${page.length} elements`));
-        
-        return pages;
-    }
-    
-    async renderPage(pageElements, container) {
-        // ページ要素をコンテナに配置
-        container.innerHTML = '';
-        
-        pageElements.forEach(elementInfo => {
-            const clonedElement = elementInfo.element.cloneNode(true);
-            
-            // スタイル調整と折り返し設定
-            clonedElement.style.wordWrap = 'break-word';
-            clonedElement.style.wordBreak = 'break-word';
-            clonedElement.style.overflowWrap = 'break-word';
-            clonedElement.style.maxWidth = '100%';
-            
-            if (elementInfo.tagName === 'p') {
-                clonedElement.style.marginBottom = '12px';
-                clonedElement.style.lineHeight = '1.5';
-                clonedElement.style.whiteSpace = 'normal';
-            } else if (elementInfo.tagName.match(/^h[1-6]$/)) {
-                clonedElement.style.marginTop = '20px';
-                clonedElement.style.marginBottom = '12px';
-                clonedElement.style.lineHeight = '1.4';
-                clonedElement.style.whiteSpace = 'normal';
-            } else if (elementInfo.tagName === 'li') {
-                clonedElement.style.marginBottom = '6px';
-                clonedElement.style.lineHeight = '1.5';
-                clonedElement.style.whiteSpace = 'normal';
-            } else if (elementInfo.tagName === 'pre' || elementInfo.tagName === 'code') {
-                clonedElement.style.whiteSpace = 'pre-wrap';
-                clonedElement.style.wordBreak = 'break-all';
-            }
-            
-            container.appendChild(clonedElement);
-        });
-        
-        // html2canvasでレンダリング
-        const canvas = await html2canvas(container, {
-            useCORS: true,
-            scale: 1.5,
-            backgroundColor: '#ffffff',
-            logging: false,
-            letterRendering: true,
-            allowTaint: false,
-            foreignObjectRendering: false
-        });
-        
-        return canvas;
-    }
-    
-    combinePageCanvases(pageCanvases) {
-        if (pageCanvases.length === 0) {
-            return null;
-        }
-        if (pageCanvases.length === 1) {
-            return pageCanvases[0];
-        }
-        
-        // 全ページの高さを計算
-        const totalWidth = pageCanvases[0].width;
-        const totalHeight = pageCanvases.reduce((sum, canvas) => sum + canvas.height, 0);
-        
-        // 結合キャンバスを作成
-        const combinedCanvas = document.createElement('canvas');
-        combinedCanvas.width = totalWidth;
-        combinedCanvas.height = totalHeight;
-        
-        const ctx = combinedCanvas.getContext('2d');
-        ctx.fillStyle = '#ffffff';
-        ctx.fillRect(0, 0, totalWidth, totalHeight);
-        
-        // ページを縦に結合
-        let currentY = 0;
-        pageCanvases.forEach(canvas => {
-            ctx.drawImage(canvas, 0, currentY);
-            currentY += canvas.height;
-        });
-        
-        return combinedCanvas;
-    }
-    
-    async renderSafePDF(markdownContent) {
-        try {
-            // html2canvasで全体をレンダリング
-            const fullCanvas = await html2canvas(markdownContent, {
-                useCORS: true,
-                scale: 1.5,
-                backgroundColor: '#ffffff',
-                logging: false,
-                letterRendering: true,
-                allowTaint: false,
-                foreignObjectRendering: false,
-                onclone: (clonedDoc) => {
-                    // クローンされたドキュメントでツールバーなどを非表示
-                    const elementsToHide = clonedDoc.querySelectorAll('.main-toolbar, .toc-panel, .search-panel, .toc-floating-button');
-                    elementsToHide.forEach(el => el.style.display = 'none');
-                    
-                    // 行間と文字間隔を調整
-                    const markdownContentClone = clonedDoc.querySelector('#markdown-content');
-                    if (markdownContentClone) {
-                        markdownContentClone.style.lineHeight = '1.5';
-                        markdownContentClone.style.letterSpacing = '0.5px';
-                        markdownContentClone.style.wordSpacing = '1px';
-                        markdownContentClone.style.fontSize = '14px';
-                        markdownContentClone.style.wordWrap = 'break-word';
-                        markdownContentClone.style.wordBreak = 'break-word';
-                        markdownContentClone.style.whiteSpace = 'normal';
-                        markdownContentClone.style.maxWidth = '100%';
-                        markdownContentClone.style.overflowWrap = 'break-word';
-                        
-                        // 分割禁止要素にマーキング
-                        this.markAvoidBreakElements(markdownContentClone);
-                        
-                        // 全ての要素に余白と折り返しスタイルを追加
-                        const allElements = markdownContentClone.querySelectorAll('*');
-                        allElements.forEach(el => {
-                            // 全要素に折り返しスタイルを適用
-                            el.style.wordWrap = 'break-word';
-                            el.style.wordBreak = 'break-word';
-                            el.style.overflowWrap = 'break-word';
-                            el.style.maxWidth = '100%';
-                            
-                            if (el.tagName === 'P') {
-                                el.style.marginBottom = '12px';
-                                el.style.lineHeight = '1.5';
-                                el.style.whiteSpace = 'normal';
-                            }
-                            if (el.tagName.match(/^H[1-6]$/)) {
-                                el.style.marginTop = '20px';
-                                el.style.marginBottom = '12px';
-                                el.style.lineHeight = '1.4';
-                                el.style.whiteSpace = 'normal';
-                            }
-                            if (el.tagName === 'LI') {
-                                el.style.marginBottom = '6px';
-                                el.style.lineHeight = '1.5';
-                                el.style.whiteSpace = 'normal';
-                            }
-                            if (el.tagName === 'PRE' || el.tagName === 'CODE') {
-                                el.style.whiteSpace = 'pre-wrap';
-                                el.style.wordBreak = 'break-all';
-                            }
-                        });
-                    }
-                }
-            });
-            
-            // 安全な改ページ処理
-            return this.applySafePageBreaks(fullCanvas, markdownContent);
-            
-        } catch (error) {
-            console.error('Safe PDF rendering failed:', error);
-            throw error;
-        }
-    }
-    
-    markAvoidBreakElements(container) {
-        // 分割禁止要素を特定してマーキング
-        const avoidBreakSelectors = [
-            'pre',
-            'code',
-            '.mermaid',
-            'table',
-            'blockquote',
-            'img',
-            '[class*="highlight"]',
-            '[class*="code"]'
-        ];
-        
-        avoidBreakSelectors.forEach(selector => {
-            const elements = container.querySelectorAll(selector);
-            elements.forEach(el => {
-                el.style.border = '1px solid rgba(255,0,0,0.1)'; // デバッグ用の薄い境界線
-                el.dataset.avoidBreak = 'true';
-            });
-        });
-    }
-    
-    async applySafePageBreaks(fullCanvas, originalContent) {
-        const pageHeight = 1100; // A4相当の高さ（ピクセル）
-        const safeMargin = 50; // 安全マージン
-        const effectivePageHeight = pageHeight - safeMargin;
-        
-        // 分割禁止領域を特定
-        const avoidBreakAreas = await this.identifyAvoidBreakAreas(originalContent);
-        
-        // 行間での分割点を計算
-        const lineBasedBreakPoints = await this.calculateLineBasedBreakPoints(fullCanvas, originalContent, effectivePageHeight, avoidBreakAreas);
-        
-        console.log('Line-based break points:', lineBasedBreakPoints);
-        console.log('Avoid break areas:', avoidBreakAreas);
-        
-        // 分割点に基づいてページを作成
-        return this.createPagesFromBreakPoints(fullCanvas, lineBasedBreakPoints, pageHeight);
-    }
-    
-    async identifyAvoidBreakAreas(originalContent) {
-        const avoidAreas = [];
-        const scale = 1.5; // html2canvasのスケールに合わせる
-        
-        // 分割禁止要素の位置を取得
-        const avoidSelectors = [
-            'pre',
-            'code:not(pre code)', // pre内のcodeは除外
-            '.mermaid',
-            'table',
-            'blockquote',
-            'img'
-        ];
-        
-        for (const selector of avoidSelectors) {
-            const elements = originalContent.querySelectorAll(selector);
-            for (const element of elements) {
-                const rect = element.getBoundingClientRect();
-                const contentRect = originalContent.getBoundingClientRect();
-                
-                // コンテンツ内での相対位置を計算
-                const relativeTop = (rect.top - contentRect.top) * scale;
-                const relativeBottom = relativeTop + (rect.height * scale);
-                
-                if (rect.height > 10) { // 極小要素は除外
-                    avoidAreas.push({
-                        start: Math.max(0, relativeTop - 10), // 少し余裕を持たせる
-                        end: relativeBottom + 10,
-                        height: rect.height * scale,
-                        element: element.tagName.toLowerCase(),
-                        class: element.className
-                    });
-                }
-            }
-        }
-        
-        // 重複する領域をマージ
-        return this.mergeOverlappingAreas(avoidAreas);
-    }
-    
-    mergeOverlappingAreas(areas) {
-        if (areas.length === 0) {
-            return areas;
-        }
-        
-        // 開始位置でソート
-        areas.sort((a, b) => a.start - b.start);
-        
-        const merged = [areas[0]];
-        
-        for (let i = 1; i < areas.length; i++) {
-            const current = areas[i];
-            const last = merged[merged.length - 1];
-            
-            if (current.start <= last.end + 20) { // 20px以内なら結合
-                last.end = Math.max(last.end, current.end);
-                last.height = last.end - last.start;
-            } else {
-                merged.push(current);
-            }
-        }
-        
-        return merged;
-    }
-    
-    calculateSafeBreakPoints(totalHeight, pageHeight, avoidAreas) {
-        const breakPoints = [0]; // 最初のページは0から開始
-        let currentPosition = 0;
-        
-        while (currentPosition < totalHeight) {
-            let nextBreakPoint = currentPosition + pageHeight;
-            
-            // 次の分割点が分割禁止領域と重複するかチェック
-            for (const area of avoidAreas) {
-                // 分割点が分割禁止領域内にある場合
-                if (nextBreakPoint > area.start && nextBreakPoint < area.end) {
-                    // 領域の前で分割するか、後で分割するかを決定
-                    const beforeDistance = nextBreakPoint - area.start;
-                    const afterDistance = area.end - nextBreakPoint;
-                    
-                    if (beforeDistance < afterDistance && area.start > currentPosition + 100) {
-                        // 領域の前で分割（ただし、最小高さを確保）
-                        nextBreakPoint = area.start;
-                    } else {
-                        // 領域の後で分割
-                        nextBreakPoint = area.end;
-                    }
-                    break;
-                }
-            }
-            
-            // 最後のページの処理
-            if (nextBreakPoint >= totalHeight) {
-                break;
-            }
-            
-            breakPoints.push(nextBreakPoint);
-            currentPosition = nextBreakPoint;
-        }
-        
-        return breakPoints;
-    }
-    
-    async calculateLineBasedBreakPoints(fullCanvas, originalContent, pageHeight, avoidBreakAreas) {
-        const breakPoints = [0];
-        let currentPosition = 0;
-        const scale = 1.5;
-        const lineHeight = 20 * scale; // 概算行高（スケール調整済み）
-        
-        // テキスト要素の行情報を取得
-        const textLines = await this.identifyTextLines(originalContent, scale);
-        
-        console.log('Identified text lines:', textLines.length);
-        
-        while (currentPosition < fullCanvas.height) {
-            let nextBreakPoint = currentPosition + pageHeight;
-            
-            // 分割禁止領域をチェック
-            for (const area of avoidBreakAreas) {
-                if (nextBreakPoint > area.start && nextBreakPoint < area.end) {
-                    // 領域の前後どちらで分割するか決定
-                    const beforeDistance = nextBreakPoint - area.start;
-                    const afterDistance = area.end - nextBreakPoint;
-                    
-                    if (beforeDistance < afterDistance && area.start > currentPosition + 100) {
-                        nextBreakPoint = area.start;
-                    } else {
-                        nextBreakPoint = area.end;
-                    }
-                    break;
-                }
-            }
-            
-            // 最も近い行間を探す
-            const adjustedBreakPoint = this.findNearestLineGap(nextBreakPoint, textLines, lineHeight);
-            
-            if (adjustedBreakPoint >= fullCanvas.height) {
-                break;
-            }
-            
-            // 最小ページ高さを確保
-            if (adjustedBreakPoint - currentPosition > 200) {
-                breakPoints.push(adjustedBreakPoint);
-                currentPosition = adjustedBreakPoint;
-            } else {
-                // 最小高さに満たない場合は次のページまで延長
-                currentPosition = nextBreakPoint;
-            }
-        }
-        
-        return breakPoints;
-    }
-    
-    async identifyTextLines(originalContent, scale) {
-        const textLines = [];
-        const textElements = originalContent.querySelectorAll('p, h1, h2, h3, h4, h5, h6, li, td, th, div:not(.mermaid)');
-        
-        for (const element of textElements) {
-            // 分割禁止要素は除外
-            if (element.tagName.toLowerCase() === 'pre' || 
-                element.classList.contains('mermaid') ||
-                element.closest('pre, .mermaid, table')) {
-                continue;
-            }
-            
-            const rect = element.getBoundingClientRect();
-            const contentRect = originalContent.getBoundingClientRect();
-            
-            if (rect.height < 5) {
-                continue;
-            } // 極小要素は除外
-            
-            const relativeTop = (rect.top - contentRect.top) * scale;
-            const _relativeBottom = relativeTop + (rect.height * scale);
-            
-            // 要素内の行を推定
-            const lineHeight = this.getElementLineHeight(element) * scale;
-            const actualLineHeight = lineHeight / scale;
-            const lineCount = Math.max(1, Math.round(rect.height / actualLineHeight));
-            
-            // 要素のパディングとマージンを考慮
-            const computedStyle = window.getComputedStyle(element);
-            const paddingTop = parseFloat(computedStyle.paddingTop) * scale;
-            const _marginTop = parseFloat(computedStyle.marginTop) * scale;
-            
-            for (let i = 0; i < lineCount; i++) {
-                const lineY = relativeTop + paddingTop + (i * lineHeight);
-                const lineBottom = lineY + lineHeight;
-                
-                textLines.push({
-                    y: lineY,
-                    height: lineHeight,
-                    bottom: lineBottom,
-                    element: element.tagName.toLowerCase(),
-                    canBreakAfter: true,
-                    paddingTop: paddingTop,
-                    actualHeight: actualLineHeight
-                });
-            }
-        }
-        
-        // Y座標でソート
-        textLines.sort((a, b) => a.y - b.y);
-        
-        return textLines;
-    }
-    
-    getElementLineHeight(element) {
-        const computedStyle = window.getComputedStyle(element);
-        const lineHeight = computedStyle.lineHeight;
-        const fontSize = parseFloat(computedStyle.fontSize);
-        
-        let calculatedLineHeight;
-        
-        if (lineHeight === 'normal') {
-            // フォントサイズの1.2倍を概算（より正確に）
-            calculatedLineHeight = fontSize * 1.2;
-        } else if (lineHeight.endsWith('px')) {
-            calculatedLineHeight = parseFloat(lineHeight);
-        } else if (lineHeight.match(/^\d+(\.\d+)?$/)) {
-            // 数値のみの場合はフォントサイズの倍数
-            calculatedLineHeight = fontSize * parseFloat(lineHeight);
-        } else {
-            // デフォルト値
-            calculatedLineHeight = fontSize * 1.2;
-        }
-        
-        // CSS設定された行高を確認
-        const cssLineHeight = parseFloat(getComputedStyle(element).lineHeight);
-        if (!isNaN(cssLineHeight) && cssLineHeight > 0) {
-            calculatedLineHeight = cssLineHeight;
-        }
-        
-        // 最小値を確保（文字が読める程度）
-        return Math.max(calculatedLineHeight, fontSize * 1.1);
-    }
-    
-    findNearestLineGap(targetY, textLines, _defaultLineHeight) {
-        let bestGap = targetY;
-        let minDistance = Infinity;
-        
-        // 目標位置の前後80px範囲で行間を探す（範囲を拡大）
-        const searchRange = 80;
-        
-        for (let i = 0; i < textLines.length - 1; i++) {
-            const currentLine = textLines[i];
-            const nextLine = textLines[i + 1];
-            
-            const currentLineEnd = currentLine.y + currentLine.height;
-            const nextLineStart = nextLine.y;
-            
-            // 行間のスペースを計算
-            const lineGapHeight = nextLineStart - currentLineEnd;
-            
-            if (lineGapHeight > 5) { // 十分な行間がある場合のみ
-                // 行間の真ん中で分割
-                const gapCenter = currentLineEnd + (lineGapHeight / 2);
-                
-                // 目標位置の前後範囲内かチェック
-                if (Math.abs(gapCenter - targetY) <= searchRange) {
-                    const distance = Math.abs(gapCenter - targetY);
-                    if (distance < minDistance && currentLine.canBreakAfter) {
-                        minDistance = distance;
-                        bestGap = gapCenter;
-                        
-                        console.log(`Found perfect line gap: line1 end: ${currentLineEnd}, line2 start: ${nextLineStart}, gap center: ${gapCenter}, gap height: ${lineGapHeight}`);
-                    }
-                }
-            }
-        }
-        
-        // 行間の真ん中が見つからない場合は、行の終わりから少し下で分割
-        if (minDistance === Infinity) {
-            for (const line of textLines) {
-                const lineEnd = line.y + line.height;
-                const gapY = lineEnd + 8; // 行の終わりから8px下（余裕を持たせる）
-                
-                if (Math.abs(gapY - targetY) <= searchRange) {
-                    const distance = Math.abs(gapY - targetY);
-                    if (distance < minDistance && line.canBreakAfter) {
-                        minDistance = distance;
-                        bestGap = gapY;
-                    }
-                }
-            }
-        }
-        
-        console.log(`Found line gap at ${bestGap} (target: ${targetY}, distance: ${minDistance})`);
-        
-        return bestGap;
-    }
-    
-    
-    createPagesFromBreakPoints(fullCanvas, breakPoints, _pageHeight) {
-        const pages = [];
-        
-        for (let i = 0; i < breakPoints.length; i++) {
-            const startY = breakPoints[i];
-            const endY = i < breakPoints.length - 1 ? breakPoints[i + 1] : fullCanvas.height;
-            const actualHeight = endY - startY;
-            
-            // ページキャンバスを作成
-            const pageCanvas = document.createElement('canvas');
-            pageCanvas.width = fullCanvas.width;
-            pageCanvas.height = actualHeight;
-            
-            const ctx = pageCanvas.getContext('2d');
-            ctx.fillStyle = '#ffffff';
-            ctx.fillRect(0, 0, pageCanvas.width, pageCanvas.height);
-            
-            // 該当部分をコピー
-            ctx.drawImage(
-                fullCanvas,
-                0, startY, fullCanvas.width, actualHeight,
-                0, 0, pageCanvas.width, actualHeight
-            );
-            
-            pages.push(pageCanvas);
-        }
-        
-        console.log(`Created ${pages.length} pages with safe breaks`);
-        
-        // ページを縦に結合して返す
-        return this.combinePageCanvases(pages);
-    }
-    
-    fallbackToPrintDialog() {
-        // 印刷用のスタイルを一時的に適用
-        this.applyPrintStyles();
-        
-        // 少し遅延してから印刷ダイアログを開く
-        setTimeout(() => {
-            try {
-                // 印刷ダイアログを開く（ユーザーがPDFを選択可能）
-                window.print();
-                
-                // 印刷スタイルを元に戻す
-                setTimeout(() => {
-                    this.removePrintStyles();
-                }, 1000);
-                
-                // 成功メッセージを表示
-                this.showPDFSuccessMessage();
-                
-            } catch (error) {
-                console.error('Print dialog failed:', error);
-                this.removePrintStyles();
-                this.showPDFErrorMessage();
-            }
-        }, 100);
-    }
-    
-    applyPrintStyles() {
-        // PDFエクスポート用の一時スタイルを追加
-        const pdfStyle = document.createElement('style');
-        pdfStyle.id = 'pdf-export-styles';
-        pdfStyle.textContent = `
-            @media print {
-                /* ツールバーやサイドバーを非表示 */
-                .main-toolbar,
-                .toc-panel,
-                .search-panel,
-                .toc-floating-button {
-                    display: none !important;
-                }
-                
-                /* コンテンツのマージンを調整 */
-                body {
-                    margin: 0 !important;
-                    padding: 20px !important;
-                    font-size: 12pt !important;
-                    line-height: 1.4 !important;
-                    color: #000 !important;
-                    background: #fff !important;
-                }
-                
-                #markdown-content {
-                    margin-left: 0 !important;
-                    margin-right: 0 !important;
-                    max-width: none !important;
-                }
-                
-                /* 見出しの改ページ制御 */
-                h1, h2, h3, h4, h5, h6 {
-                    page-break-after: avoid;
-                    page-break-inside: avoid;
-                }
-                
-                /* コードブロックとテーブルの改ページ制御 */
-                pre, blockquote, table {
-                    page-break-inside: avoid;
-                }
-                
-                /* Mermaid図の調整 */
-                .mermaid {
-                    page-break-inside: avoid;
-                    max-width: 100% !important;
-                }
-                
-                /* リンクの印刷時表示 */
-                a {
-                    text-decoration: none !important;
-                    color: inherit !important;
-                }
-                
-                /* 外部リンクのURL表示 */
-                a[href^="http"]:after {
-                    content: " (" attr(href) ")";
-                    font-size: 9pt;
-                    color: #666;
-                }
-            }
-        `;
-        document.head.appendChild(pdfStyle);
-    }
-    
-    removePrintStyles() {
-        const pdfStyle = document.getElementById('pdf-export-styles');
-        if (pdfStyle) {
-            pdfStyle.remove();
-        }
-    }
-    
-    showPDFGeneratingMessage() {
-        // 既存のメッセージを削除
-        this.removePDFMessages();
-        
-        const message = document.createElement('div');
-        message.id = 'pdf-generating-message';
-        message.style.cssText = `
-            position: fixed;
-            top: 80px;
-            right: 20px;
-            background: #cce7ff;
-            border: 1px solid #99d6ff;
-            color: #004085;
-            padding: 15px 20px;
-            border-radius: 8px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-            z-index: 10010;
-            font-size: 14px;
-            max-width: 350px;
-        `;
-        message.innerHTML = `
-            <div style="display: flex; align-items: center;">
-                <span style="font-size: 18px; margin-right: 10px;">⏳</span>
-                <div>
-                    <strong>PDF生成中...</strong><br>
-                    <small>しばらくお待ちください。</small>
-                </div>
-            </div>
-        `;
-        document.body.appendChild(message);
-    }
-    
-    showPDFDirectSuccessMessage() {
-        // 既存のメッセージを削除
-        this.removePDFMessages();
-        
-        const message = document.createElement('div');
-        message.style.cssText = `
-            position: fixed;
-            top: 80px;
-            right: 20px;
-            background: #d4edda;
-            border: 1px solid #c3e6cb;
-            color: #155724;
-            padding: 15px 20px;
-            border-radius: 8px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-            z-index: 10010;
-            font-size: 14px;
-            max-width: 350px;
-        `;
-        message.innerHTML = `
-            <div style="display: flex; align-items: center;">
-                <span style="font-size: 18px; margin-right: 10px;">✅</span>
-                <div>
-                    <strong>PDF生成完了！</strong><br>
-                    <small>PDFファイルをダウンロードしました。</small>
-                </div>
-            </div>
-        `;
-        document.body.appendChild(message);
-        
-        // Auto-hide after 3 seconds
-        setTimeout(() => {
-            if (message.parentNode) {
-                message.parentNode.removeChild(message);
-            }
-        }, 3000);
-    }
-    
-    showPDFSuccessMessage() {
-        // 既存のメッセージを削除
-        this.removePDFMessages();
-        
-        const message = document.createElement('div');
-        message.style.cssText = `
-            position: fixed;
-            top: 80px;
-            right: 20px;
-            background: #d4edda;
-            border: 1px solid #c3e6cb;
-            color: #155724;
-            padding: 15px 20px;
-            border-radius: 8px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-            z-index: 10010;
-            font-size: 14px;
-            max-width: 350px;
-        `;
-        message.innerHTML = `
-            <div style="display: flex; align-items: center;">
-                <span style="font-size: 18px; margin-right: 10px;">📋</span>
-                <div>
-                    <strong>PDFエクスポート</strong><br>
-                    <small>印刷ダイアログで「PDFに保存」を選択してください。</small>
-                </div>
-            </div>
-        `;
-        document.body.appendChild(message);
-        
-        // Auto-hide after 5 seconds
-        setTimeout(() => {
-            if (message.parentNode) {
-                message.parentNode.removeChild(message);
-            }
-        }, 5000);
-    }
-    
-    removePDFMessages() {
-        const existingMessages = document.querySelectorAll('#pdf-generating-message');
-        existingMessages.forEach(msg => msg.remove());
-    }
-    
-    showPDFErrorMessage() {
-        // 既存のトーストがあれば削除
-        const existingToast = document.querySelector('.pdf-error-toast');
-        if (existingToast) {
-            existingToast.remove();
-        }
-        
-        // 印刷エラーと完全に同じスタイル
-        const toast = document.createElement('div');
-        toast.className = 'pdf-error-toast';
-        toast.innerHTML = `
-            <div class="toast-content">
-                <div class="toast-icon">⚠️</div>
-                <div class="toast-message">
-                    <strong>PDFエクスポート機能について</strong><br>
-                    この環境ではPDFエクスポート機能を利用できません。<br>
-                    ブラウザの印刷機能をご利用ください。
-                </div>
-                <button class="toast-close">×</button>
-            </div>
-        `;
-        
-        // スタイルを設定 - 印刷エラーと完全に同じ
-        toast.style.cssText = `
-            position: fixed;
-            top: 80px;
-            right: 20px;
-            background: #fff3cd;
-            border: 1px solid #ffeaa7;
-            border-radius: 8px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-            z-index: 10010;
-            max-width: 350px;
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            animation: slideInRight 0.3s ease;
-        `;
-        
-        // コンテンツのスタイル
-        const content = toast.querySelector('.toast-content');
-        content.style.cssText = `
-            display: flex;
-            align-items: flex-start;
-            padding: 16px;
-            gap: 12px;
-        `;
-        
-        // アイコンのスタイル
-        const icon = toast.querySelector('.toast-icon');
-        icon.style.cssText = `
-            font-size: 20px;
-            flex-shrink: 0;
-        `;
-        
-        // メッセージのスタイル
-        const message = toast.querySelector('.toast-message');
-        message.style.cssText = `
-            flex: 1;
-            font-size: 14px;
-            line-height: 1.4;
-            color: #856404;
-        `;
-        
-        // 閉じるボタンのスタイル
-        const closeBtn = toast.querySelector('.toast-close');
-        closeBtn.style.cssText = `
-            background: none;
-            border: none;
-            font-size: 18px;
-            cursor: pointer;
-            color: #856404;
-            padding: 0;
-            width: 24px;
-            height: 24px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border-radius: 4px;
-            flex-shrink: 0;
-        `;
-        
-        // CSSアニメーションを追加
-        if (!document.querySelector('#toast-animations')) {
-            const style = document.createElement('style');
-            style.id = 'toast-animations';
-            style.textContent = `
-                @keyframes slideInRight {
-                    from {
-                        transform: translateX(100%);
-                        opacity: 0;
-                    }
-                    to {
-                        transform: translateX(0);
-                        opacity: 1;
-                    }
-                }
-                
-                .toast-close:hover {
-                    background: rgba(0,0,0,0.1) !important;
-                }
-            `;
-            document.head.appendChild(style);
-        }
-        
-        document.body.appendChild(toast);
-        
-        // 閉じるボタンのイベントリスナー
-        closeBtn.addEventListener('click', () => {
-            toast.remove();
-        });
-        
-        // ホバー効果
-        closeBtn.addEventListener('mouseenter', () => {
-            closeBtn.style.backgroundColor = 'rgba(0,0,0,0.1)';
-        });
-        closeBtn.addEventListener('mouseleave', () => {
-            closeBtn.style.backgroundColor = 'transparent';
-        });
-        
-        // 5秒後に自動で閉じる
-        setTimeout(() => {
-            if (toast.parentNode) {
-                toast.remove();
-            }
-        }, 5000);
-    }
-    
-    generateCompleteHTML() {
-        // 現在のコンテンツを取得
-        const markdownContent = document.getElementById('markdown-content');
-        if (!markdownContent) {
-            throw new Error('Markdown content not found');
-        }
-        
-        // メタデータを取得
-        const title = document.title || 'Markdown Document';
-        const currentURL = location.href;
-        const timestamp = new Date().toLocaleString();
-        
-        // すべてのCSSを収集
-        const allCSS = this.collectAllCSS();
-        
-        // 完全なHTMLを生成
-        const completeHTML = `<!DOCTYPE html>
+      })
+      .join('\n');
+
+    // HTMLテンプレートを生成
+    const htmlTemplate = `<!DOCTYPE html>
 <html lang="ja">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>${title}</title>
-    <meta name="generator" content="Markdown Viewer with Mermaid Extension">
-    <meta name="exported-from" content="${currentURL}">
-    <meta name="export-date" content="${timestamp}">
     <style>
-${allCSS}
+        /* リセットスタイル */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
         
-        /* Export-specific styles */
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
             line-height: 1.6;
-            max-width: 1000px;
-            margin: 0 auto;
+            color: #333;
+            background-color: #fff;
             padding: 20px;
-            color: #24292e;
-            background-color: #ffffff;
+            max-width: 1200px;
+            margin: 0 auto;
         }
         
-        .export-header {
-            border-bottom: 2px solid #e1e4e8;
-            margin-bottom: 2em;
-            padding-bottom: 1em;
-            text-align: center;
-            color: #586069;
+        /* Markdownコンテンツのスタイル */
+        ${styles}
+        
+        /* エクスポート用追加スタイル */
+        .markdown-content {
+            max-width: none;
         }
         
-        .export-footer {
-            border-top: 1px solid #e1e4e8;
-            margin-top: 3em;
-            padding-top: 1em;
-            text-align: center;
-            font-size: 0.9em;
-            color: #586069;
+        /* ツールバーや他のUI要素を非表示 */
+        .toolbar, .toc-panel, .search-panel {
+            display: none !important;
         }
         
         @media print {
-            .export-header, .export-footer {
-                break-inside: avoid;
+            body {
+                padding: 0;
             }
         }
     </style>
 </head>
 <body>
-    <div class="export-header">
-        <h1>${title}</h1>
-        <p>エクスポート日時: ${timestamp}</p>
-        <p>元URL: <a href="${currentURL}">${currentURL}</a></p>
-    </div>
-    
     <div class="markdown-content">
         ${markdownContent.innerHTML}
     </div>
     
-    <div class="export-footer">
-        <p>Generated by <strong>Markdown Viewer with Mermaid Extension</strong></p>
-        <p>Exported from: ${currentURL}</p>
-    </div>
+    <footer style="margin-top: 40px; padding-top: 20px; border-top: 1px solid #eee; color: #666; font-size: 12px;">
+        <p>エクスポート日時: ${new Date().toLocaleString('ja-JP')}</p>
+        <p>Generated by Markdown Viewer with Mermaid Chrome Extension</p>
+    </footer>
 </body>
 </html>`;
-        
-        return completeHTML;
+
+    return htmlTemplate;
+  }
+
+  /**
+   * HTMLファイルをダウンロードする
+   * @param {string} htmlContent HTMLコンテンツ
+   */
+  downloadHTMLFile(htmlContent) {
+    try {
+      // Blobを作成
+      const blob = new Blob([htmlContent], {
+        type: 'text/html;charset=utf-8',
+      });
+      const url = URL.createObjectURL(blob);
+
+      // ダウンロードリンクを作成
+      const link = document.createElement('a');
+      link.href = url;
+
+      // ファイル名を生成（タイトル + タイムスタンプ）
+      const timestamp = new Date()
+        .toISOString()
+        .slice(0, SIZES.ANIMATION_OFFSET)
+        .replace(/:/g, '-');
+      const title = document.title || 'markdown-document';
+      const filename = `${title.replace(/[^a-zA-Z0-9\u3040-\u309F\u30A0-\u30FF\u4E00-\u9FAF]/g, '_')}-${timestamp}.html`;
+
+      link.download = filename;
+      link.style.display = 'none';
+
+      // ダウンロードを実行
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      URL.revokeObjectURL(url);
+
+      console.log(`HTMLファイルをダウンロードしました: ${filename}`);
+    } catch (error) {
+      console.error('HTMLファイルのダウンロードに失敗しました:', error);
+      throw error;
     }
-    
-    collectAllCSS() {
-        let allCSS = '';
-        
-        // インラインスタイルから収集
-        const styleElements = document.querySelectorAll('style');
-        styleElements.forEach(style => {
-            if (style.textContent) {
-                allCSS += style.textContent + '\n';
-            }
-        });
-        
-        // リンクされたスタイルシートから収集（Chrome拡張機能のもの）
-        const linkElements = document.querySelectorAll('link[rel="stylesheet"]');
-        linkElements.forEach(link => {
-            if (link.href && link.href.includes('chrome-extension://')) {
-                // Chrome拡張機能のCSSは直接アクセスできないため、
-                // 主要なスタイルを手動で追加
-                allCSS += this.getEssentialCSS();
-            }
-        });
-        
-        return allCSS;
-    }
-    
-    getEssentialCSS() {
-        return `
-        /* Essential Markdown styles */
-        h1, h2, h3, h4, h5, h6 {
-            margin-top: 2em;
-            margin-bottom: 1em;
-            font-weight: 600;
-            line-height: 1.25;
-        }
-        
-        h1 { font-size: 2em; border-bottom: 1px solid #eaecef; padding-bottom: 0.3em; }
-        h2 { font-size: 1.5em; border-bottom: 1px solid #eaecef; padding-bottom: 0.3em; }
-        h3 { font-size: 1.25em; }
-        h4 { font-size: 1em; }
-        h5 { font-size: 0.875em; }
-        h6 { font-size: 0.85em; color: #6a737d; }
-        
-        p { margin-bottom: 16px; }
-        
-        code {
-            background-color: #f6f8fa;
-            border-radius: 6px;
-            font-size: 85%;
-            margin: 0;
-            padding: 0.2em 0.4em;
-            font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
-        }
-        
-        pre {
-            background-color: #f6f8fa;
-            border-radius: 6px;
-            font-size: 85%;
-            line-height: 1.45;
-            overflow: auto;
-            padding: 16px;
-            margin-bottom: 16px;
-        }
-        
-        pre code {
-            background-color: transparent;
-            border: 0;
-            display: inline;
-            line-height: inherit;
-            margin: 0;
-            max-width: auto;
-            overflow: visible;
-            padding: 0;
-            word-wrap: normal;
-        }
-        
-        blockquote {
-            border-left: 0.25em solid #dfe2e5;
-            color: #6a737d;
-            padding: 0 1em;
-            margin: 0 0 16px 0;
-        }
-        
-        ul, ol {
-            padding-left: 2em;
-            margin-bottom: 16px;
-        }
-        
-        li + li {
-            margin-top: 0.25em;
-        }
-        
-        table {
-            border-collapse: collapse;
-            border-spacing: 0;
-            display: block;
-            width: max-content;
-            max-width: 100%;
-            overflow: auto;
-            margin-bottom: 16px;
-        }
-        
-        table th, table td {
-            border: 1px solid #dfe2e5;
-            padding: 6px 13px;
-        }
-        
-        table th {
-            background-color: #f6f8fa;
-            font-weight: 600;
-        }
-        
-        table tr {
-            background-color: #fff;
-            border-top: 1px solid #c6cbd1;
-        }
-        
-        table tr:nth-child(2n) {
-            background-color: #f6f8fa;
-        }
-        
-        a {
-            color: #0366d6;
-            text-decoration: none;
-        }
-        
-        a:hover {
-            text-decoration: underline;
-        }
-        
-        .mermaid {
-            text-align: center;
-            margin: 1em 0;
-        }
-        `;
-    }
-    
-    downloadHTMLFile(htmlContent) {
-        const timestamp = new Date().toISOString().slice(0, 19).replace(/:/g, '-');
-        const filename = `markdown-export-${timestamp}.html`;
-        
-        const blob = new Blob([htmlContent], { type: 'text/html;charset=utf-8' });
-        const url = URL.createObjectURL(blob);
-        
-        const downloadLink = document.createElement('a');
-        downloadLink.href = url;
-        downloadLink.download = filename;
-        downloadLink.style.display = 'none';
-        
-        document.body.appendChild(downloadLink);
-        downloadLink.click();
-        document.body.removeChild(downloadLink);
-        
-        // Clean up
-        setTimeout(() => URL.revokeObjectURL(url), 1000);
-    }
-    
-    showExportSuccessMessage() {
-        const message = document.createElement('div');
-        message.style.cssText = `
+  }
+
+  // === PDF関連コードを完全削除しました ===
+  showExportSuccessMessage() {
+    const message = document.createElement('div');
+    message.style.cssText = `
             position: fixed;
             top: 20px;
             right: 20px;
@@ -3082,7 +1474,7 @@ ${allCSS}
             font-size: 14px;
             max-width: 350px;
         `;
-        message.innerHTML = `
+    message.innerHTML = `
             <div style="display: flex; align-items: center;">
                 <span style="font-size: 18px; margin-right: 10px;">✅</span>
                 <div>
@@ -3091,27 +1483,27 @@ ${allCSS}
                 </div>
             </div>
         `;
-        document.body.appendChild(message);
-        
-        // Auto-hide after 3 seconds
-        setTimeout(() => {
-            if (message.parentNode) {
-                message.parentNode.removeChild(message);
-            }
-        }, 3000);
+    document.body.appendChild(message);
+
+    // Auto-hide after 3 seconds
+    setTimeout(() => {
+      if (message.parentNode) {
+        message.parentNode.removeChild(message);
+      }
+    }, 3000);
+  }
+
+  showExportErrorMessage() {
+    // 既存のトーストがあれば削除
+    const existingToast = document.querySelector('.export-error-toast');
+    if (existingToast) {
+      existingToast.remove();
     }
-    
-    showExportErrorMessage() {
-        // 既存のトーストがあれば削除
-        const existingToast = document.querySelector('.export-error-toast');
-        if (existingToast) {
-            existingToast.remove();
-        }
-        
-        // 印刷エラーと完全に同じスタイル
-        const toast = document.createElement('div');
-        toast.className = 'export-error-toast';
-        toast.innerHTML = `
+
+    // 印刷エラーと完全に同じスタイル
+    const toast = document.createElement('div');
+    toast.className = 'export-error-toast';
+    toast.innerHTML = `
             <div class="toast-content">
                 <div class="toast-icon">⚠️</div>
                 <div class="toast-message">
@@ -3122,9 +1514,9 @@ ${allCSS}
                 <button class="toast-close">×</button>
             </div>
         `;
-        
-        // スタイルを設定 - 印刷エラーと完全に同じ
-        toast.style.cssText = `
+
+    // スタイルを設定 - 印刷エラーと完全に同じ
+    toast.style.cssText = `
             position: fixed;
             top: 80px;
             right: 20px;
@@ -3137,35 +1529,35 @@ ${allCSS}
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
             animation: slideInRight 0.3s ease;
         `;
-        
-        // コンテンツのスタイル
-        const content = toast.querySelector('.toast-content');
-        content.style.cssText = `
+
+    // コンテンツのスタイル
+    const content = toast.querySelector('.toast-content');
+    content.style.cssText = `
             display: flex;
             align-items: flex-start;
             padding: 16px;
             gap: 12px;
         `;
-        
-        // アイコンのスタイル
-        const icon = toast.querySelector('.toast-icon');
-        icon.style.cssText = `
+
+    // アイコンのスタイル
+    const icon = toast.querySelector('.toast-icon');
+    icon.style.cssText = `
             font-size: 20px;
             flex-shrink: 0;
         `;
-        
-        // メッセージのスタイル
-        const message = toast.querySelector('.toast-message');
-        message.style.cssText = `
+
+    // メッセージのスタイル
+    const message = toast.querySelector('.toast-message');
+    message.style.cssText = `
             flex: 1;
             font-size: 14px;
             line-height: 1.4;
             color: #856404;
         `;
-        
-        // 閉じるボタンのスタイル
-        const closeBtn = toast.querySelector('.toast-close');
-        closeBtn.style.cssText = `
+
+    // 閉じるボタンのスタイル
+    const closeBtn = toast.querySelector('.toast-close');
+    closeBtn.style.cssText = `
             background: none;
             border: none;
             font-size: 18px;
@@ -3180,12 +1572,12 @@ ${allCSS}
             border-radius: 4px;
             flex-shrink: 0;
         `;
-        
-        // CSSアニメーションを追加
-        if (!document.querySelector('#toast-animations')) {
-            const style = document.createElement('style');
-            style.id = 'toast-animations';
-            style.textContent = `
+
+    // CSSアニメーションを追加
+    if (!document.querySelector('#toast-animations')) {
+      const style = document.createElement('style');
+      style.id = 'toast-animations';
+      style.textContent = `
                 @keyframes slideInRight {
                     from {
                         transform: translateX(100%);
@@ -3201,31 +1593,31 @@ ${allCSS}
                     background: rgba(0,0,0,0.1) !important;
                 }
             `;
-            document.head.appendChild(style);
-        }
-        
-        document.body.appendChild(toast);
-        
-        // 閉じるボタンのイベントリスナー
-        closeBtn.addEventListener('click', () => {
-            toast.remove();
-        });
-        
-        // ホバー効果
-        closeBtn.addEventListener('mouseenter', () => {
-            closeBtn.style.backgroundColor = 'rgba(0,0,0,0.1)';
-        });
-        closeBtn.addEventListener('mouseleave', () => {
-            closeBtn.style.backgroundColor = 'transparent';
-        });
-        
-        // 5秒後に自動で閉じる
-        setTimeout(() => {
-            if (toast.parentNode) {
-                toast.remove();
-            }
-        }, 5000);
+      document.head.appendChild(style);
     }
+
+    document.body.appendChild(toast);
+
+    // 閉じるボタンのイベントリスナー
+    closeBtn.addEventListener('click', () => {
+      toast.remove();
+    });
+
+    // ホバー効果
+    closeBtn.addEventListener('mouseenter', () => {
+      closeBtn.style.backgroundColor = 'rgba(0,0,0,0.1)';
+    });
+    closeBtn.addEventListener('mouseleave', () => {
+      closeBtn.style.backgroundColor = 'transparent';
+    });
+
+    // 5秒後に自動で閉じる
+    setTimeout(() => {
+      if (toast.parentNode) {
+        toast.remove();
+      }
+    }, 5000);
+  }
 }
 
 // Ensure class is available globally

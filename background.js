@@ -16,6 +16,235 @@
  */
 
 /**
+ * Service Worker用定数定義
+ * content_scriptsのconstants.jsとは独立したコンテキストのため、必要な定数を定義
+ */
+const BACKGROUND_CONSTANTS = {
+  TIMEOUTS: {
+    VERY_LONG_DELAY: 1000,
+    DIAGNOSTIC_DELAY: 100,
+  },
+  INTERVALS: {
+    HEAVY_PROCESS: 5000,
+  },
+};
+
+// 短縮形エイリアス
+const INTERVALS = BACKGROUND_CONSTANTS.INTERVALS;
+
+/**
+ * Service Worker登録とエラー監視システム
+ * Status code 15 エラーの詳細分析とデバッグ機能を提供
+ */
+const ServiceWorkerMonitor = {
+  /**
+   * Service Worker登録状態の詳細分析
+   */
+  async analyzeRegistrationStatus() {
+    try {
+      console.log('🔍 Service Worker Registration Analysis:');
+      console.log('- Manifest V3 Environment: ✓');
+      console.log(
+        '- Current Context:',
+        typeof self !== 'undefined' ? 'Service Worker' : 'Unknown'
+      );
+      console.log('- Available APIs:');
+      console.log(
+        '  - chrome.runtime:',
+        typeof chrome?.runtime !== 'undefined' ? '✓' : '❌'
+      );
+      console.log(
+        '  - chrome.storage:',
+        typeof chrome?.storage !== 'undefined' ? '✓' : '❌'
+      );
+      console.log(
+        '  - chrome.action:',
+        typeof chrome?.action !== 'undefined' ? '✓' : '❌'
+      );
+      console.log(
+        '  - chrome.notifications:',
+        typeof chrome?.notifications !== 'undefined' ? '✓' : '❌'
+      );
+
+      // Service Worker登録状態をチェック（Service Worker自身からは直接確認できない）
+      try {
+        if (typeof navigator !== 'undefined' && 'serviceWorker' in navigator) {
+          const registration = await navigator.serviceWorker.getRegistration();
+          console.log(
+            '- ServiceWorker Registration:',
+            registration ? '✓ Registered' : '❌ Not Registered'
+          );
+          if (registration) {
+            console.log('  - Scope:', registration.scope);
+            console.log('  - State:', registration.active?.state || 'Unknown');
+          }
+        } else {
+          console.log(
+            '- ServiceWorker Support: ❌ Not Available (Service Worker Context)'
+          );
+        }
+      } catch (error) {
+        console.log(
+          '- ServiceWorker Registration Check: ❌ Cannot access from Service Worker context:',
+          error.message
+        );
+      }
+
+      // セキュリティコンテキストの確認
+      console.log('- Security Context:');
+      console.log(
+        '  - isSecureContext:',
+        typeof self.isSecureContext !== 'undefined'
+          ? self.isSecureContext
+          : 'Unknown'
+      );
+      try {
+        if (typeof location !== 'undefined') {
+          console.log('  - Protocol:', location.protocol || 'Unknown');
+          console.log('  - Origin:', location.origin || 'Unknown');
+        } else {
+          console.log(
+            '  - Protocol: chrome-extension: (Service Worker context)'
+          );
+          console.log(
+            '  - Origin: chrome-extension://[extension-id] (Service Worker context)'
+          );
+        }
+      } catch (error) {
+        console.log(
+          '  - Location: ❌ Cannot access location in Service Worker context:',
+          error.message
+        );
+      }
+    } catch (error) {
+      console.error('❌ Service Worker Analysis Error:', error);
+    }
+  },
+
+  /**
+   * エラー詳細分析 - Status code 15の原因特定
+   */
+  analyzeStatusCode15() {
+    console.log('🚨 Status Code 15 (SECURITY_ERR) Analysis:');
+    console.log('Possible causes:');
+    console.log('1. Insecure context (non-HTTPS)');
+    console.log('2. File:// protocol restrictions');
+    console.log('3. Service Worker scope violations');
+    console.log('4. CSP (Content Security Policy) restrictions');
+    console.log('5. Manifest V3 permission issues');
+
+    // CSP検証（Service Workerからは直接アクセスできない）
+    try {
+      if (typeof document !== 'undefined') {
+        const cspMeta = document.querySelector(
+          'meta[http-equiv="Content-Security-Policy"]'
+        );
+        if (cspMeta) {
+          console.log('6. CSP Meta tag found:', cspMeta.content);
+        }
+      } else {
+        console.log(
+          '6. CSP Meta tag: ❌ Cannot access from Service Worker context'
+        );
+      }
+    } catch (error) {
+      console.log(
+        '6. CSP Meta tag check: ❌ Document not available in Service Worker:',
+        error.message
+      );
+    }
+
+    // Manifest検証
+    if (chrome?.runtime?.getManifest) {
+      const manifest = chrome.runtime.getManifest();
+      console.log('7. Manifest version:', manifest.manifest_version);
+      console.log('8. Background script config:', manifest.background);
+    }
+  },
+};
+
+// Service Worker初期化とエラー監視
+console.log('🚀 Background Service Worker Initializing...');
+
+// Global error handler for unhandled errors
+self.addEventListener('error', event => {
+  console.error('🚨 Service Worker Global Error:', event.error);
+  console.error('  - Message:', event.message);
+  console.error('  - Filename:', event.filename);
+  console.error('  - Line:', event.lineno);
+  console.error('  - Column:', event.colno);
+});
+
+// Global error handler for unhandled promise rejections
+self.addEventListener('unhandledrejection', event => {
+  console.error('🚨 Service Worker Unhandled Promise Rejection:', event.reason);
+  event.preventDefault(); // Prevent the default browser console error
+});
+
+// Enhanced Service Worker lifecycle management
+const ServiceWorkerLifecycle = {
+  /**
+   * Service Worker activation handler
+   */
+  handleActivation() {
+    console.log('🔄 Service Worker Activated');
+    // Claim all clients immediately
+    return self.clients.claim();
+  },
+
+  /**
+   * Service Worker installation handler
+   */
+  handleInstallation() {
+    console.log('📦 Service Worker Installing');
+    // Skip waiting to activate immediately
+    return self.skipWaiting();
+  },
+
+  /**
+   * Initialize all lifecycle events
+   */
+  init() {
+    self.addEventListener('install', event => {
+      console.log('📦 Service Worker Install Event');
+      event.waitUntil(this.handleInstallation());
+    });
+
+    self.addEventListener('activate', event => {
+      console.log('🔄 Service Worker Activate Event');
+      event.waitUntil(this.handleActivation());
+    });
+
+    // Log Service Worker state changes（Service Workerコンテキストでは利用不可）
+    try {
+      if (typeof navigator !== 'undefined' && 'serviceWorker' in navigator) {
+        navigator.serviceWorker.addEventListener('statechange', event => {
+          console.log('🔄 Service Worker State Change:', event.target.state);
+        });
+      } else {
+        console.log(
+          '📝 Service Worker state monitoring: Not available in Service Worker context'
+        );
+      }
+    } catch (error) {
+      console.log(
+        '📝 Service Worker state monitoring: Cannot access navigator in Service Worker context:',
+        error.message
+      );
+    }
+  },
+};
+
+// Initialize lifecycle management
+ServiceWorkerLifecycle.init();
+
+// Run diagnostics after a short delay to allow initialization
+setTimeout(() => {
+  ServiceWorkerMonitor.analyzeRegistrationStatus();
+  ServiceWorkerMonitor.analyzeStatusCode15();
+}, BACKGROUND_CONSTANTS.TIMEOUTS.DIAGNOSTIC_DELAY);
+
+/**
  * 拡張機能インストール時のイベントハンドラー
  *
  * @description 拡張機能のインストール、更新、再読み込み時に実行されます。
@@ -43,13 +272,13 @@ chrome.runtime.onInstalled.addListener(details => {
 
 /**
  * 初回インストール時の処理を実行する関数
- * 
+ *
  * @function handleFirstInstall
  * @description 拡張機能が初回インストールされた際に実行される処理を定義します。
  *              ウェルカム通知の表示と、1秒遅延後のセットアップガイド表示を行います。
  * @returns {void} 戻り値なし
  * @since 1.0.0
- * 
+ *
  * @example
  * // 初回インストール処理を手動実行
  * handleFirstInstall();
@@ -58,24 +287,21 @@ function handleFirstInstall() {
   // Show welcome notification
   showWelcomeNotification();
 
-  // Open setup guide after a short delay
-  setTimeout(() => {
-    chrome.tabs.create({
-      url: chrome.runtime.getURL('setup-guide.html'),
-    });
-  }, 1000);
+  // Note: setup-guide.html was removed during cleanup
+  // Instead of opening setup guide, we'll just show the welcome notification
+  console.log('First install completed. Welcome notification shown.');
 }
 
 /**
  * 拡張機能更新時の処理を実行する関数
- * 
+ *
  * @function handleUpdate
  * @description 拡張機能が更新された際に実行される処理を定義します。
  *              現在はログ出力のみですが、将来的に更新通知機能を実装可能です。
  * @param {string} previousVersion - 更新前のバージョン番号文字列
  * @returns {void} 戻り値なし
  * @since 1.0.0
- * 
+ *
  * @example
  * // 更新処理を手動実行（バージョン文字列を指定）
  * handleUpdate('1.9.0');
@@ -87,14 +313,14 @@ function handleUpdate(previousVersion) {
 
 /**
  * ウェルカム通知を表示する関数
- * 
+ *
  * @function showWelcomeNotification
  * @description 拡張機能インストール後のウェルカム通知を表示します。
  *              開発環境では通知をスキップし、本番環境でのみ通知を表示します。
  *              通知にはセットアップリマインダーとアクションボタンが含まれます。
  * @returns {void} 戻り値なし
  * @since 1.0.0
- * 
+ *
  * @example
  * // ウェルカム通知を手動表示
  * showWelcomeNotification();
@@ -127,7 +353,7 @@ function showWelcomeNotification() {
 
 /**
  * 通知ボタンクリックイベントハンドラーの設定
- * 
+ *
  * @description Chrome通知APIのボタンクリックイベントをリッスンし、
  *              適切なアクションを実行します。ウェルカム通知の「設定を開く」
  *              ボタンクリック時には拡張機能設定ページを開きます。
@@ -136,7 +362,7 @@ function showWelcomeNotification() {
 if (chrome.notifications) {
   /**
    * 通知ボタンクリック時の処理
-   * 
+   *
    * @param {string} notificationId - 通知の識別ID
    * @param {number} buttonIndex - クリックされたボタンのインデックス（0ベース）
    * @returns {void}
@@ -185,18 +411,18 @@ chrome.contextMenus.onClicked.addListener((info, _tab) => {
 
 /**
  * バッジ表示をファイルアクセス状態に基づいて更新する関数
- * 
+ *
  * @function updateBadge
  * @description Chrome拡張機能のファイルアクセス権限状態をチェックし、
  *              拡張機能アイコンのバッジとツールチップを適切に更新します。
  *              アクセス権がある場合はバッジを非表示、ない場合は警告バッジを表示します。
  * @returns {void} 戻り値なし
  * @since 1.0.0
- * 
+ *
  * @example
  * // バッジを手動更新
  * updateBadge();
- * 
+ *
  * @see {@link https://developer.chrome.com/docs/extensions/reference/action/} Chrome Action API
  */
 function updateBadge() {
@@ -224,25 +450,25 @@ function updateBadge() {
 }
 
 // Update badge periodically
-setInterval(updateBadge, 5000);
+setInterval(updateBadge, INTERVALS.HEAVY_PROCESS);
 
 // Update badge on startup
 updateBadge();
 
 /**
  * Cipherサービスを初期化する関数
- * 
+ *
  * @function initializeCipher
  * @description Cipherサービスの自動起動機能を初期化し、
  *              ローカルストレージに設定を保存します。
  *              拡張機能起動時に実行され、自動起動フラグと初期化タイムスタンプを設定します。
  * @returns {void} 戻り値なし
  * @since 1.0.0
- * 
+ *
  * @example
  * // Cipher初期化を手動実行
  * initializeCipher();
- * 
+ *
  * @see {@link https://developer.chrome.com/docs/extensions/reference/storage/} Chrome Storage API
  */
 function initializeCipher() {
@@ -279,27 +505,28 @@ initializeCipher();
 
 /**
  * テスト用関数群（開発・デバッグ用途）
- * 
+ *
  * @namespace testFunctions
  * @description 開発時のテストとデバッグに使用する関数群を提供します。
  *              本番環境でも利用可能ですが、主に開発者向けの機能です。
+ *              Service Workerコンテキストでは self オブジェクトを使用します。
  * @since 1.0.0
- * 
+ *
  * @example
  * // コンソールからテスト実行
  * testFunctions.testWelcomeNotification();
  */
-window.testFunctions = {
+const testFunctions = {
   /**
    * ウェルカム通知のテスト表示
-   * 
+   *
    * @method testWelcomeNotification
    * @memberof testFunctions
    * @description テスト用のウェルカム通知を表示します。
    *              本番の通知と区別するため「[テスト]」マークが付きます。
    * @returns {void} 戻り値なし
    * @since 1.0.0
-   * 
+   *
    * @example
    * // ウェルカム通知をテスト
    * testFunctions.testWelcomeNotification();
@@ -320,7 +547,7 @@ window.testFunctions = {
 
   /**
    * セットアップガイド表示のテスト
-   * 
+   *
    * @method testSetupGuide
    * @memberof testFunctions
    * @description セットアップガイドページを新しいタブで開くテストを実行します。
@@ -336,7 +563,7 @@ window.testFunctions = {
 
   /**
    * バッジ表示のテスト
-   * 
+   *
    * @method testBadge
    * @memberof testFunctions
    * @description 警告バッジとタイトルを強制的に表示してテストします。
@@ -355,7 +582,7 @@ window.testFunctions = {
 
   /**
    * バッジをクリアする
-   * 
+   *
    * @method clearBadge
    * @memberof testFunctions
    * @description 表示中のバッジを削除し、デフォルトタイトルに戻します。
@@ -372,7 +599,7 @@ window.testFunctions = {
 
   /**
    * インストールイベントをシミュレート
-   * 
+   *
    * @method simulateInstall
    * @memberof testFunctions
    * @description 初回インストール処理を手動実行してテストします。
@@ -386,7 +613,7 @@ window.testFunctions = {
 
   /**
    * Cipher初期化テスト
-   * 
+   *
    * @method testCipherInit
    * @memberof testFunctions
    * @description Cipherサービスの初期化処理をテスト実行します。
@@ -400,7 +627,7 @@ window.testFunctions = {
 
   /**
    * Cipher状態確認テスト
-   * 
+   *
    * @method testCipherStatus
    * @memberof testFunctions
    * @description Cipherサービスの状態をローカルストレージから取得してコンソール出力します。
@@ -417,6 +644,9 @@ window.testFunctions = {
     );
   },
 };
+
+// Service Worker グローバルスコープに testFunctions を追加
+self.testFunctions = testFunctions;
 
 // コンソールからテストできるように
 console.log('🧪 Test functions available:');
@@ -451,50 +681,24 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
         }
       );
       return true;
-    case 'checkFileAccess':
-      // Handle file access permission check from content script
-      try {
-        chrome.management.getSelf(info => {
-          if (chrome.runtime.lastError) {
-            console.error(
-              'Background: chrome.management.getSelf error:',
-              chrome.runtime.lastError
-            );
-            sendResponse({ success: false, hasFileAccess: false });
-            return;
-          }
-
-          const hasAccess = info.isAllowedFileSchemeAccess;
-          console.log(
-            'Background: File access permission check result:',
-            hasAccess
-          );
-          sendResponse({ success: true, hasFileAccess: hasAccess });
-        });
-        return true; // 非同期レスポンスのため
-      } catch (error) {
-        console.error('Background: Error checking file access:', error);
-        sendResponse({ success: false, hasFileAccess: false });
-      }
-      break;
     case 'testNotification':
-      window.testFunctions.testWelcomeNotification();
+      testFunctions.testWelcomeNotification();
       sendResponse({ success: true });
       break;
     case 'testSetupGuide':
-      window.testFunctions.testSetupGuide();
+      testFunctions.testSetupGuide();
       sendResponse({ success: true });
       break;
     case 'testBadge':
-      window.testFunctions.testBadge();
+      testFunctions.testBadge();
       sendResponse({ success: true });
       break;
     case 'clearBadge':
-      window.testFunctions.clearBadge();
+      testFunctions.clearBadge();
       sendResponse({ success: true });
       break;
     case 'simulateInstall':
-      window.testFunctions.simulateInstall();
+      testFunctions.simulateInstall();
       sendResponse({ success: true });
       break;
     default:

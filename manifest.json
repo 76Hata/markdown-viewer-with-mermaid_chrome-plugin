@@ -8,11 +8,7 @@
     "48": "icons/mdvier-icon_48.png",
     "128": "icons/mdvier-icon_128.png"
   },
-  "permissions": [
-    "storage",
-    "notifications",
-    "contextMenus"
-  ],
+  "permissions": ["storage", "notifications", "contextMenus", "activeTab"],
   "action": {
     "default_popup": "popup.html",
     "default_title": "Markdown Viewer with Mermaid",
@@ -26,25 +22,21 @@
   "background": {
     "service_worker": "background.js"
   },
-  "host_permissions": [
-    "file:///*",
-    "http://*/*",
-    "https://*/*"
-  ],
+  "host_permissions": ["file:///*", "http://*/*", "https://*/*"],
   "content_scripts": [
     {
       "matches": [
-        "file:///*/*.md", 
-        "file:///*/*.mkd", 
-        "file:///*/*.mdx", 
+        "file:///*/*.md",
+        "file:///*/*.mkd",
+        "file:///*/*.mdx",
         "file:///*/*.markdown",
         "file://*/*.md",
-        "file://*/*.mkd", 
-        "file://*/*.mdx", 
+        "file://*/*.mkd",
+        "file://*/*.mdx",
         "file://*/*.markdown",
         "http://*/*.md",
         "http://*/*.mkd",
-        "http://*/*.mdx", 
+        "http://*/*.mdx",
         "http://*/*.markdown",
         "https://*/*.md",
         "https://*/*.mkd",
@@ -53,6 +45,8 @@
       ],
       "js": [
         "lib/marked.min.js",
+        "lib/mermaid.min.js",
+        "js/constants.js",
         "js/toc-generator.js",
         "js/theme-manager.js",
         "js/search-engine.js",
@@ -66,22 +60,12 @@
   ],
   "web_accessible_resources": [
     {
-      "resources": [
-        "js/*.js",
-        "css/*.css",
-        "lib/*.js",
-        "icons/*.png",
-        "doc/*.png"
-      ],
-      "matches": [
-        "file:///*",
-        "http://*/*",
-        "https://*/*"
-      ]
+      "resources": ["js/*.js", "css/*.css", "lib/*.js", "icons/*.png", "doc/*.png"],
+      "matches": ["file:///*", "http://*/*", "https://*/*"]
     }
   ],
   "content_security_policy": {
-    "extension_pages": "script-src 'self'; object-src 'self'; style-src 'self' 'unsafe-inline';",
-    "content_scripts": "script-src 'self'; object-src 'self'; style-src 'self' 'unsafe-inline';"
+    "extension_pages": "script-src 'self' 'wasm-unsafe-eval'; object-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; worker-src 'self';",
+    "content_scripts": "script-src 'self' 'wasm-unsafe-eval'; object-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; worker-src 'self';"
   }
 }
