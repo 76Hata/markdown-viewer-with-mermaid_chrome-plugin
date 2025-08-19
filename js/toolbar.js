@@ -91,27 +91,58 @@ class Toolbar {
     this.toolbarElement = document.createElement('div');
     this.toolbarElement.className = 'main-toolbar';
     this.toolbarElement.title = 'ドラッグで移動可能';
-    this.toolbarElement.innerHTML = `
-            <div class="toolbar-drag-handle" title="ツールバーをドラッグして移動">⋮⋮</div>
-            <button class="toolbar-btn" id="search-btn" title="検索 (Ctrl+F)">
-                🔍
-            </button>
-            <div class="theme-selector-container"></div>
-            <button class="toolbar-btn" id="print-btn" title="印刷 (Ctrl+Shift+P)">
-                🖨️
-            </button>
-            <div class="export-selector">
-                <button class="toolbar-btn" id="export-btn" title="HTMLエクスポート">
-                    📤
-                </button>
-            </div>
-            <button class="toolbar-btn" id="settings-btn" title="設定">
-                ⚙️
-            </button>
-            <button class="toolbar-btn" id="hide-toolbar-btn" title="ツールバーを隠す (F11)">
-                ✕
-            </button>
-        `;
+    
+    // Create elements safely without innerHTML
+    const dragHandle = document.createElement('div');
+    dragHandle.className = 'toolbar-drag-handle';
+    dragHandle.title = 'ツールバーをドラッグして移動';
+    dragHandle.textContent = '⋮⋮';
+    
+    const searchBtn = document.createElement('button');
+    searchBtn.className = 'toolbar-btn';
+    searchBtn.id = 'search-btn';
+    searchBtn.title = '検索 (Ctrl+F)';
+    searchBtn.textContent = '🔍';
+    
+    const themeSelectorContainer = document.createElement('div');
+    themeSelectorContainer.className = 'theme-selector-container';
+    
+    const printBtn = document.createElement('button');
+    printBtn.className = 'toolbar-btn';
+    printBtn.id = 'print-btn';
+    printBtn.title = '印刷 (Ctrl+Shift+P)';
+    printBtn.textContent = '🖨️';
+    
+    const exportSelector = document.createElement('div');
+    exportSelector.className = 'export-selector';
+    
+    const exportBtn = document.createElement('button');
+    exportBtn.className = 'toolbar-btn';
+    exportBtn.id = 'export-btn';
+    exportBtn.title = 'HTMLエクスポート';
+    exportBtn.textContent = '📤';
+    exportSelector.appendChild(exportBtn);
+    
+    const settingsBtn = document.createElement('button');
+    settingsBtn.className = 'toolbar-btn';
+    settingsBtn.id = 'settings-btn';
+    settingsBtn.title = '設定';
+    settingsBtn.textContent = '⚙️';
+    
+    const hideBtn = document.createElement('button');
+    hideBtn.className = 'toolbar-btn';
+    hideBtn.id = 'hide-toolbar-btn';
+    hideBtn.title = 'ツールバーを隠す (F11)';
+    hideBtn.textContent = '✕';
+    
+    // Append all elements
+    this.toolbarElement.appendChild(dragHandle);
+    this.toolbarElement.appendChild(searchBtn);
+    this.toolbarElement.appendChild(themeSelectorContainer);
+    this.toolbarElement.appendChild(printBtn);
+    this.toolbarElement.appendChild(exportSelector);
+    this.toolbarElement.appendChild(settingsBtn);
+    this.toolbarElement.appendChild(hideBtn);
 
     this.container.appendChild(this.toolbarElement);
     this.createShowButton();
@@ -173,33 +204,58 @@ class Toolbar {
   createThemeSelector(container) {
     const themeSelector = document.createElement('div');
     themeSelector.className = 'theme-selector';
-    themeSelector.innerHTML = `
-            <button class="toolbar-btn theme-selector-button" title="テーマを選択">
-                🎨 <span class="theme-name">Light</span>
-            </button>
-            <div class="theme-dropdown" style="display: none;">
-                <div class="theme-options">
-                    <div class="theme-option" data-theme="light">
-                        <div class="theme-preview light-preview">
-                            <div class="preview-text">Aa</div>
-                        </div>
-                        <span class="theme-label">Light</span>
-                    </div>
-                    <div class="theme-option" data-theme="dark">
-                        <div class="theme-preview dark-preview">
-                            <div class="preview-text">Aa</div>
-                        </div>
-                        <span class="theme-label">Dark</span>
-                    </div>
-                    <div class="theme-option" data-theme="sepia">
-                        <div class="theme-preview sepia-preview">
-                            <div class="preview-text">Aa</div>
-                        </div>
-                        <span class="theme-label">Sepia</span>
-                    </div>
-                </div>
-            </div>
-        `;
+    
+    // Create theme selector button safely
+    const themeSelectorBtn = document.createElement('button');
+    themeSelectorBtn.className = 'toolbar-btn theme-selector-button';
+    themeSelectorBtn.title = 'テーマを選択';
+    themeSelectorBtn.textContent = '🎨 ';
+    
+    const themeNameSpan = document.createElement('span');
+    themeNameSpan.className = 'theme-name';
+    themeNameSpan.textContent = 'Light';
+    themeSelectorBtn.appendChild(themeNameSpan);
+    
+    // Create dropdown
+    const themeDropdown = document.createElement('div');
+    themeDropdown.className = 'theme-dropdown';
+    themeDropdown.style.display = 'none';
+    
+    const themeOptions = document.createElement('div');
+    themeOptions.className = 'theme-options';
+    
+    // Create theme options
+    const themes = [
+      { key: 'light', label: 'Light', preview: 'light-preview' },
+      { key: 'dark', label: 'Dark', preview: 'dark-preview' },
+      { key: 'sepia', label: 'Sepia', preview: 'sepia-preview' }
+    ];
+    
+    themes.forEach(theme => {
+      const themeOption = document.createElement('div');
+      themeOption.className = 'theme-option';
+      themeOption.dataset.theme = theme.key;
+      
+      const themePreview = document.createElement('div');
+      themePreview.className = `theme-preview ${theme.preview}`;
+      
+      const previewText = document.createElement('div');
+      previewText.className = 'preview-text';
+      previewText.textContent = 'Aa';
+      themePreview.appendChild(previewText);
+      
+      const themeLabel = document.createElement('span');
+      themeLabel.className = 'theme-label';
+      themeLabel.textContent = theme.label;
+      
+      themeOption.appendChild(themePreview);
+      themeOption.appendChild(themeLabel);
+      themeOptions.appendChild(themeOption);
+    });
+    
+    themeDropdown.appendChild(themeOptions);
+    themeSelector.appendChild(themeSelectorBtn);
+    themeSelector.appendChild(themeDropdown);
 
     container.appendChild(themeSelector);
   }

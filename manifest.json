@@ -22,7 +22,20 @@
   "background": {
     "service_worker": "background.js"
   },
-  "host_permissions": ["file:///*", "http://*/*", "https://*/*"],
+  "host_permissions": [
+    "file:///*/*.md",
+    "file:///*/*.mkd", 
+    "file:///*/*.mdx",
+    "file:///*/*.markdown",
+    "http://*/*.md",
+    "http://*/*.mkd",
+    "http://*/*.mdx", 
+    "http://*/*.markdown",
+    "https://*/*.md",
+    "https://*/*.mkd",
+    "https://*/*.mdx",
+    "https://*/*.markdown"
+  ],
   "content_scripts": [
     {
       "matches": [

@@ -52,37 +52,71 @@ async function checkFileAccessStatus() {
       const hasAccess = await chrome.extension.isAllowedFileSchemeAccess();
 
       if (hasAccess) {
-        statusContainer.innerHTML = `
-                    <div class="status working">
-                        ✅ ローカルファイルアクセス: 有効
-                        <br><small>Markdownファイルを開いて使用できます</small>
-                    </div>
-                `;
+        // Clear existing content
+        statusContainer.textContent = '';
+        
+        const statusDiv = document.createElement('div');
+        statusDiv.className = 'status working';
+        statusDiv.textContent = '✅ ローカルファイルアクセス: 有効';
+        
+        const brElement = document.createElement('br');
+        statusDiv.appendChild(brElement);
+        
+        const smallElement = document.createElement('small');
+        smallElement.textContent = 'Markdownファイルを開いて使用できます';
+        statusDiv.appendChild(smallElement);
+        
+        statusContainer.appendChild(statusDiv);
       } else {
-        statusContainer.innerHTML = `
-                    <div class="status needs-setup">
-                        ⚠️ ローカルファイルアクセス: 無効
-                        <br><small>設定が必要です</small>
-                    </div>
-                `;
+        // Clear existing content
+        statusContainer.textContent = '';
+        
+        const statusDiv = document.createElement('div');
+        statusDiv.className = 'status needs-setup';
+        statusDiv.textContent = '⚠️ ローカルファイルアクセス: 無効';
+        
+        const brElement = document.createElement('br');
+        statusDiv.appendChild(brElement);
+        
+        const smallElement = document.createElement('small');
+        smallElement.textContent = '設定が必要です';
+        statusDiv.appendChild(smallElement);
+        
+        statusContainer.appendChild(statusDiv);
       }
     } else {
       // Manifest V3やその他の制限によりAPIが利用できない場合
-      statusContainer.innerHTML = `
-                <div class="status needs-setup">
-                    ❓ ファイルアクセス状態: 確認できません
-                    <br><small>設定を確認してください</small>
-                </div>
-            `;
+      statusContainer.textContent = '';
+      
+      const statusDiv = document.createElement('div');
+      statusDiv.className = 'status needs-setup';
+      statusDiv.textContent = '❓ ファイルアクセス状態: 確認できません';
+      
+      const brElement = document.createElement('br');
+      statusDiv.appendChild(brElement);
+      
+      const smallElement = document.createElement('small');
+      smallElement.textContent = '設定を確認してください';
+      statusDiv.appendChild(smallElement);
+      
+      statusContainer.appendChild(statusDiv);
     }
   } catch (error) {
     console.error('Error checking file access status:', error);
-    statusContainer.innerHTML = `
-            <div class="status needs-setup">
-                ⚠️ 設定確認中にエラーが発生しました
-                <br><small>手動で設定を確認してください</small>
-            </div>
-        `;
+    statusContainer.textContent = '';
+    
+    const statusDiv = document.createElement('div');
+    statusDiv.className = 'status needs-setup';
+    statusDiv.textContent = '⚠️ 設定確認中にエラーが発生しました';
+    
+    const brElement = document.createElement('br');
+    statusDiv.appendChild(brElement);
+    
+    const smallElement = document.createElement('small');
+    smallElement.textContent = '手動で設定を確認してください';
+    statusDiv.appendChild(smallElement);
+    
+    statusContainer.appendChild(statusDiv);
   }
 }
 
@@ -128,27 +162,49 @@ function checkCipherStatus() {
           const initDate = response.initialized
             ? new Date(response.initialized).toLocaleString()
             : '不明';
-          container.innerHTML = `
-                    <div class="status working">
-                        🔐 Cipher: 自動起動有効
-                        <br><small>初期化済み (${initDate})</small>
-                    </div>
-                `;
+          
+          container.textContent = '';
+          const statusDiv = document.createElement('div');
+          statusDiv.className = 'status working';
+          statusDiv.textContent = '🔐 Cipher: 自動起動有効';
+          
+          const brElement = document.createElement('br');
+          statusDiv.appendChild(brElement);
+          
+          const smallElement = document.createElement('small');
+          smallElement.textContent = `初期化済み (${initDate})`;
+          statusDiv.appendChild(smallElement);
+          
+          container.appendChild(statusDiv);
         } else {
-          container.innerHTML = `
-                    <div class="status needs-setup">
-                        🔐 Cipher: 未設定
-                        <br><small>自動起動を有効にしてください</small>
-                    </div>
-                `;
+          container.textContent = '';
+          const statusDiv = document.createElement('div');
+          statusDiv.className = 'status needs-setup';
+          statusDiv.textContent = '🔐 Cipher: 未設定';
+          
+          const brElement = document.createElement('br');
+          statusDiv.appendChild(brElement);
+          
+          const smallElement = document.createElement('small');
+          smallElement.textContent = '自動起動を有効にしてください';
+          statusDiv.appendChild(smallElement);
+          
+          container.appendChild(statusDiv);
         }
       } else {
-        container.innerHTML = `
-                <div class="status needs-setup">
-                    🔐 Cipher: 状態確認エラー
-                    <br><small>設定を確認してください</small>
-                </div>
-            `;
+        container.textContent = '';
+        const statusDiv = document.createElement('div');
+        statusDiv.className = 'status needs-setup';
+        statusDiv.textContent = '🔐 Cipher: 状態確認エラー';
+        
+        const brElement = document.createElement('br');
+        statusDiv.appendChild(brElement);
+        
+        const smallElement = document.createElement('small');
+        smallElement.textContent = '設定を確認してください';
+        statusDiv.appendChild(smallElement);
+        
+        container.appendChild(statusDiv);
       }
     }
   );
