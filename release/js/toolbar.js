@@ -1143,7 +1143,7 @@ class Toolbar {
       const deltaY = e.clientY - startY;
 
       // 5px以上移動したらドラッグとみなす
-      if (!isDragging && (Math.abs(deltaX) > (window.FALLBACK?.FIVE || 5) || Math.abs(deltaY) > (window.FALLBACK?.FIVE || 5))) {
+      if (!isDragging && (Math.abs(deltaX) > (window.FALLBACK?.FIVE) || Math.abs(deltaY) > (window.FALLBACK?.FIVE))) {
         isDragging = true;
         this.isDragging = true;
       }
@@ -1178,7 +1178,7 @@ class Toolbar {
       // ドラッグ終了後、少し遅らせてクリックフラグをクリア
       setTimeout(() => {
         this.isDragging = false;
-      }, window.FALLBACK?.MEDIUM || 100);
+      }, window.FALLBACK?.MEDIUM);
     };
   }
 
@@ -1546,7 +1546,7 @@ class Toolbar {
       if (message.parentNode) {
         message.parentNode.removeChild(message);
       }
-    }, window.FALLBACK?.NETWORK_TIMEOUT || 3000);
+    }, window.FALLBACK?.NETWORK_TIMEOUT);
   }
 
   showExportErrorMessage() {
