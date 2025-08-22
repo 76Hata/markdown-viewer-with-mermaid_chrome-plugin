@@ -1,0 +1,64 @@
+# Chrome拡張機能パッケージングから除外するファイル・フォルダ
+# Chrome Web Store申請用の最適化設定
+
+# 開発用フォルダ
+doc/
+docs/
+Diagram/
+after_doc/
+analysis-reports/
+archive/
+tests/
+claude-workspace/
+claude-extensions/
+final-function-verification/
+function-tests/
+reports/
+
+# Node.js関連
+node_modules/
+coverage/
+.nyc_output/
+
+# ビルド成果物
+build/
+dist/
+web-ext-artifacts/
+release/
+
+# 設定ファイル
+package.json
+package-lock.json
+eslint.config.js
+tsconfig.json
+typedoc.json
+jest.config.js
+jsconfig.json
+
+# 文書ファイル
+README.md
+CLAUDE.md
+PACKAGING.md
+Chrome_Web_Store_Policy_Compliance_Report.md
+
+# バックアップ・一時ファイル
+*.backup
+.DS_Store
+temp_end.js
+chrome-extension.tar.gz
+exclude.txt
+
+# Git関連
+.git/
+.github/
+.gitignore
+
+# IDE設定
+.vscode/
+.idea/
+
+# TypeScript定義（開発時のみ使用）
+types/
+
+# その他開発用ファイル
+performance-test.html
