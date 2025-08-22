@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Markdown Viewer with Mermaid</title>
+    <style>
+        body {
+            width: 350px;
+            padding: 16px;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            font-size: 14px;
+            line-height: 1.5;
+            margin: 0;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 16px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .header h1 {
+            font-size: 16px;
+            margin: 0;
+            color: #333;
+        }
+        
+        .status {
+            padding: 12px;
+            border-radius: 6px;
+            margin-bottom: 16px;
+            text-align: center;
+            font-weight: 500;
+        }
+        
+        .status.working {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        
+        .status.needs-setup {
+            background: #fff3cd;
+            color: #856404;
+            border: 1px solid #ffeaa7;
+        }
+        
+        .setup-steps {
+            background: #f8f9fa;
+            padding: 12px;
+            border-radius: 6px;
+            margin-bottom: 16px;
+        }
+        
+        .setup-steps h3 {
+            margin: 0 0 8px 0;
+            font-size: 14px;
+            color: #495057;
+        }
+        
+        .setup-steps ol {
+            margin: 0;
+            padding-left: 20px;
+        }
+        
+        .setup-steps li {
+            margin-bottom: 4px;
+            font-size: 13px;
+        }
+        
+        .button {
+            display: block;
+            width: 100%;
+            padding: 8px 12px;
+            background: #007bff;
+            color: white;
+            text-decoration: none;
+            border-radius: 4px;
+            text-align: center;
+            font-size: 13px;
+            margin-bottom: 8px;
+            border: none;
+            cursor: pointer;
+        }
+        
+        .button:hover {
+            background: #0056b3;
+        }
+        
+        .button.secondary {
+            background: #6c757d;
+        }
+        
+        .button.secondary:hover {
+            background: #545b62;
+        }
+        
+        .note {
+            font-size: 12px;
+            color: #6c757d;
+            text-align: center;
+            margin-top: 12px;
+            padding-top: 12px;
+            border-top: 1px solid #eee;
+        }
+        
+        .icon {
+            font-size: 24px;
+            margin-bottom: 8px;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="icon">📝</div>
+        <h1>Markdown Viewer</h1>
+    </div>
+    
+    <div id="status-container">
+        <!-- Status will be inserted here by JavaScript -->
+    </div>
+    
+    <div class="setup-steps">
+        <h3>📁 ローカルファイルで使用するには</h3>
+        <ol>
+            <li>右クリック → 「拡張機能を管理」</li>
+            <li>「ファイルのURLへのアクセスを許可する」をON</li>
+            <li>Markdownファイルを開く</li>
+        </ol>
+    </div>
+    
+    <button class="button" id="open-extensions">
+        ⚙️ 拡張機能設定を開く
+    </button>
+    
+    <button class="button secondary" id="test-file">
+        📄 テストファイルを開く
+    </button>
+    
+    <!-- デバッグ用セクション -->
+    <div id="debug-section" style="display: none;">
+        <hr style="margin: 16px 0; border: none; border-top: 1px solid #eee;">
+        <div style="text-align: center; margin-bottom: 12px;">
+            <strong style="font-size: 12px; color: #6c757d;">🧪 デバッグ・テスト機能</strong>
+        </div>
+        
+        <button class="button" id="test-notification" style="font-size: 12px; padding: 6px 12px;">
+            🔔 通知テスト
+        </button>
+        
+        <button class="button" id="test-setup-guide" style="font-size: 12px; padding: 6px 12px;">
+            📋 セットアップガイド
+        </button>
+        
+        <button class="button secondary" id="test-badge" style="font-size: 12px; padding: 6px 12px;">
+            🟡 バッジテスト
+        </button>
+        
+        <button class="button secondary" id="clear-badge" style="font-size: 12px; padding: 6px 12px;">
+            🔄 バッジクリア
+        </button>
+    </div>
+    
+    <button id="toggle-debug" style="background: none; border: none; color: #6c757d; font-size: 10px; width: 100%; padding: 8px; cursor: pointer;">
+        🧪 デバッグ機能を表示
+    </button>
+    
+    <div class="note">
+        💡 設定後はこのポップアップから状態を確認できます
+    </div>
+
+    <script src="popup.js"></script>
+</body>
+</html>

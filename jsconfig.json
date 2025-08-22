@@ -11,13 +11,6 @@
     "moduleResolution": "node",
     "esModuleInterop": true
   },
-  "include": [
-    "./**/*.js"
-  ],
-  "exclude": [
-    "node_modules",
-    "dist",
-    "build",
-    "coverage"
-  ]
+  "include": ["./**/*.js"],
+  "exclude": ["node_modules", "dist", "build", "coverage"]
 }

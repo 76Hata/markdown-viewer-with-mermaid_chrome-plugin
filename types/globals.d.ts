@@ -38,7 +38,11 @@ declare global {
       needsFileAccess(): boolean;
     };
     SafeStorage: {
-      setItem(key: string, value: string, callback?: (success: boolean) => void): void;
+      setItem(
+        key: string,
+        value: string,
+        callback?: (success: boolean) => void
+      ): void;
       getItem(key: string, callback: (value: string | null) => void): void;
     };
     LibraryLoader: any;
@@ -52,7 +56,11 @@ declare global {
     tryNewWindow: (htmlContent: string, modal?: boolean) => Promise<boolean>;
     tryClipboard: (htmlContent: string) => Promise<boolean>;
     tryModal: (htmlContent: string, showPreview?: boolean) => Promise<boolean>;
-    tryExportMethods: (htmlContent: string, methods: string[], index: number) => void;
+    tryExportMethods: (
+      htmlContent: string,
+      methods: string[],
+      index: number
+    ) => void;
     tryLegacyClipboard: (htmlContent: string) => Promise<boolean>;
     testFunctions: {
       testWelcomeNotification(): void;
@@ -132,7 +140,7 @@ declare global {
     title: string;
   }
 
-  // Extended Node interface  
+  // Extended Node interface
   interface Node {
     innerText: string;
     classList: DOMTokenList;
@@ -144,7 +152,12 @@ declare global {
   interface PromiseConstructor {
     new (): Promise<any>;
     new <T>(): Promise<T>;
-    new <T>(executor: (resolve: (value: T | PromiseLike<T>) => void, reject: (reason?: any) => void) => void): Promise<T>;
+    new <T>(
+      executor: (
+        resolve: (value: T | PromiseLike<T>) => void,
+        reject: (reason?: any) => void
+      ) => void
+    ): Promise<T>;
   }
 
   // Constants available globally
