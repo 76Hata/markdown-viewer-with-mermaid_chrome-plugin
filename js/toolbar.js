@@ -168,7 +168,7 @@ class Toolbar {
         // テーマセレクター作成後にイベントをバインド
         setTimeout(() => {
           this.bindThemeEvents();
-        }, window.SIZES?.SMALL || 50);
+        }, window.SIZES?.SMALL || window.FALLBACK?.SMALL);
       }
 
       // Search Engine (using fixed version)
@@ -195,7 +195,7 @@ class Toolbar {
             'TOC Generator disabled: no headings or class not available'
           );
         }
-      }, window.SIZES?.MEDIUM || 100);
+      }, window.SIZES?.MEDIUM || window.FALLBACK?.MEDIUM);
     } catch (error) {
       console.error('Error initializing components:', error);
     }
@@ -552,13 +552,13 @@ class Toolbar {
       if (errorDetected) {
         this.showPrintErrorToast();
       }
-    }, window.TIMEOUTS?.LONG_DELAY || 500);
+    }, window.TIMEOUTS?.LONG_DELAY || window.FALLBACK?.LONG_DELAY);
   }
 
   downloadPrintableVersion() {
     const printContent = document.getElementById('markdown-content').innerHTML;
     const currentTitle = document.title || 'markdown-document';
-    const timestamp = new Date().toISOString().slice(0, window.SIZES?.ANIMATION_OFFSET || 19).replace(/:/g, '-');
+    const timestamp = new Date().toISOString().slice(0, window.SIZES?.ANIMATION_OFFSET || window.FALLBACK?.ANIMATION_OFFSET).replace(/:/g, '-');
 
     const htmlContent = `<!DOCTYPE html>
 <html>
@@ -708,7 +708,7 @@ class Toolbar {
             padding: 15px 20px;
             border-radius: 8px;
             box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-            z-index: ${window.TIMEOUTS?.MAX_TIMEOUT || 10000};
+            z-index: ${window.TIMEOUTS?.MAX_TIMEOUT || window.FALLBACK?.MAX_TIMEOUT};
             font-size: 14px;
             max-width: 350px;
         `;
@@ -728,7 +728,7 @@ class Toolbar {
       if (message.parentNode) {
         message.parentNode.removeChild(message);
       }
-    }, window.TIMEOUTS?.HEAVY_PROCESS_TIMEOUT || 5000);
+    }, window.TIMEOUTS?.HEAVY_PROCESS_TIMEOUT || window.FALLBACK?.HEAVY_PROCESS_TIMEOUT);
   }
 
   showPrintFallback() {
@@ -743,7 +743,7 @@ class Toolbar {
             border-radius: 10px;
             padding: 20px;
             box-shadow: 0 4px 20px rgba(0,0,0,0.3);
-            z-index: ${window.TIMEOUTS?.MAX_TIMEOUT || 10000};
+            z-index: ${window.TIMEOUTS?.MAX_TIMEOUT || window.FALLBACK?.MAX_TIMEOUT};
             text-align: center;
             max-width: 400px;
         `;
@@ -781,7 +781,7 @@ class Toolbar {
       if (message.parentNode) {
         message.parentNode.removeChild(message);
       }
-    }, window.TIMEOUTS?.MAX_TIMEOUT || 10000);
+    }, window.TIMEOUTS?.MAX_TIMEOUT || window.FALLBACK?.MAX_TIMEOUT);
   }
 
   showPrintErrorToast() {
@@ -899,9 +899,9 @@ class Toolbar {
         toast.style.animation = 'slideInRight 0.3s ease reverse';
         setTimeout(() => {
           toast.remove();
-        }, window.ANIMATION?.FADE_DURATION || 300);
+        }, window.ANIMATION?.FADE_DURATION || window.FALLBACK?.STANDARD_DELAY);
       }
-    }, window.PERFORMANCE?.HEAVY_TIMEOUT || 8000);
+    }, window.PERFORMANCE?.HEAVY_TIMEOUT || window.FALLBACK?.HEAVY_TIMEOUT);
   }
 
   addPrintStyles() {
@@ -1143,7 +1143,7 @@ class Toolbar {
       const deltaY = e.clientY - startY;
 
       // 5px以上移動したらドラッグとみなす
-      if (!isDragging && (Math.abs(deltaX) > 5 || Math.abs(deltaY) > 5)) {
+      if (!isDragging && (Math.abs(deltaX) > (window.FALLBACK?.FIVE || 5) || Math.abs(deltaY) > (window.FALLBACK?.FIVE || 5))) {
         isDragging = true;
         this.isDragging = true;
       }
@@ -1178,7 +1178,7 @@ class Toolbar {
       // ドラッグ終了後、少し遅らせてクリックフラグをクリア
       setTimeout(() => {
         this.isDragging = false;
-      }, 100);
+      }, window.FALLBACK?.MEDIUM || 100);
     };
   }
 
@@ -1307,7 +1307,7 @@ class Toolbar {
     // 5秒後に自動的に隠す
     setTimeout(() => {
       this.hideToolbarHint();
-    }, window.TIMEOUTS?.HEAVY_PROCESS_TIMEOUT || 5000);
+    }, window.TIMEOUTS?.HEAVY_PROCESS_TIMEOUT || window.FALLBACK?.HEAVY_PROCESS_TIMEOUT);
   }
 
   hideToolbarHint() {
@@ -1526,7 +1526,7 @@ class Toolbar {
             padding: 15px 20px;
             border-radius: 8px;
             box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-            z-index: ${window.TIMEOUTS?.MAX_TIMEOUT || 10000};
+            z-index: ${window.TIMEOUTS?.MAX_TIMEOUT || window.FALLBACK?.MAX_TIMEOUT};
             font-size: 14px;
             max-width: 350px;
         `;
@@ -1546,7 +1546,7 @@ class Toolbar {
       if (message.parentNode) {
         message.parentNode.removeChild(message);
       }
-    }, 3000);
+    }, window.FALLBACK?.NETWORK_TIMEOUT || 3000);
   }
 
   showExportErrorMessage() {
@@ -1672,7 +1672,7 @@ class Toolbar {
       if (toast.parentNode) {
         toast.remove();
       }
-    }, window.TIMEOUTS?.HEAVY_PROCESS_TIMEOUT || 5000);
+    }, window.TIMEOUTS?.HEAVY_PROCESS_TIMEOUT || window.FALLBACK?.HEAVY_PROCESS_TIMEOUT);
   }
 }
 

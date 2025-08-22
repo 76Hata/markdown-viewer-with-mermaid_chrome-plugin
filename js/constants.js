@@ -310,6 +310,67 @@ const DEBUG = {
 };
 
 // ===========================================
+// フォールバック値の定数定義
+// ===========================================
+
+/** フォールバック値として使用される定数 */
+const FALLBACK = {
+  /** 小さな値 */
+  SMALL: 50,
+  
+  /** 中程度の値 */
+  MEDIUM: 100,
+  
+  /** 大きな値 */
+  LARGE: 200,
+  
+  /** 標準的な遅延時間 */
+  STANDARD_DELAY: 300,
+  
+  /** 長い遅延時間 */
+  LONG_DELAY: 500,
+  
+  /** 非常に長い遅延時間 */
+  VERY_LONG_DELAY: 1000,
+  
+  /** ネットワークタイムアウト */
+  NETWORK_TIMEOUT: 3000,
+  
+  /** 重い処理のタイムアウト */
+  HEAVY_PROCESS_TIMEOUT: 5000,
+  
+  /** 最大タイムアウト */
+  MAX_TIMEOUT: 10000,
+  
+  /** アニメーション関連の値 */
+  ANIMATION_OFFSET: 19,
+  
+  /** スムーズスクロールのしきい値 */
+  SMOOTH_SCROLL_THRESHOLD: 800,
+  
+  /** 重い処理用のタイムアウト */
+  HEAVY_TIMEOUT: 8000,
+  
+  /** 小さな数値 */
+  TEN: 10,
+  
+  /** 透明度の小数 */
+  HALF: 0.5,
+  
+  /** 小さな整数値 */
+  FOUR: 4,
+  
+  /** 負の小さな値 */
+  NEGATIVE_TWO: -2,
+  
+  /** 小さな正の値 */
+  THREE: 3,
+  
+  /** マージン用の小さな値 */
+  FIVE: 5,
+};
+
+// ===========================================
 // 互換性維持用のエクスポート
 // ===========================================
 
@@ -329,6 +390,7 @@ if (typeof window !== 'undefined') {
   window.PRINT = PRINT;
   window.FILE_PROCESSING = FILE_PROCESSING;
   window.LAYOUT = LAYOUT;
+  window.FALLBACK = FALLBACK;
 }
 
 // Node.js環境での互換性確保
@@ -348,5 +410,6 @@ if (typeof module !== 'undefined' && module.exports) {
     PRINT,
     FILE_PROCESSING,
     LAYOUT,
+    FALLBACK,
   };
 }

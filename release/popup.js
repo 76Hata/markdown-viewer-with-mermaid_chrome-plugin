@@ -326,7 +326,7 @@ function setupEventListeners() {
           if (response && response.success) {
             console.log('Cipher initialization requested');
             // Refresh cipher status after a short delay
-            setTimeout(checkCipherStatus, window.TIMEOUTS?.LONG_DELAY || 500);
+            setTimeout(checkCipherStatus, window.TIMEOUTS?.LONG_DELAY || window.FALLBACK?.LONG_DELAY);
           }
         }
       );
@@ -354,4 +354,4 @@ function setupEventListeners() {
 const _statusUpdateInterval = setInterval(() => {
   checkFileAccessStatus();
   checkCipherStatus();
-}, window.TIMEOUTS?.NETWORK_TIMEOUT || 3000);
+}, window.TIMEOUTS?.NETWORK_TIMEOUT || window.FALLBACK?.NETWORK_TIMEOUT);
