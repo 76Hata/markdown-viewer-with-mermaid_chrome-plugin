@@ -627,7 +627,7 @@ class SearchEngine {
           block: 'center',
         });
       }
-    }, 100);
+    }, window.SIZES?.MEDIUM || 100);
   }
 
   /**
@@ -799,7 +799,7 @@ class SearchEngine {
     setTimeout(() => {
       input.focus();
       input.select();
-    }, 50);
+    }, window.SIZES?.SMALL || 50);
   }
 
   /**

@@ -52,7 +52,7 @@
   if (typeof marked === 'undefined') {
     setTimeout(() => {
       initializeMarkdownViewer();
-    }, window.TIMEOUTS ? window.TIMEOUTS.SHORT_DELAY : 100);
+    }, window.TIMEOUTS ? window.TIMEOUTS.SHORT_DELAY : window.SIZES?.MEDIUM || 100);
     return;
   }
 
@@ -549,7 +549,7 @@
         reject(new Error('XHR timeout'));
       };
 
-      xhr.timeout = 10000; // 10秒タイムアウト
+      xhr.timeout = window.TIMEOUTS?.MAX_TIMEOUT || 10000; // 10秒タイムアウト
       xhr.send();
     });
   }
@@ -1036,8 +1036,8 @@ ${element.dataset.mermaidCode ? decodeURIComponent(element.dataset.mermaidCode) 
                                 align-items: center !important;
                                 padding: 0 15px !important;
                                 gap: 10px !important;
-                                z-index: 1000 !important;
-                                height: 50px !important;
+                                z-index: ${window.SIZES?.MAX_TOC_ITEMS || 1000} !important;
+                                height: ${window.LAYOUT?.TOOLBAR_HEIGHT || 50}px !important;
                                 box-shadow: 0 4px 12px rgba(0,0,0,0.1) !important;
                                 font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif !important;
                             `;
@@ -1109,8 +1109,8 @@ ${element.dataset.mermaidCode ? decodeURIComponent(element.dataset.mermaidCode) 
             border-radius: 5px;
             font-size: 12px;
             color: #1976d2;
-            z-index: 1000;
-            max-width: 300px;
+            z-index: ${window.SIZES?.MAX_TOC_ITEMS || 1000};
+            max-width: ${window.PRINT?.PDF_MARGIN || 300}px;
         `;
     fallbackNotice.innerHTML = `
             <strong>Markdown Viewer Active</strong><br>
@@ -1180,7 +1180,7 @@ ${element.dataset.mermaidCode ? decodeURIComponent(element.dataset.mermaidCode) 
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
             line-height: 1.6;
-            max-width: 1000px;
+            max-width: ${window.SIZES?.MAX_TOC_ITEMS || 1000}px;
             margin: 0 auto;
             padding: 20px;
             color: #24292e;
@@ -1255,7 +1255,7 @@ ${element.dataset.mermaidCode ? decodeURIComponent(element.dataset.mermaidCode) 
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>${title}</title>
     <style>
-        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; line-height: 1.6; max-width: 1000px; margin: 0 auto; padding: 20px; color: #24292e; }
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; line-height: 1.6; max-width: ${window.SIZES?.MAX_TOC_ITEMS || 1000}px; margin: 0 auto; padding: 20px; color: #24292e; }
         h1, h2, h3, h4, h5, h6 { font-weight: 600; margin-top: 2em; margin-bottom: 1em; }
         h1 { font-size: 2em; border-bottom: 1px solid #eee; padding-bottom: 0.3em; }
         h2 { font-size: 1.5em; border-bottom: 1px solid #eee; padding-bottom: 0.3em; }
@@ -1326,7 +1326,7 @@ ${element.dataset.mermaidCode ? decodeURIComponent(element.dataset.mermaidCode) 
             right: 0;
             bottom: 0;
             background: rgba(0,0,0,0.5);
-            z-index: 10000;
+            z-index: ${window.TIMEOUTS?.MAX_TIMEOUT || 10000};
             display: flex;
             align-items: center;
             justify-content: center;
@@ -1336,7 +1336,7 @@ ${element.dataset.mermaidCode ? decodeURIComponent(element.dataset.mermaidCode) 
             <div style="background: white; padding: 20px; border-radius: 8px; max-width: 80%; max-height: 80%; overflow: auto;">
                 <h3>📄 HTMLエクスポート</h3>
                 <p>以下のHTMLコードをコピーして、.htmlファイルとして保存してください：</p>
-                <textarea readonly style="width: 100%; height: 300px; font-family: monospace; font-size: 12px; border: 1px solid #ccc; padding: 10px;">${htmlContent}</textarea>
+                <textarea readonly style="width: 100%; height: ${window.PRINT?.PDF_MARGIN || 300}px; font-family: monospace; font-size: 12px; border: 1px solid #ccc; padding: 10px;">${htmlContent}</textarea>
                 <div style="margin-top: 10px; text-align: center;">
                     <button onclick="
                         const textarea = this.previousElementSibling.previousElementSibling;
@@ -1498,7 +1498,7 @@ ${element.dataset.mermaidCode ? decodeURIComponent(element.dataset.mermaidCode) 
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>${title}</title>
     <style>
-        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; line-height: 1.6; max-width: 1000px; margin: 0 auto; padding: 20px; color: #24292e; }
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; line-height: 1.6; max-width: ${window.SIZES?.MAX_TOC_ITEMS || 1000}px; margin: 0 auto; padding: 20px; color: #24292e; }
         h1, h2, h3, h4, h5, h6 { font-weight: 600; margin-top: 2em; margin-bottom: 1em; }
         h1 { border-bottom: 1px solid #eee; padding-bottom: 0.3em; }
         h2 { border-bottom: 1px solid #eee; padding-bottom: 0.3em; }
@@ -1589,7 +1589,7 @@ ${element.dataset.mermaidCode ? decodeURIComponent(element.dataset.mermaidCode) 
     // 次の方法を試行
     setTimeout(() => {
       window.tryExportMethods(htmlContent, methods, index + 1);
-    }, 100);
+    }, window.SIZES?.MEDIUM || 100);
   };
 
   // Blobダウンロード試行
@@ -1680,7 +1680,7 @@ ${element.dataset.mermaidCode ? decodeURIComponent(element.dataset.mermaidCode) 
                 window.tryModal(htmlContent);
               }
             }
-          }, 100);
+          }, window.SIZES?.MEDIUM || 100);
 
           return false;
         } else {
@@ -1820,7 +1820,7 @@ ${element.dataset.mermaidCode ? decodeURIComponent(element.dataset.mermaidCode) 
                 <div style="background: white; padding: 20px; border-radius: 8px; max-width: 90%; max-height: 90%; overflow: auto;">
                     <h3>📄 HTMLエクスポート</h3>
                     <p>以下のHTMLコードをコピーして、.htmlファイルとして保存してください：</p>
-                    <textarea readonly style="width: 100%; height: 300px; font-family: monospace; font-size: 12px;">${htmlContent}</textarea>
+                    <textarea readonly style="width: 100%; height: ${window.PRINT?.PDF_MARGIN || 300}px; font-family: monospace; font-size: 12px;">${htmlContent}</textarea>
                     <div style="margin-top: 10px; text-align: center;">
                         <button onclick="
                         const textarea = this.previousElementSibling.previousElementSibling;
@@ -1909,7 +1909,7 @@ ${element.dataset.mermaidCode ? decodeURIComponent(element.dataset.mermaidCode) 
             border: 1px solid ${borderColor};
             border-radius: 8px;
             box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-            z-index: 10010;
+            z-index: ${window.TIMEOUTS?.MAX_TIMEOUT + 10 || 10010};
             max-width: 350px;
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
             animation: slideInRight 0.3s ease;
@@ -1965,7 +1965,7 @@ ${element.dataset.mermaidCode ? decodeURIComponent(element.dataset.mermaidCode) 
       style.textContent = `
                 @keyframes slideInRight {
                     from {
-                        transform: translateX(100%);
+                        transform: translateX(${window.SIZES?.MEDIUM || 100}%);
                         opacity: 0;
                     }
                     to {
@@ -2036,7 +2036,7 @@ ${element.dataset.mermaidCode ? decodeURIComponent(element.dataset.mermaidCode) 
             border: 1px solid #ffeaa7;
             border-radius: 8px;
             box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-            z-index: 10010;
+            z-index: ${window.TIMEOUTS?.MAX_TIMEOUT + 10 || 10010};
             max-width: 350px;
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
             animation: slideInRight 0.3s ease;
@@ -2092,7 +2092,7 @@ ${element.dataset.mermaidCode ? decodeURIComponent(element.dataset.mermaidCode) 
       style.textContent = `
                 @keyframes slideInRight {
                     from {
-                        transform: translateX(100%);
+                        transform: translateX(${window.SIZES?.MEDIUM || 100}%);
                         opacity: 0;
                     }
                     to {
@@ -2145,7 +2145,7 @@ ${element.dataset.mermaidCode ? decodeURIComponent(element.dataset.mermaidCode) 
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>${title}</title>
     <style>
-        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; line-height: 1.6; max-width: 1000px; margin: 0 auto; padding: 20px; color: #24292e; }
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; line-height: 1.6; max-width: ${window.SIZES?.MAX_TOC_ITEMS || 1000}px; margin: 0 auto; padding: 20px; color: #24292e; }
         h1, h2, h3, h4, h5, h6 { font-weight: 600; margin-top: 2em; margin-bottom: 1em; }
         h1 { border-bottom: 1px solid #eee; padding-bottom: 0.3em; }
         h2 { border-bottom: 1px solid #eee; padding-bottom: 0.3em; }
@@ -2251,10 +2251,10 @@ ${element.dataset.mermaidCode ? decodeURIComponent(element.dataset.mermaidCode) 
       // fetchでコンテンツを取得できた場合は、サンドボックス制限が回避される可能性が高い
       const isFetchedContent = isGitHubRawURL() && originalContent.trim();
       const delay = isFetchedContent
-        ? 200
+        ? window.SIZES?.LARGE || 200
         : location.protocol === 'https:' || location.protocol === 'http:'
-          ? 1000
-          : 200;
+          ? window.TIMEOUTS?.VERY_LONG_DELAY || 1000
+          : window.SIZES?.LARGE || 200;
 
       const initFeatures = () => {
         try {
@@ -2271,7 +2271,7 @@ ${element.dataset.mermaidCode ? decodeURIComponent(element.dataset.mermaidCode) 
               console.error('Enhanced features failed to initialize:', e);
               showBasicFallback();
             }
-          }, 1000);
+          }, window.TIMEOUTS?.VERY_LONG_DELAY || 1000);
         }
       };
 

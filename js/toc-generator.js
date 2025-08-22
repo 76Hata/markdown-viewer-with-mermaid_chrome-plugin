@@ -833,7 +833,7 @@ class TOCGenerator {
       () => {
         heading.focus();
       },
-      this.options.smoothScroll ? 800 : 0
+      this.options.smoothScroll ? window.TOC?.SMOOTH_SCROLL_THRESHOLD || 800 : 0
     );
   }
 
@@ -879,9 +879,9 @@ class TOCGenerator {
 
       // easeInOutCubic イージング関数
       const easeProgress =
-        progress < 0.5
-          ? 4 * progress * progress * progress
-          : 1 - Math.pow(-2 * progress + 2, 3) / 2;
+        progress < window.OPACITY?.SEMI_TRANSPARENT || 0.5
+          ? window.COLORS?.MISC_VALUE_4 || 4 * progress * progress * progress
+          : 1 - Math.pow(window.TOC?.LEVEL_ADJUSTMENT_NEGATIVE || -2 * progress + 2, window.TOC?.LEVEL_ADJUSTMENT_POSITIVE || 3) / 2;
 
       window.scrollTo(0, startY + distance * easeProgress);
 

@@ -168,7 +168,7 @@ class Toolbar {
         // テーマセレクター作成後にイベントをバインド
         setTimeout(() => {
           this.bindThemeEvents();
-        }, 50);
+        }, window.SIZES?.SMALL || 50);
       }
 
       // Search Engine (using fixed version)
@@ -195,7 +195,7 @@ class Toolbar {
             'TOC Generator disabled: no headings or class not available'
           );
         }
-      }, 100);
+      }, window.SIZES?.MEDIUM || 100);
     } catch (error) {
       console.error('Error initializing components:', error);
     }
@@ -552,13 +552,13 @@ class Toolbar {
       if (errorDetected) {
         this.showPrintErrorToast();
       }
-    }, 500);
+    }, window.TIMEOUTS?.LONG_DELAY || 500);
   }
 
   downloadPrintableVersion() {
     const printContent = document.getElementById('markdown-content').innerHTML;
     const currentTitle = document.title || 'markdown-document';
-    const timestamp = new Date().toISOString().slice(0, 19).replace(/:/g, '-');
+    const timestamp = new Date().toISOString().slice(0, window.SIZES?.ANIMATION_OFFSET || 19).replace(/:/g, '-');
 
     const htmlContent = `<!DOCTYPE html>
 <html>
@@ -708,7 +708,7 @@ class Toolbar {
             padding: 15px 20px;
             border-radius: 8px;
             box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-            z-index: 10000;
+            z-index: ${window.TIMEOUTS?.MAX_TIMEOUT || 10000};
             font-size: 14px;
             max-width: 350px;
         `;
@@ -728,7 +728,7 @@ class Toolbar {
       if (message.parentNode) {
         message.parentNode.removeChild(message);
       }
-    }, 5000);
+    }, window.TIMEOUTS?.HEAVY_PROCESS_TIMEOUT || 5000);
   }
 
   showPrintFallback() {
@@ -743,7 +743,7 @@ class Toolbar {
             border-radius: 10px;
             padding: 20px;
             box-shadow: 0 4px 20px rgba(0,0,0,0.3);
-            z-index: 10000;
+            z-index: ${window.TIMEOUTS?.MAX_TIMEOUT || 10000};
             text-align: center;
             max-width: 400px;
         `;
@@ -781,7 +781,7 @@ class Toolbar {
       if (message.parentNode) {
         message.parentNode.removeChild(message);
       }
-    }, 10000);
+    }, window.TIMEOUTS?.MAX_TIMEOUT || 10000);
   }
 
   showPrintErrorToast() {
@@ -899,9 +899,9 @@ class Toolbar {
         toast.style.animation = 'slideInRight 0.3s ease reverse';
         setTimeout(() => {
           toast.remove();
-        }, 300);
+        }, window.ANIMATION?.FADE_DURATION || 300);
       }
-    }, 8000);
+    }, window.PERFORMANCE?.HEAVY_TIMEOUT || 8000);
   }
 
   addPrintStyles() {
@@ -1307,7 +1307,7 @@ class Toolbar {
     // 5秒後に自動的に隠す
     setTimeout(() => {
       this.hideToolbarHint();
-    }, 5000);
+    }, window.TIMEOUTS?.HEAVY_PROCESS_TIMEOUT || 5000);
   }
 
   hideToolbarHint() {
@@ -1526,7 +1526,7 @@ class Toolbar {
             padding: 15px 20px;
             border-radius: 8px;
             box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-            z-index: 10000;
+            z-index: ${window.TIMEOUTS?.MAX_TIMEOUT || 10000};
             font-size: 14px;
             max-width: 350px;
         `;
@@ -1672,7 +1672,7 @@ class Toolbar {
       if (toast.parentNode) {
         toast.remove();
       }
-    }, 5000);
+    }, window.TIMEOUTS?.HEAVY_PROCESS_TIMEOUT || 5000);
   }
 }
 

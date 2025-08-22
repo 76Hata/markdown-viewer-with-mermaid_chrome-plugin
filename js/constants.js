@@ -163,6 +163,42 @@ const OPACITY = {
   SCALE_SMALL: 1.2,
 };
 
+/** 印刷・エクスポート関連 */
+const PRINT = {
+  /** ページ幅のしきい値（mm） */
+  PAGE_WIDTH_THRESHOLD: 200,
+
+  /** PDF生成時の余白 */
+  PDF_MARGIN: 300,
+};
+
+/** ファイル処理関連 */
+const FILE_PROCESSING = {
+  /** ファイル読み込みチャンクサイズ */
+  CHUNK_SIZE: 8000,
+
+  /** 最大ファイルサイズ（MB） */
+  MAX_FILE_SIZE_MB: 50,
+};
+
+/** レイアウト関連 */
+const LAYOUT = {
+  /** ツールバーの高さ */
+  TOOLBAR_HEIGHT: 50,
+
+  /** メニュー表示の遅延 */
+  MENU_DISPLAY_DELAY: 100,
+
+  /** スクロール監視の遅延 */
+  SCROLL_WATCH_DELAY: 500,
+
+  /** ファイルアクセスメッセージの遅延 */
+  FILE_ACCESS_DELAY: 3000,
+
+  /** アニメーション表示時間 */
+  ANIMATION_DISPLAY_TIME: 5000,
+};
+
 // ===========================================
 // カラー関連の定数
 // ===========================================
@@ -277,6 +313,24 @@ const DEBUG = {
 // 互換性維持用のエクスポート
 // ===========================================
 
+// グローバルオブジェクトに全ての定数を追加（ブラウザ環境用）
+if (typeof window !== 'undefined') {
+  window.TIMEOUTS = TIMEOUTS;
+  window.INTERVALS = INTERVALS;
+  window.SIZES = SIZES;
+  window.OPACITY = OPACITY;
+  window.COLORS = COLORS;
+  window.TOC = TOC;
+  window.SEARCH = SEARCH;
+  window.PERFORMANCE = PERFORMANCE;
+  window.ANIMATION = ANIMATION;
+  window.NOTIFICATIONS = NOTIFICATIONS;
+  window.DEBUG = DEBUG;
+  window.PRINT = PRINT;
+  window.FILE_PROCESSING = FILE_PROCESSING;
+  window.LAYOUT = LAYOUT;
+}
+
 // Node.js環境での互換性確保
 if (typeof module !== 'undefined' && module.exports) {
   module.exports = {
@@ -291,5 +345,8 @@ if (typeof module !== 'undefined' && module.exports) {
     ANIMATION,
     NOTIFICATIONS,
     DEBUG,
+    PRINT,
+    FILE_PROCESSING,
+    LAYOUT,
   };
 }
