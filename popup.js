@@ -43,7 +43,9 @@ document.addEventListener('DOMContentLoaded', function () {
  */
 async function checkFileAccessStatus() {
   /** @type {HTMLElement} ステータスメッセージを表示するコンテナ要素 */
-  const statusContainer = document.getElementById('status-container') /** @type {HTMLElement} */ ;
+  const statusContainer = document.getElementById('status-container');
+
+  /** @type {HTMLElement} */
 
   try {
     // Chrome拡張機能APIを使用してファイルアクセス権限をチェック
@@ -54,68 +56,68 @@ async function checkFileAccessStatus() {
       if (hasAccess) {
         // Clear existing content
         statusContainer.textContent = '';
-        
+
         const statusDiv = document.createElement('div');
         statusDiv.className = 'status working';
         statusDiv.textContent = '✅ ローカルファイルアクセス: 有効';
-        
+
         const brElement = document.createElement('br');
         statusDiv.appendChild(brElement);
-        
+
         const smallElement = document.createElement('small');
         smallElement.textContent = 'Markdownファイルを開いて使用できます';
         statusDiv.appendChild(smallElement);
-        
+
         statusContainer.appendChild(statusDiv);
       } else {
         // Clear existing content
         statusContainer.textContent = '';
-        
+
         const statusDiv = document.createElement('div');
         statusDiv.className = 'status needs-setup';
         statusDiv.textContent = '⚠️ ローカルファイルアクセス: 無効';
-        
+
         const brElement = document.createElement('br');
         statusDiv.appendChild(brElement);
-        
+
         const smallElement = document.createElement('small');
         smallElement.textContent = '設定が必要です';
         statusDiv.appendChild(smallElement);
-        
+
         statusContainer.appendChild(statusDiv);
       }
     } else {
       // Manifest V3やその他の制限によりAPIが利用できない場合
       statusContainer.textContent = '';
-      
+
       const statusDiv = document.createElement('div');
       statusDiv.className = 'status needs-setup';
       statusDiv.textContent = '❓ ファイルアクセス状態: 確認できません';
-      
+
       const brElement = document.createElement('br');
       statusDiv.appendChild(brElement);
-      
+
       const smallElement = document.createElement('small');
       smallElement.textContent = '設定を確認してください';
       statusDiv.appendChild(smallElement);
-      
+
       statusContainer.appendChild(statusDiv);
     }
   } catch (error) {
     console.error('Error checking file access status:', error);
     statusContainer.textContent = '';
-    
+
     const statusDiv = document.createElement('div');
     statusDiv.className = 'status needs-setup';
     statusDiv.textContent = '⚠️ 設定確認中にエラーが発生しました';
-    
+
     const brElement = document.createElement('br');
     statusDiv.appendChild(brElement);
-    
+
     const smallElement = document.createElement('small');
     smallElement.textContent = '手動で設定を確認してください';
     statusDiv.appendChild(smallElement);
-    
+
     statusContainer.appendChild(statusDiv);
   }
 }
@@ -162,33 +164,33 @@ function checkCipherStatus() {
           const initDate = response.initialized
             ? new Date(response.initialized).toLocaleString()
             : '不明';
-          
+
           container.textContent = '';
           const statusDiv = document.createElement('div');
           statusDiv.className = 'status working';
           statusDiv.textContent = '🔐 Cipher: 自動起動有効';
-          
+
           const brElement = document.createElement('br');
           statusDiv.appendChild(brElement);
-          
+
           const smallElement = document.createElement('small');
           smallElement.textContent = `初期化済み (${initDate})`;
           statusDiv.appendChild(smallElement);
-          
+
           container.appendChild(statusDiv);
         } else {
           container.textContent = '';
           const statusDiv = document.createElement('div');
           statusDiv.className = 'status needs-setup';
           statusDiv.textContent = '🔐 Cipher: 未設定';
-          
+
           const brElement = document.createElement('br');
           statusDiv.appendChild(brElement);
-          
+
           const smallElement = document.createElement('small');
           smallElement.textContent = '自動起動を有効にしてください';
           statusDiv.appendChild(smallElement);
-          
+
           container.appendChild(statusDiv);
         }
       } else {
@@ -196,14 +198,14 @@ function checkCipherStatus() {
         const statusDiv = document.createElement('div');
         statusDiv.className = 'status needs-setup';
         statusDiv.textContent = '🔐 Cipher: 状態確認エラー';
-        
+
         const brElement = document.createElement('br');
         statusDiv.appendChild(brElement);
-        
+
         const smallElement = document.createElement('small');
         smallElement.textContent = '設定を確認してください';
         statusDiv.appendChild(smallElement);
-        
+
         container.appendChild(statusDiv);
       }
     }
@@ -326,7 +328,10 @@ function setupEventListeners() {
           if (response && response.success) {
             console.log('Cipher initialization requested');
             // Refresh cipher status after a short delay
-            setTimeout(checkCipherStatus, window.TIMEOUTS?.LONG_DELAY || window.FALLBACK?.LONG_DELAY);
+            setTimeout(
+              checkCipherStatus,
+              window.TIMEOUTS?.LONG_DELAY || window.FALLBACK?.LONG_DELAY
+            );
           }
         }
       );

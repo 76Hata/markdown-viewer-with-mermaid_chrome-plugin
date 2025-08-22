@@ -140,7 +140,10 @@ const ServiceWorkerMonitor = {
           'meta[http-equiv="Content-Security-Policy"]'
         );
         if (cspMeta) {
-          console.log('6. CSP Meta tag found:', /** @type {HTMLMetaElement} */ (cspMeta).content);
+          console.log(
+            '6. CSP Meta tag found:',
+            /** @type {HTMLMetaElement} */ (cspMeta).content
+          );
         }
       } else {
         console.log(
@@ -219,7 +222,10 @@ const ServiceWorkerLifecycle = {
     try {
       if (typeof navigator !== 'undefined' && 'serviceWorker' in navigator) {
         navigator.serviceWorker.addEventListener('statechange', event => {
-          console.log('🔄 Service Worker State Change:', event.target && /** @type {EventTarget} */ (event.target).state);
+          console.log(
+            '🔄 Service Worker State Change:',
+            event.target && /** @type {EventTarget} */ (event.target).state
+          );
         });
       } else {
         console.log(

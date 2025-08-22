@@ -159,7 +159,9 @@ class SearchEngine {
    */
   bindEvents() {
     /** @type {HTMLInputElement} 検索入力フィールド */
-    const input = this.searchPanelElement.querySelector('.search-input') /** @type {HTMLInputElement} */ ;
+    const input = this.searchPanelElement.querySelector('.search-input');
+
+    /** @type {HTMLInputElement} */
 
     /** @type {HTMLButtonElement} 前の結果へのナビゲーションボタン */
     const prevBtn = this.searchPanelElement.querySelector('.search-prev');
@@ -760,7 +762,8 @@ class SearchEngine {
 
       // 入力フィールドをクリア
       /** @type {HTMLInputElement} 検索入力フィールド */
-      const input = this.searchPanelElement.querySelector('.search-input') /** @type {HTMLInputElement} */ ;
+      const input = this.searchPanelElement.querySelector('.search-input');
+      /** @type {HTMLInputElement} */
       if (input) {
         input.value = '';
       }
@@ -795,7 +798,8 @@ class SearchEngine {
 
     // 検索入力フィールドにフォーカスを設定
     /** @type {HTMLInputElement} 検索入力フィールド */
-    const input = this.searchPanelElement.querySelector('.search-input') /** @type {HTMLInputElement} */ ;
+    const input = this.searchPanelElement.querySelector('.search-input');
+    /** @type {HTMLInputElement} */
     setTimeout(() => {
       input.focus();
       input.select();

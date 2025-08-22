@@ -11,7 +11,7 @@
 // タイミング関連の定数
 // ===========================================
 
-/** 
+/**
  * @typedef {Object} TimeoutConfig
  * @property {number} SHORT_DELAY - 短い遅延（アニメーション等）
  * @property {number} STANDARD_DELAY - 標準的な遅延
@@ -61,7 +61,7 @@ const TIMEOUTS = {
   FILE_ACCESS_CHECK_INTERVAL: 2000,
 };
 
-/** 
+/**
  * @typedef {Object} IntervalConfig
  * @property {number} UI_UPDATE - UI更新の間隔
  * @property {number} STATUS_CHECK - 状態チェックの間隔
@@ -91,7 +91,7 @@ const INTERVALS = {
 // サイズ・寸法関連の定数
 // ===========================================
 
-/** 
+/**
  * @typedef {Object} SizeConfig
  * @property {number} SMALL - 小さいサイズ
  * @property {number} MEDIUM - 中サイズ
@@ -317,55 +317,55 @@ const DEBUG = {
 const FALLBACK = {
   /** 小さな値 */
   SMALL: 50,
-  
+
   /** 中程度の値 */
   MEDIUM: 100,
-  
+
   /** 大きな値 */
   LARGE: 200,
-  
+
   /** 標準的な遅延時間 */
   STANDARD_DELAY: 300,
-  
+
   /** 長い遅延時間 */
   LONG_DELAY: 500,
-  
+
   /** 非常に長い遅延時間 */
   VERY_LONG_DELAY: 1000,
-  
+
   /** ネットワークタイムアウト */
   NETWORK_TIMEOUT: 3000,
-  
+
   /** 重い処理のタイムアウト */
   HEAVY_PROCESS_TIMEOUT: 5000,
-  
+
   /** 最大タイムアウト */
   MAX_TIMEOUT: 10000,
-  
+
   /** アニメーション関連の値 */
   ANIMATION_OFFSET: 19,
-  
+
   /** スムーズスクロールのしきい値 */
   SMOOTH_SCROLL_THRESHOLD: 800,
-  
+
   /** 重い処理用のタイムアウト */
   HEAVY_TIMEOUT: 8000,
-  
+
   /** 小さな数値 */
   TEN: 10,
-  
+
   /** 透明度の小数 */
   HALF: 0.5,
-  
+
   /** 小さな整数値 */
   FOUR: 4,
-  
+
   /** 負の小さな値 */
   NEGATIVE_TWO: -2,
-  
+
   /** 小さな正の値 */
   THREE: 3,
-  
+
   /** マージン用の小さな値 */
   FIVE: 5,
 };

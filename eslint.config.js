@@ -100,7 +100,7 @@ module.exports = [
       '*-debug.md',
       // 外部ライブラリの具体的な除外
       'lib/html2canvas.min.js',
-      'lib/jspdf.umd.min.js', 
+      'lib/jspdf.umd.min.js',
       'lib/marked.min.js',
       'lib/mermaid.min.js',
       'release/lib/html2canvas.min.js',

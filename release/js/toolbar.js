@@ -91,50 +91,50 @@ class Toolbar {
     this.toolbarElement = document.createElement('div');
     this.toolbarElement.className = 'main-toolbar';
     this.toolbarElement.title = 'ドラッグで移動可能';
-    
+
     // Create elements safely without innerHTML
     const dragHandle = document.createElement('div');
     dragHandle.className = 'toolbar-drag-handle';
     dragHandle.title = 'ツールバーをドラッグして移動';
     dragHandle.textContent = '⋮⋮';
-    
+
     const searchBtn = document.createElement('button');
     searchBtn.className = 'toolbar-btn';
     searchBtn.id = 'search-btn';
     searchBtn.title = '検索 (Ctrl+F)';
     searchBtn.textContent = '🔍';
-    
+
     const themeSelectorContainer = document.createElement('div');
     themeSelectorContainer.className = 'theme-selector-container';
-    
+
     const printBtn = document.createElement('button');
     printBtn.className = 'toolbar-btn';
     printBtn.id = 'print-btn';
     printBtn.title = '印刷 (Ctrl+Shift+P)';
     printBtn.textContent = '🖨️';
-    
+
     const exportSelector = document.createElement('div');
     exportSelector.className = 'export-selector';
-    
+
     const exportBtn = document.createElement('button');
     exportBtn.className = 'toolbar-btn';
     exportBtn.id = 'export-btn';
     exportBtn.title = 'HTMLエクスポート';
     exportBtn.textContent = '📤';
     exportSelector.appendChild(exportBtn);
-    
+
     const settingsBtn = document.createElement('button');
     settingsBtn.className = 'toolbar-btn';
     settingsBtn.id = 'settings-btn';
     settingsBtn.title = '設定';
     settingsBtn.textContent = '⚙️';
-    
+
     const hideBtn = document.createElement('button');
     hideBtn.className = 'toolbar-btn';
     hideBtn.id = 'hide-toolbar-btn';
     hideBtn.title = 'ツールバーを隠す (F11)';
     hideBtn.textContent = '✕';
-    
+
     // Append all elements
     this.toolbarElement.appendChild(dragHandle);
     this.toolbarElement.appendChild(searchBtn);
@@ -204,55 +204,55 @@ class Toolbar {
   createThemeSelector(container) {
     const themeSelector = document.createElement('div');
     themeSelector.className = 'theme-selector';
-    
+
     // Create theme selector button safely
     const themeSelectorBtn = document.createElement('button');
     themeSelectorBtn.className = 'toolbar-btn theme-selector-button';
     themeSelectorBtn.title = 'テーマを選択';
     themeSelectorBtn.textContent = '🎨 ';
-    
+
     const themeNameSpan = document.createElement('span');
     themeNameSpan.className = 'theme-name';
     themeNameSpan.textContent = 'Light';
     themeSelectorBtn.appendChild(themeNameSpan);
-    
+
     // Create dropdown
     const themeDropdown = document.createElement('div');
     themeDropdown.className = 'theme-dropdown';
     themeDropdown.style.display = 'none';
-    
+
     const themeOptions = document.createElement('div');
     themeOptions.className = 'theme-options';
-    
+
     // Create theme options
     const themes = [
       { key: 'light', label: 'Light', preview: 'light-preview' },
       { key: 'dark', label: 'Dark', preview: 'dark-preview' },
-      { key: 'sepia', label: 'Sepia', preview: 'sepia-preview' }
+      { key: 'sepia', label: 'Sepia', preview: 'sepia-preview' },
     ];
-    
+
     themes.forEach(theme => {
       const themeOption = document.createElement('div');
       themeOption.className = 'theme-option';
       themeOption.dataset.theme = theme.key;
-      
+
       const themePreview = document.createElement('div');
       themePreview.className = `theme-preview ${theme.preview}`;
-      
+
       const previewText = document.createElement('div');
       previewText.className = 'preview-text';
       previewText.textContent = 'Aa';
       themePreview.appendChild(previewText);
-      
+
       const themeLabel = document.createElement('span');
       themeLabel.className = 'theme-label';
       themeLabel.textContent = theme.label;
-      
+
       themeOption.appendChild(themePreview);
       themeOption.appendChild(themeLabel);
       themeOptions.appendChild(themeOption);
     });
-    
+
     themeDropdown.appendChild(themeOptions);
     themeSelector.appendChild(themeSelectorBtn);
     themeSelector.appendChild(themeDropdown);
@@ -558,7 +558,13 @@ class Toolbar {
   downloadPrintableVersion() {
     const printContent = document.getElementById('markdown-content').innerHTML;
     const currentTitle = document.title || 'markdown-document';
-    const timestamp = new Date().toISOString().slice(0, window.SIZES?.ANIMATION_OFFSET || window.FALLBACK?.ANIMATION_OFFSET).replace(/:/g, '-');
+    const timestamp = new Date()
+      .toISOString()
+      .slice(
+        0,
+        window.SIZES?.ANIMATION_OFFSET || window.FALLBACK?.ANIMATION_OFFSET
+      )
+      .replace(/:/g, '-');
 
     const htmlContent = `<!DOCTYPE html>
 <html>
@@ -1143,7 +1149,11 @@ class Toolbar {
       const deltaY = e.clientY - startY;
 
       // 5px以上移動したらドラッグとみなす
-      if (!isDragging && (Math.abs(deltaX) > (window.FALLBACK?.FIVE) || Math.abs(deltaY) > (window.FALLBACK?.FIVE))) {
+      if (
+        !isDragging &&
+        (Math.abs(deltaX) > window.FALLBACK?.FIVE ||
+          Math.abs(deltaY) > window.FALLBACK?.FIVE)
+      ) {
         isDragging = true;
         this.isDragging = true;
       }

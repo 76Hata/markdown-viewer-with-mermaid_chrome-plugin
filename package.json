@@ -31,7 +31,7 @@
     "package:clean": "npm run create-release-dir && npm run package:minimal",
     "create-release-dir": "if exist release rmdir /s /q release && mkdir release",
     "copy-essential-files": "copy manifest.json release\\ && copy background.js release\\ && copy content.js release\\ && copy popup.html release\\ && copy popup.js release\\ && xcopy css release\\css\\ /e /i && xcopy icons release\\icons\\ /e /i /exclude:exclude.txt && xcopy js release\\js\\ /e /i /exclude:exclude.txt && xcopy lib release\\lib\\ /e /i",
-    "create-exclude-file": "echo .DS_Store > exclude.txt && echo .backup >> exclude.txt && echo *.backup >> exclude.txt && echo toolbar.js.backup >> exclude.txt",
+    "create-exclude-file": "echo .DS_Store > exclude.txt && echo .backup >> exclude.txt && echo *.backup >> exclude.txt && echo toolbar.js.backup >> exclude.txt && echo toolbar\\ >> exclude.txt",
     "package:minimal": "npm run create-release-dir && npm run create-exclude-file && npm run copy-essential-files && web-ext build --source-dir=release --artifacts-dir=build --filename=markdown_viewer_with_mermaid-minimal-{version}.zip",
     "package:production": "web-ext build --config web-ext-config.js --filename=markdown_viewer_with_mermaid-production-{version}.zip",
     "clean": "if exist build rmdir /s /q build && if exist web-ext-artifacts rmdir /s /q web-ext-artifacts && if exist coverage rmdir /s /q coverage && if exist dist rmdir /s /q dist && if exist release rmdir /s /q release"

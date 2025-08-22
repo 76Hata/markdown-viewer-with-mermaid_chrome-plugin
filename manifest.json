@@ -24,12 +24,12 @@
   },
   "host_permissions": [
     "file:///*/*.md",
-    "file:///*/*.mkd", 
+    "file:///*/*.mkd",
     "file:///*/*.mdx",
     "file:///*/*.markdown",
     "http://*/*.md",
     "http://*/*.mkd",
-    "http://*/*.mdx", 
+    "http://*/*.mdx",
     "http://*/*.markdown",
     "https://*/*.md",
     "https://*/*.mkd",
@@ -73,7 +73,7 @@
   ],
   "web_accessible_resources": [
     {
-      "resources": ["js/*.js", "css/*.css", "lib/*.js", "icons/*.png", "doc/*.png"],
+      "resources": ["js/*.js", "css/*.css", "lib/*.js", "icons/*.png"],
       "matches": ["file:///*", "http://*/*", "https://*/*"]
     }
   ],
